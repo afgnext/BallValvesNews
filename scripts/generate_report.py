@@ -197,7 +197,7 @@ def send_email(recipients, key_signal, n_opps, n_projects):
     today_str = TODAY.strftime("%d %B %Y")
     msg = MIMEMultipart("alternative")
     msg["Subject"] = f"AFG Market Radar actualizado: {today_str}"
-    msg["From"]    = f"AFG Intelligence <{SMTP_USER}>"
+    msg["From"]    = f"AFG Intelligence <afgnext@alcortagroup.com>"
     msg["To"]      = ", ".join(recipients)
     body = f"""<html><body style="font-family:Arial,sans-serif;background:#f5f5f5;padding:20px">
 <div style="max-width:580px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.1)">
