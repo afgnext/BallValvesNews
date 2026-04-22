@@ -1,1004 +1,509 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>AFG · Market Intelligence — Ball Valves USA Oil & Gas</title>
+  <title>AFG · Market Intelligence — Ball Valves USA Oil &amp; Gas</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
-    :root {
-      --bg: #0d1117;
-      --surface: #161b22;
-      --surface2: #1c2230;
-      --border: #21262d;
-      --accent: #e8a225;
-      --accent2: #1f6feb;
-      --green: #238636;
-      --red: #da3633;
-      --orange: #d29922;
-      --purple: #8b5cf6;
-      --text: #e6edf3;
-      --text-muted: #7d8590;
-      --text-dim: #484f58;
-    }
-    * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-      font-size: 14px;
-      line-height: 1.6;
-    }
+    :root{--bg:#0d1117;--surface:#161b22;--border:#30363d;--text:#e6edf3;--muted:#7d8590;--amber:#e8a225;--blue:#1f6feb;--red:#f85149;--green:#3fb950}
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh}
+    a{color:var(--amber);text-decoration:none}
+    a:hover{text-decoration:underline}
 
-    /* ── Header ── */
-    header {
-      background: linear-gradient(135deg, #0d1117 0%, #161b22 50%, #1a1f2e 100%);
-      border-bottom: 1px solid var(--border);
-      padding: 24px 32px 0;
-      position: sticky; top: 0; z-index: 100;
-    }
-    .header-top {
-      display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;
-    }
-    .logo { display: flex; align-items: center; gap: 12px; }
-    .logo-badge {
-      background: var(--accent);
-      color: #000;
-      font-weight: 800;
-      font-size: 13px;
-      padding: 5px 10px;
-      border-radius: 6px;
-      letter-spacing: 0.5px;
-    }
-    .logo-title { font-size: 17px; font-weight: 600; color: var(--text); }
-    .logo-sub { font-size: 12px; color: var(--text-muted); }
-    .date-badge {
-      display: flex; align-items: center; gap: 8px;
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      padding: 6px 14px; border-radius: 20px;
-      font-size: 12px; color: var(--text-muted);
-    }
-    .date-badge .dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+    /* ── HEADER ── */
+    header{background:#010409;border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100}
+    .logo{background:var(--amber);color:#000;font-weight:800;padding:5px 10px;border-radius:6px;font-size:14px}
+    .header-title{font-size:16px;font-weight:600}
+    .header-sub{font-size:12px;color:var(--muted);margin-left:auto}
+    #date-badge{font-size:12px;color:var(--muted);background:var(--surface);border:1px solid var(--border);padding:4px 10px;border-radius:20px}
 
-    /* ── Nav tabs ── */
-    .nav-tabs { display: flex; gap: 4px; overflow-x: auto; }
-    .nav-tab {
-      padding: 10px 16px;
-      border: none; background: transparent;
-      color: var(--text-muted);
-      cursor: pointer; font-size: 13px; font-weight: 500;
-      border-bottom: 2px solid transparent;
-      transition: all .2s; white-space: nowrap;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .nav-tab:hover { color: var(--text); }
-    .nav-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-    .nav-tab .badge {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1px 7px; font-size: 11px; color: var(--text-muted);
-    }
-    .nav-tab.active .badge { background: var(--accent); color: #000; border-color: var(--accent); }
+    /* ── TABS ── */
+    nav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;gap:4px;overflow-x:auto}
+    .tab{padding:12px 16px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:.2s}
+    .tab:hover{color:var(--text)}
+    .tab.active{color:var(--amber);border-bottom-color:var(--amber)}
 
-    /* ── Main layout ── */
-    main { padding: 28px 32px; max-width: 1400px; margin: 0 auto; }
+    /* ── MAIN ── */
+    main{padding:24px;max-width:1400px;margin:0 auto}
+    .section{display:none}
+    .section.active{display:block}
 
-    /* ── Section ── */
-    .section { display: none; }
-    .section.active { display: block; }
+    /* ── GRID ── */
+    .grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:24px}
+    .grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(360px,1fr));gap:16px}
+    .grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
 
-    /* ── Section header ── */
-    .section-header {
-      display: flex; align-items: center; gap: 12px; margin-bottom: 24px;
-    }
-    .section-icon { font-size: 22px; }
-    .section-title { font-size: 20px; font-weight: 700; color: var(--text); }
-    .section-desc { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+    /* ── CARDS ── */
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px}
+    .card-sm{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
+    .kpi{text-align:center}
+    .kpi .val{font-size:36px;font-weight:800;color:var(--amber)}
+    .kpi .lbl{font-size:12px;color:var(--muted);text-transform:uppercase;margin-top:4px}
+    .temp-bar{height:8px;background:var(--border);border-radius:4px;margin-top:8px}
+    .temp-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--green),var(--amber),var(--red));transition:width .6s}
 
-    /* ── Dashboard overview (section 0) ── */
-    .kpi-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;
-      margin-bottom: 32px;
-    }
-    .kpi-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-      position: relative; overflow: hidden;
-    }
-    .kpi-card::before {
-      content: ''; position: absolute; top: 0; left: 0;
-      width: 100%; height: 3px;
-    }
-    .kpi-card.alta::before { background: var(--red); }
-    .kpi-card.media::before { background: var(--orange); }
-    .kpi-card.verde::before { background: var(--green); }
-    .kpi-card.azul::before { background: var(--accent2); }
-    .kpi-number { font-size: 36px; font-weight: 800; margin-bottom: 4px; }
-    .kpi-card.alta .kpi-number { color: var(--red); }
-    .kpi-card.media .kpi-number { color: var(--orange); }
-    .kpi-card.verde .kpi-number { color: var(--green); }
-    .kpi-card.azul .kpi-number { color: var(--accent2); }
-    .kpi-label { font-size: 12px; color: var(--text-muted); font-weight: 500; text-transform: uppercase; letter-spacing: .5px; }
-    .kpi-sub { font-size: 11px; color: var(--text-dim); margin-top: 4px; }
+    /* ── SIGNAL ── */
+    .signal-box{background:rgba(232,162,37,.08);border:1px solid rgba(232,162,37,.3);border-radius:10px;padding:20px;margin-bottom:24px}
+    .signal-label{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--amber);margin-bottom:6px}
+    .signal-text{font-size:15px;font-weight:600;display:flex;align-items:center;gap:8px}
+    .sarrow{color:var(--amber)}
 
-    /* ── Urgency meter ── */
-    .urgency-block {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 24px;
-      margin-bottom: 24px;
-    }
-    .urgency-title { font-size: 13px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 16px; }
-    .urgency-bar-wrap { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-    .urgency-label { font-size: 13px; color: var(--text); min-width: 160px; }
-    .urgency-bar-outer { flex: 1; background: var(--surface2); border-radius: 6px; height: 10px; }
-    .urgency-bar-inner { height: 10px; border-radius: 6px; }
-    .urgency-pct { font-size: 12px; color: var(--text-muted); min-width: 36px; text-align: right; }
+    /* ── OPPORTUNITY CARD ── */
+    .opp{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;display:flex;flex-direction:column;gap:10px}
+    .opp-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+    .opp-title{font-weight:600;font-size:14px;line-height:1.3}
+    .opp-co{font-size:12px;color:var(--muted)}
+    .opp-desc{font-size:13px;color:#cdd9e5;line-height:1.5}
+    .opp-foot{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+    .tag{background:rgba(31,111,235,.15);color:#79c0ff;font-size:11px;padding:2px 8px;border-radius:12px}
+    .badge{font-size:11px;padding:3px 9px;border-radius:12px;font-weight:600}
+    .badge-Alta{background:rgba(63,185,80,.15);color:var(--green)}
+    .badge-Media{background:rgba(232,162,37,.15);color:var(--amber)}
+    .badge-Baja{background:rgba(99,110,123,.15);color:var(--muted)}
+    .src-link{font-size:11px;color:var(--muted);margin-left:auto}
 
-    /* ── Card grid ── */
-    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; }
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-      transition: border-color .2s, transform .15s;
-      cursor: default;
-    }
-    .card:hover { border-color: #3d4451; transform: translateY(-2px); }
-    .card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
-    .card-tag {
-      font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px;
-      padding: 3px 8px; border-radius: 4px;
-    }
-    .tag-alta { background: rgba(218,54,51,.15); color: #ff6b6b; border: 1px solid rgba(218,54,51,.3); }
-    .tag-media { background: rgba(210,153,34,.15); color: #fbbf24; border: 1px solid rgba(210,153,34,.3); }
-    .tag-baja { background: rgba(35,134,54,.15); color: #4ade80; border: 1px solid rgba(35,134,54,.3); }
-    .tag-alerta { background: rgba(218,54,51,.15); color: #ff6b6b; border: 1px solid rgba(218,54,51,.3); }
-    .tag-proyecto { background: rgba(31,111,235,.15); color: #60a5fa; border: 1px solid rgba(31,111,235,.3); }
-    .tag-regulacion { background: rgba(139,92,246,.15); color: #c4b5fd; border: 1px solid rgba(139,92,246,.3); }
-    .tag-riesgo { background: rgba(210,153,34,.15); color: #fbbf24; border: 1px solid rgba(210,153,34,.3); }
-    .tag-accion { background: rgba(232,162,37,.15); color: #fbbf24; border: 1px solid rgba(232,162,37,.3); }
+    /* ── ALERT ── */
+    .alert{border-radius:10px;padding:16px 18px;margin-bottom:12px;border-left:4px solid}
+    .alert-Critica{background:rgba(248,81,73,.08);border-color:var(--red)}
+    .alert-Alta{background:rgba(232,162,37,.08);border-color:var(--amber)}
+    .alert-Media{background:rgba(31,111,235,.08);border-color:var(--blue)}
+    .alert-head{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+    .alert-dot{width:8px;height:8px;border-radius:50%}
+    .dot-Critica{background:var(--red)}
+    .dot-Alta{background:var(--amber)}
+    .dot-Media{background:var(--blue)}
+    .alert-title{font-weight:600;font-size:14px}
+    .alert-body{font-size:13px;color:#cdd9e5;line-height:1.5}
 
-    .card-title { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 6px; line-height: 1.4; }
-    .card-company {
-      font-size: 12px; color: var(--accent2); font-weight: 600; margin-bottom: 10px;
-      display: flex; align-items: center; gap: 4px;
-    }
-    .card-body { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
-    .card-meta {
-      display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px;
-      padding-top: 14px; border-top: 1px solid var(--border);
-    }
-    .meta-chip {
-      font-size: 11px; padding: 3px 9px; border-radius: 20px;
-      background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted);
-      display: flex; align-items: center; gap: 4px;
-    }
-    .card-link {
-      display: inline-flex; align-items: center; gap: 5px;
-      font-size: 12px; color: var(--accent2); text-decoration: none; font-weight: 500;
-      margin-top: 10px; padding: 5px 10px; background: rgba(31,111,235,.1);
-      border: 1px solid rgba(31,111,235,.2); border-radius: 6px;
-      transition: background .2s;
-    }
-    .card-link:hover { background: rgba(31,111,235,.2); }
+    /* ── PROJECT ── */
+    .project{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px}
+    .proj-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:10px}
+    .proj-name{font-weight:600;font-size:14px}
+    .proj-phase{font-size:11px;padding:3px 9px;border-radius:12px;font-weight:600;white-space:nowrap}
+    .phase-planificacion{background:rgba(31,111,235,.15);color:#79c0ff}
+    .phase-ejecucion{background:rgba(232,162,37,.15);color:var(--amber)}
+    .phase-operativo{background:rgba(63,185,80,.15);color:var(--green)}
+    .proj-co{font-size:12px;color:var(--muted);margin-bottom:6px}
+    .proj-desc{font-size:13px;color:#cdd9e5;line-height:1.5}
+    .proj-capex{font-size:12px;color:var(--amber);font-weight:700;margin-top:8px}
 
-    /* ── Timeline (projects) ── */
-    .timeline { position: relative; }
-    .timeline::before {
-      content: ''; position: absolute; left: 20px; top: 0; bottom: 0;
-      width: 2px; background: var(--border);
-    }
-    .timeline-item { display: flex; gap: 24px; margin-bottom: 24px; position: relative; }
-    .timeline-dot {
-      width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px; position: relative; z-index: 1;
-    }
-    .dot-active { background: rgba(35,134,54,.2); border: 2px solid var(--green); }
-    .dot-planning { background: rgba(31,111,235,.2); border: 2px solid var(--accent2); }
-    .dot-execution { background: rgba(232,162,37,.2); border: 2px solid var(--accent); }
-    .timeline-content {
-      flex: 1; background: var(--surface); border: 1px solid var(--border);
-      border-radius: 12px; padding: 18px;
-    }
-    .timeline-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
-    .timeline-title { font-size: 15px; font-weight: 700; color: var(--text); }
-    .phase-badge {
-      font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
-      padding: 3px 9px; border-radius: 12px;
-    }
-    .phase-active { background: rgba(35,134,54,.2); color: #4ade80; }
-    .phase-planning { background: rgba(31,111,235,.2); color: #60a5fa; }
-    .phase-execution { background: rgba(232,162,37,.2); color: #fbbf24; }
-    .timeline-companies { font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
-    .timeline-companies strong { color: var(--accent2); }
-    .timeline-desc { font-size: 13px; color: var(--text-muted); }
-    .timeline-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+    /* ── RISK ── */
+    .risk{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:12px}
+    .risk-head{display:flex;justify-content:space-between;margin-bottom:8px}
+    .risk-title{font-weight:600;font-size:14px}
+    .imp-Alto{color:var(--red)}
+    .imp-Medio{color:var(--amber)}
+    .imp-Bajo{color:var(--green)}
+    .risk-desc{font-size:13px;color:#cdd9e5;margin-bottom:8px;line-height:1.5}
+    .risk-mit{font-size:12px;color:var(--green);background:rgba(63,185,80,.08);padding:8px 12px;border-radius:6px}
 
-    /* ── Alerts ── */
-    .alert-list { display: flex; flex-direction: column; gap: 12px; }
-    .alert-item {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 16px 20px;
-      display: flex; gap: 14px; align-items: flex-start;
-    }
-    .alert-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
-    .alert-level {
-      font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px;
-      padding: 2px 8px; border-radius: 4px; margin-bottom: 6px; display: inline-block;
-    }
-    .level-critica { background: rgba(218,54,51,.2); color: #ff6b6b; }
-    .level-alta { background: rgba(210,153,34,.2); color: #fbbf24; }
-    .level-media { background: rgba(31,111,235,.2); color: #60a5fa; }
-    .alert-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
-    .alert-body { font-size: 13px; color: var(--text-muted); }
-    .alert-source { margin-top: 8px; }
+    /* ── ACTION ── */
+    .action{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;margin-bottom:12px}
+    .act-head{display:flex;justify-content:space-between;margin-bottom:8px}
+    .act-target{font-weight:700;font-size:14px}
+    .act-type{font-size:11px;padding:3px 9px;border-radius:12px;font-weight:600}
+    .type-urgente{background:rgba(248,81,73,.15);color:#ff7b72}
+    .type-distribucion{background:rgba(63,185,80,.15);color:var(--green)}
+    .type-partnership{background:rgba(31,111,235,.15);color:#79c0ff}
+    .type-comunicacion{background:rgba(232,162,37,.15);color:var(--amber)}
+    .act-desc{font-size:13px;color:#cdd9e5;line-height:1.5;margin-bottom:8px}
+    .signals{display:flex;flex-wrap:wrap;gap:6px}
+    .sig{background:var(--bg);border:1px solid var(--border);font-size:11px;padding:2px 8px;border-radius:12px;color:var(--muted)}
 
-    /* ── Action cards ── */
-    .action-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 16px; }
-    .action-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px;
-      border-left: 4px solid var(--accent);
-    }
-    .action-card.urgent { border-left-color: var(--red); }
-    .action-card.partner { border-left-color: var(--purple); }
-    .action-target { font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
-    .action-type {
-      font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .5px;
-      color: var(--accent); margin-bottom: 12px;
-    }
-    .action-card.urgent .action-type { color: #ff6b6b; }
-    .action-card.partner .action-type { color: #c4b5fd; }
-    .action-body { font-size: 13px; color: var(--text-muted); margin-bottom: 14px; }
-    .action-signals { display: flex; flex-direction: column; gap: 5px; }
-    .signal { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted); }
-    .signal::before { content: '→'; color: var(--accent); font-weight: 700; }
-    .action-card.urgent .signal::before { color: #ff6b6b; }
-    .action-card.partner .signal::before { color: #c4b5fd; }
+    /* ── CLIENT MAP ── */
+    #map{height:460px;border-radius:10px;border:1px solid var(--border);margin-bottom:24px}
+    .client-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+    .client{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
+    .client-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+    .client-name{font-weight:600;font-size:14px}
+    .client-type{font-size:11px;color:var(--muted);padding:2px 7px;border:1px solid var(--border);border-radius:10px}
+    .client-city{font-size:12px;color:var(--muted);margin-bottom:6px}
+    .client-reason{font-size:13px;color:#cdd9e5;line-height:1.5}
+    .manual-badge{background:rgba(232,162,37,.15);color:var(--amber);font-size:10px;padding:1px 6px;border-radius:8px;font-weight:700}
 
-    /* ── Risk matrix ── */
-    .risk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
-    @media(max-width:700px){ .risk-grid { grid-template-columns: 1fr; } }
-    .risk-card {
-      background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px;
-    }
-    .risk-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
-    .risk-emoji { font-size: 20px; }
-    .risk-title { font-size: 14px; font-weight: 700; color: var(--text); }
-    .risk-level-bar { height: 6px; background: var(--surface2); border-radius: 3px; margin-bottom: 12px; }
-    .risk-level-fill { height: 6px; border-radius: 3px; }
-    .risk-body { font-size: 13px; color: var(--text-muted); }
-    .risk-items { list-style: none; display: flex; flex-direction: column; gap: 6px; }
-    .risk-items li { display: flex; gap: 8px; align-items: flex-start; font-size: 13px; color: var(--text-muted); }
-    .risk-items li::before { content: '◆'; color: var(--red); font-size: 8px; margin-top: 4px; flex-shrink: 0; }
+    /* ── FILTER ── */
+    .filters{display:flex;gap:10px;margin-bottom:18px;flex-wrap:wrap;align-items:center}
+    .filters select,.filters input{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:7px 12px;border-radius:6px;font-size:13px}
+    .filters label{font-size:13px;color:var(--muted)}
 
-    /* ── Filter chips ── */
-    .filter-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
-    .filter-chip {
-      padding: 6px 14px; border-radius: 20px;
-      background: var(--surface2); border: 1px solid var(--border);
-      color: var(--text-muted); font-size: 12px; cursor: pointer;
-      transition: all .2s;
-    }
-    .filter-chip:hover { color: var(--text); border-color: #3d4451; }
-    .filter-chip.active { background: rgba(232,162,37,.15); color: var(--accent); border-color: var(--accent); }
+    /* ── SECTION TITLE ── */
+    .sec-title{font-size:18px;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:10px}
+    .sec-count{background:var(--border);font-size:12px;padding:2px 8px;border-radius:10px;color:var(--muted)}
 
-    /* ── Footer ── */
-    footer {
-      border-top: 1px solid var(--border); margin: 40px 32px 0;
-      padding: 20px 0; text-align: center;
-      font-size: 12px; color: var(--text-dim);
-    }
+    /* ── LOADER ── */
+    #loader{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:9999}
+    .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--amber);border-radius:50%;animation:spin .8s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    #loader.hidden{display:none}
 
-    /* ── Responsive ── */
-    @media(max-width:768px){
-      header, main { padding-left: 16px; padding-right: 16px; }
-      .card-grid { grid-template-columns: 1fr; }
-      .kpi-grid { grid-template-columns: 1fr 1fr; }
-    }
+    /* ── ERROR ── */
+    #error-msg{background:rgba(248,81,73,.1);border:1px solid rgba(248,81,73,.3);border-radius:10px;padding:20px;text-align:center;display:none}
   </style>
 </head>
 <body>
 
+<div id="loader">
+  <div class="spinner"></div>
+  <div style="color:var(--muted);font-size:14px">Cargando inteligencia de mercado…</div>
+</div>
+
 <header>
-  <div class="header-top">
-    <div class="logo">
-      <div class="logo-badge">AFG</div>
-      <div>
-        <div class="logo-title">Market Intelligence · Ball Valves</div>
-        <div class="logo-sub">Stainless Steel Balls (~4" / ~10 kg) — Oil & Gas USA</div>
-      </div>
-    </div>
-    <div class="date-badge">
-      <span class="dot"></span>
-      Actualizado: 22 Abril 2026
-    </div>
-  </div>
-  <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showSection('dashboard')">📊 Dashboard <span class="badge">5</span></button>
-    <button class="nav-tab" onclick="showSection('oportunidades')">🔎 Oportunidades <span class="badge">6</span></button>
-    <button class="nav-tab" onclick="showSection('alertas')">⚠️ Alertas <span class="badge">4</span></button>
-    <button class="nav-tab" onclick="showSection('proyectos')">🏭 Proyectos <span class="badge">5</span></button>
-    <button class="nav-tab" onclick="showSection('riesgos')">📉 Riesgos <span class="badge">4</span></button>
-    <button class="nav-tab" onclick="showSection('acciones')">🎯 Acciones <span class="badge">5</span></button>
+  <div class="logo">AFG</div>
+  <div class="header-title">Market Intelligence Radar</div>
+  <div class="header-sub" style="display:flex;gap:10px;align-items:center">
+    <span id="date-badge">—</span>
+    <span style="font-size:12px;color:var(--muted)">Stainless Steel Balls · Oil &amp; Gas USA · Planta Michigan</span>
   </div>
 </header>
 
+<nav>
+  <div class="tab active" onclick="switchTab('dashboard',this)">📊 Dashboard</div>
+  <div class="tab" onclick="switchTab('oportunidades',this)">🎯 Oportunidades</div>
+  <div class="tab" onclick="switchTab('alertas',this)">🚨 Alertas</div>
+  <div class="tab" onclick="switchTab('proyectos',this)">🏗️ Proyectos</div>
+  <div class="tab" onclick="switchTab('riesgos',this)">⚠️ Riesgos</div>
+  <div class="tab" onclick="switchTab('acciones',this)">⚡ Acciones</div>
+  <div class="tab" onclick="switchTab('clientes',this)">🗺️ Clientes</div>
+</nav>
+
 <main>
+  <div id="error-msg">
+    <div style="font-size:18px;margin-bottom:8px">⚠️ No se pudo cargar data.json</div>
+    <div style="font-size:13px;color:var(--muted)">Ejecuta el script generate_report.py para generar los datos, o verifica que data.json existe en la raíz del proyecto.</div>
+  </div>
 
-  <!-- ════════════════════════════════ DASHBOARD ════════════════════════════════ -->
-  <section id="dashboard" class="section active">
-    <div class="section-header">
-      <span class="section-icon">📊</span>
+  <!-- DASHBOARD -->
+  <div id="tab-dashboard" class="section active">
+    <div class="signal-box" id="signal-box">
+      <div class="signal-label">🔥 Señal clave del día</div>
+      <div class="signal-text"><span class="sarrow">&#8594;</span><span id="signal-text">—</span></div>
+    </div>
+    <div class="grid-4">
+      <div class="card kpi"><div class="val" id="kpi-opps">—</div><div class="lbl">Oportunidades</div></div>
+      <div class="card kpi"><div class="val" id="kpi-alerts">—</div><div class="lbl">Alertas</div></div>
+      <div class="card kpi"><div class="val" id="kpi-projects">—</div><div class="lbl">Proyectos</div></div>
+      <div class="card kpi"><div class="val" id="kpi-actions">—</div><div class="lbl">Acciones</div></div>
+    </div>
+    <div class="card" style="margin-bottom:24px">
+      <div style="font-size:13px;color:var(--muted);margin-bottom:8px">Temperatura de mercado</div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="temp-bar" style="flex:1"><div class="temp-fill" id="temp-fill" style="width:0%"></div></div>
+        <div id="temp-val" style="font-size:22px;font-weight:800;color:var(--amber)">—</div>
+      </div>
+    </div>
+    <div class="grid-2">
       <div>
-        <div class="section-title">Executive Dashboard</div>
-        <div class="section-desc">Resumen ejecutivo de inteligencia de mercado — semana 22 Abr 2026</div>
+        <div class="sec-title">🎯 Top Oportunidades</div>
+        <div id="dash-opps"></div>
       </div>
-    </div>
-
-    <div class="kpi-grid">
-      <div class="kpi-card alta">
-        <div class="kpi-number">3</div>
-        <div class="kpi-label">Oportunidades Críticas</div>
-        <div class="kpi-sub">Señales de urgencia alta detectadas</div>
-      </div>
-      <div class="kpi-card media">
-        <div class="kpi-number">5</div>
-        <div class="kpi-label">Proyectos EPC Activos</div>
-        <div class="kpi-sub">LNG + Refinery USA en ejecución</div>
-      </div>
-      <div class="kpi-card verde">
-        <div class="kpi-number">+41%</div>
-        <div class="kpi-label">Arancel Efectivo Acero</div>
-        <div class="kpi-sub">Section 232 reforzado Abr 6, 2026</div>
-      </div>
-      <div class="kpi-card azul">
-        <div class="kpi-number">$64B</div>
-        <div class="kpi-label">Mercado EPC Oil & Gas USA</div>
-        <div class="kpi-sub">Proyección 2026 — CAGR 6.95%</div>
-      </div>
-      <div class="kpi-card media">
-        <div class="kpi-number">18 Mtpa</div>
-        <div class="kpi-label">Golden Pass LNG online</div>
-        <div class="kpi-sub">Train 1 activo Q2 2026 — Texas</div>
-      </div>
-    </div>
-
-    <div class="urgency-block">
-      <div class="urgency-title">⚡ Termómetro de Oportunidad por Categoría</div>
-
-      <div class="urgency-bar-wrap">
-        <div class="urgency-label">🏗️ Proyectos LNG / EPC</div>
-        <div class="urgency-bar-outer"><div class="urgency-bar-inner" style="width:90%;background:linear-gradient(90deg,#238636,#4ade80)"></div></div>
-        <div class="urgency-pct">90%</div>
-      </div>
-      <div class="urgency-bar-wrap">
-        <div class="urgency-label">💰 Presión Arancelaria (China)</div>
-        <div class="urgency-bar-outer"><div class="urgency-bar-inner" style="width:85%;background:linear-gradient(90deg,#da3633,#ff6b6b)"></div></div>
-        <div class="urgency-pct">85%</div>
-      </div>
-      <div class="urgency-bar-wrap">
-        <div class="urgency-label">🔄 Nearshoring / Alternativa China</div>
-        <div class="urgency-bar-outer"><div class="urgency-bar-inner" style="width:78%;background:linear-gradient(90deg,#1f6feb,#60a5fa)"></div></div>
-        <div class="urgency-pct">78%</div>
-      </div>
-      <div class="urgency-bar-wrap">
-        <div class="urgency-label">🌿 CBAM — Acero en Europa</div>
-        <div class="urgency-bar-outer"><div class="urgency-bar-inner" style="width:70%;background:linear-gradient(90deg,#8b5cf6,#c4b5fd)"></div></div>
-        <div class="urgency-pct">70%</div>
-      </div>
-      <div class="urgency-bar-wrap">
-        <div class="urgency-label">🔧 Fallo / Mantenimiento Válvulas</div>
-        <div class="urgency-bar-outer"><div class="urgency-bar-inner" style="width:62%;background:linear-gradient(90deg,#d29922,#fbbf24)"></div></div>
-        <div class="urgency-pct">62%</div>
-      </div>
-      <div class="urgency-bar-wrap">
-        <div class="urgency-label">🛢️ Midstream Pipeline USA</div>
-        <div class="urgency-bar-outer"><div class="urgency-bar-inner" style="width:55%;background:linear-gradient(90deg,#d29922,#fbbf24)"></div></div>
-        <div class="urgency-pct">55%</div>
-      </div>
-    </div>
-
-    <!-- Key Insights -->
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px">
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;border-left:4px solid var(--red)">
-        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#ff6b6b;margin-bottom:8px">🚨 SEÑAL MÁS URGENTE</div>
-        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px">Aranceles Section 232 — Efecto Inmediato</div>
-        <div style="font-size:13px;color:var(--text-muted)">El 6 de abril de 2026, Trump elevó los aranceles sobre derivados de acero al <strong style="color:#fbbf24">25–50% sobre valor total</strong>. Los proveedores chinos de bolas de válvula encarecen un 25–50%. AFG tiene ventana para posicionarse como alternativa europea/nearshore.</div>
-        <a class="card-link" href="https://www.whitehouse.gov/fact-sheets/2026/04/fact-sheet-president-donald-j-trump-strengthens-tariffs-on-steel-aluminum-and-copper-imports/" target="_blank">→ White House Fact Sheet</a>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;border-left:4px solid var(--green)">
-        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#4ade80;margin-bottom:8px">✅ MAYOR PROYECTO ACTIVO</div>
-        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px">Golden Pass LNG — Train 1 Online, Trains 2 & 3 en obra</div>
-        <div style="font-size:13px;color:var(--text-muted)">18 Mtpa en Texas. McDermott + Chiyoda completan Train 1 (Q2 2026). Los trenes 2 y 3 requieren procurement activo de componentes. Compras masivas de válvulas y componentes en curso.</div>
-        <a class="card-link" href="https://www.offshore-energy.biz/10-billion-us-lng-project-comes-online-in-texas-one-train-down-two-more-left-on-mcdermott-and-chiyodas-list/" target="_blank">→ Offshore Energy</a>
-      </div>
-      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;border-left:4px solid var(--purple)">
-        <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#c4b5fd;margin-bottom:8px">🌍 REGULACIÓN CLAVE</div>
-        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:6px">CBAM entra en fase definitiva — 1 Enero 2026</div>
-        <div style="font-size:13px;color:var(--text-muted)">El arancel de carbono europeo ya exige datos de emisiones verificados por terceros en importaciones de acero. Reorienta flujos de acero hacia USA y presiona a fabricantes europeos a diversificar mercados.</div>
-        <a class="card-link" href="https://www.spglobal.com/energy/en/news-research/latest-news/metals/010726-europes-steel-industry-faces-its-2026-reckoning-with-cbam" target="_blank">→ S&P Global CBAM</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ════════════════════════════════ OPORTUNIDADES ════════════════════════════════ -->
-  <section id="oportunidades" class="section">
-    <div class="section-header">
-      <span class="section-icon">🔎</span>
       <div>
-        <div class="section-title">Oportunidades Detectadas</div>
-        <div class="section-desc">Señales reales de demanda de bolas de acero inoxidable para válvulas — USA Oil & Gas</div>
+        <div class="sec-title">🚨 Alertas Recientes</div>
+        <div id="dash-alerts"></div>
       </div>
     </div>
+  </div>
 
-    <div class="filter-bar">
-      <div class="filter-chip active" onclick="filterCards(this,'all')">Todas (6)</div>
-      <div class="filter-chip" onclick="filterCards(this,'alta')">🔴 Alta probabilidad</div>
-      <div class="filter-chip" onclick="filterCards(this,'media')">🟡 Media probabilidad</div>
-      <div class="filter-chip" onclick="filterCards(this,'proyecto')">🏗️ Proyecto</div>
-      <div class="filter-chip" onclick="filterCards(this,'regulacion')">📋 Regulación</div>
+  <!-- OPORTUNIDADES -->
+  <div id="tab-oportunidades" class="section">
+    <div class="filters">
+      <label>Probabilidad:</label>
+      <select id="filter-prob" onchange="renderOpps()">
+        <option value="">Todas</option>
+        <option value="Alta">Alta</option>
+        <option value="Media">Media</option>
+        <option value="Baja">Baja</option>
+      </select>
+      <label>Buscar:</label>
+      <input type="text" id="filter-search" placeholder="empresa, tipo…" oninput="renderOpps()"/>
     </div>
+    <div class="sec-title">🎯 Oportunidades <span class="sec-count" id="opps-count"></span></div>
+    <div class="grid-3" id="opps-grid"></div>
+  </div>
 
-    <div class="card-grid" id="oportunidades-grid">
+  <!-- ALERTAS -->
+  <div id="tab-alertas" class="section">
+    <div class="sec-title">🚨 Alertas de Mercado</div>
+    <div id="alerts-list"></div>
+  </div>
 
-      <div class="card" data-tags="alta proyecto">
-        <div class="card-top">
-          <span class="card-tag tag-alta">🔴 Alta</span>
-          <span style="font-size:11px;color:var(--text-dim)">Abr 2026</span>
-        </div>
-        <div class="card-title">Golden Pass LNG — Trains 2 & 3: Procurement activo de componentes</div>
-        <div class="card-company">🏢 McDermott / Chiyoda · ExxonMobil / QatarEnergy — Sabine Pass, TX</div>
-        <div class="card-body">Con Train 1 completado en marzo 2026, los trenes 2 y 3 están en plena fase de construcción. El proyecto de $10B requiere procurement masivo de válvulas de bola, incluyendo componentes como bolas de acero inox para alta presión criogénica. EPC activo, ventana de suministro abierta.</div>
-        <div class="card-meta">
-          <span class="meta-chip">🗺️ Texas, USA</span>
-          <span class="meta-chip">⚙️ LNG / Criogénico</span>
-          <span class="meta-chip">💰 CAPEX $10B</span>
-        </div>
-        <a class="card-link" href="https://www.offshore-energy.biz/10-billion-us-lng-project-comes-online-in-texas-one-train-down-two-more-left-on-mcdermott-and-chiyodas-list/" target="_blank">→ Ver proyecto</a>
-      </div>
+  <!-- PROYECTOS -->
+  <div id="tab-proyectos" class="section">
+    <div class="sec-title">🏗️ Proyectos EPC &amp; Capex</div>
+    <div class="grid-3" id="projects-grid"></div>
+  </div>
 
-      <div class="card" data-tags="alta regulacion">
-        <div class="card-top">
-          <span class="card-tag tag-alta">🔴 Alta</span>
-          <span style="font-size:11px;color:var(--text-dim)">6 Abr 2026</span>
-        </div>
-        <div class="card-title">Aranceles Section 232 al 25–50%: Colapso de competitividad de proveedores chinos</div>
-        <div class="card-company">🏛️ White House / US Department of Commerce — USA Nacional</div>
-        <div class="card-body">El 6 de abril de 2026, Trump amplió los aranceles Section 232 aplicándolos al valor total aduanero: derivados de acero 25%, artículos casi 100% acero al 50%. Esto encarga a las bolas de válvula de origen chino con un sobrecosto del 25–50%, creando una ventana directa de sustitución de proveedor para AFG como fabricante europeo.</div>
-        <div class="card-meta">
-          <span class="meta-chip">📋 Section 232</span>
-          <span class="meta-chip">🔄 Sustitución proveedor</span>
-          <span class="meta-chip">🚨 Efecto inmediato</span>
-        </div>
-        <a class="card-link" href="https://www.valvemagazine.com/articles/tariff-pressure-builds-on-valve-industry" target="_blank">→ Valve Magazine</a>
-        <a class="card-link" href="https://www.chrobinson.com/en-us/resources/insights-and-advisories/client-advisories/2026q2/04-06-2026-us-expands-n-increases-sec232-tariffs-on-aluminum-steel-n-copper-effective-apr-6/" target="_blank">→ CH Robinson Advisory</a>
-      </div>
+  <!-- RIESGOS -->
+  <div id="tab-riesgos" class="section">
+    <div class="sec-title">⚠️ Mapa de Riesgos</div>
+    <div id="risks-list"></div>
+  </div>
 
-      <div class="card" data-tags="alta proyecto">
-        <div class="card-top">
-          <span class="card-tag tag-alta">🔴 Alta</span>
-          <span style="font-size:11px;color:var(--text-dim)">Ene 2026</span>
-        </div>
-        <div class="card-title">CP2 LNG Phase 2 — Worley seleccionado como EPC Contractor</div>
-        <div class="card-company">🏢 Worley Field Services / Commonwealth LNG — Louisiana, USA</div>
-        <div class="card-body">En enero 2026, Worley fue designado EPC para la Fase 2 del proyecto CP2 LNG. Worley tiene procurement activo de componentes para válvulas de alta presión y temperatura criogénica. Technip Energies ya ha emitido purchase orders a Baker Hughes, Honeywell y Solar Turbines — el proceso de sourcing de componentes menores está abierto.</div>
-        <div class="card-meta">
-          <span class="meta-chip">🗺️ Louisiana, USA</span>
-          <span class="meta-chip">🏗️ Fase EPC</span>
-          <span class="meta-chip">🌊 LNG Export</span>
-        </div>
-        <a class="card-link" href="https://naturalgasintel.com/news/clearer-timeline-emerges-for-next-wave-of-us-lng-projects-as-buildout-hits-overdrive/" target="_blank">→ Natural Gas Intel</a>
-      </div>
+  <!-- ACCIONES -->
+  <div id="tab-acciones" class="section">
+    <div class="sec-title">⚡ Acciones Comerciales Recomendadas</div>
+    <div id="actions-list"></div>
+  </div>
 
-      <div class="card" data-tags="media proyecto">
-        <div class="card-top">
-          <span class="card-tag tag-media">🟡 Media</span>
-          <span style="font-size:11px;color:var(--text-dim)">2026</span>
-        </div>
-        <div class="card-title">Texas LNG Brownsville — Acuerdo EPC con Kiewit</div>
-        <div class="card-company">🏢 Kiewit Corporation — Puerto de Brownsville, TX</div>
-        <div class="card-body">Texas LNG Brownsville ha firmado acuerdo EPC con Kiewit para su planta de exportación. La fase de procurement de componentes de válvulas y equipamiento de proceso está en apertura. Kiewit es uno de los principales contratistas de infraestructura energética de USA.</div>
-        <div class="card-meta">
-          <span class="meta-chip">🗺️ Brownsville, TX</span>
-          <span class="meta-chip">🏗️ EPC Activo</span>
-          <span class="meta-chip">🌊 LNG</span>
-        </div>
-        <a class="card-link" href="https://www.eia.gov/todayinenergy/detail.php?id=67264" target="_blank">→ EIA — LNG Contracts</a>
-      </div>
-
-      <div class="card" data-tags="media regulacion">
-        <div class="card-top">
-          <span class="card-tag tag-media">🟡 Media</span>
-          <span style="font-size:11px;color:var(--text-dim)">Ene 2026</span>
-        </div>
-        <div class="card-title">CBAM Fase Definitiva: Presión en fabricantes europeos de acero para diversificar</div>
-        <div class="card-company">🌍 Comisión Europea / S&P Global — Europa / USA</div>
-        <div class="card-body">Desde el 1 enero 2026, el CBAM exige certificados de carbono para importaciones de acero a la UE. Esto redistribuye flujos globales de acero: productores europeos con bajo carbono (como acero eléctrico español/vasco) ganan competitividad relativa. AFG, con producción baja en emisiones, puede capitalizar este diferencial tanto en Europa como en USA.</div>
-        <div class="card-meta">
-          <span class="meta-chip">🌿 Carbono</span>
-          <span class="meta-chip">📋 CBAM definitivo</span>
-          <span class="meta-chip">🔄 Redireccionamiento</span>
-        </div>
-        <a class="card-link" href="https://www.spglobal.com/energy/en/news-research/latest-news/metals/010726-europes-steel-industry-faces-its-2026-reckoning-with-cbam" target="_blank">→ S&P Global</a>
-      </div>
-
-      <div class="card" data-tags="media">
-        <div class="card-top">
-          <span class="card-tag tag-media">🟡 Media</span>
-          <span style="font-size:11px;color:var(--text-dim)">2026</span>
-        </div>
-        <div class="card-title">Infraestructura Midstream USA: 300K millas de pipeline con envejecimiento acelerado</div>
-        <div class="card-company">🏢 DNOW / Pioneer Industrial / Flowserve / Mistras Group — USA Nacional</div>
-        <div class="card-body">La red de gas natural supera las 300.000 millas en USA. Muchos sistemas operan bajo presión creciente con décadas de antigüedad. Regulaciones de PHMSA y EPA fuerzan inspecciones y reemplazos programados. Demanda sostenida de large-bore ball valves y top-entry ball valves para estaciones de pigging.</div>
-        <div class="card-meta">
-          <span class="meta-chip">🛢️ Midstream</span>
-          <span class="meta-chip">🔧 MRO</span>
-          <span class="meta-chip">📋 PHMSA</span>
-        </div>
-        <a class="card-link" href="https://alliedvalveinc.com/pipeline-safety/midstream-valve-solutions/" target="_blank">→ Allied Valve Inc.</a>
-        <a class="card-link" href="https://www.dnow.com/applications/energy/midstream" target="_blank">→ DNOW Midstream</a>
-      </div>
-
+  <!-- CLIENTES -->
+  <div id="tab-clientes" class="section">
+    <div class="sec-title">🗺️ Clientes Potenciales USA</div>
+    <div id="map"></div>
+    <div class="sec-title" style="margin-top:8px">
+      Listado <span class="sec-count" id="clients-count"></span>
+      <span style="font-size:12px;font-weight:400;color:var(--muted);margin-left:8px">
+        🔵 Identificados por IA &nbsp;|&nbsp; 🟠 Añadidos manualmente &nbsp;|&nbsp; 🟢 AFG Planta Michigan
+      </span>
     </div>
-  </section>
-
-  <!-- ════════════════════════════════ ALERTAS ════════════════════════════════ -->
-  <section id="alertas" class="section">
-    <div class="section-header">
-      <span class="section-icon">⚠️</span>
-      <div>
-        <div class="section-title">Alertas de Mercado</div>
-        <div class="section-desc">Cambios críticos en supply chain, regulación y comercio internacional — Semana Abr 22, 2026</div>
-      </div>
-    </div>
-
-    <div class="alert-list">
-
-      <div class="alert-item" style="border-left:4px solid var(--red)">
-        <div class="alert-icon">🚨</div>
-        <div style="flex:1">
-          <div class="alert-level level-critica">CRÍTICA</div>
-          <div class="alert-title">Section 232 Reformada: Aranceles al 25–50% sobre valor total de productos de acero — En vigor desde 6 Abr 2026</div>
-          <div class="alert-body">Trump firmó el 2 de abril de 2026 la modificación de la Section 232 aplicando aranceles al valor aduanero completo (no solo al valor del metal). Derivados de acero: <strong>25%</strong>. Artículos casi íntegramente de acero: <strong>50%</strong>. Equipamiento industrial crítico: <strong>15% hasta 2027</strong>. Las bolas de acero inox para válvulas de origen chino quedan gravadas con 25–50%, haciendo inviable la competencia en precio de suministradores asiáticos. Esta es la ventana comercial más clara para AFG en USA.</div>
-          <div class="alert-source">
-            <a class="card-link" href="https://www.whitehouse.gov/fact-sheets/2026/04/fact-sheet-president-donald-j-trump-strengthens-tariffs-on-steel-aluminum-and-copper-imports/" target="_blank">→ White House Fact Sheet</a>
-            <a class="card-link" href="https://www.globaltradeandsanctionslaw.com/trump-administration-section-232-metal-duties/" target="_blank">→ Global Trade Law</a>
-            <a class="card-link" href="https://materialsplus.com/resources/knowledge-hub/articles/steel-and-aluminum-tariffs-guide-us-manufacturers" target="_blank">→ Guía para fabricantes USA</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="alert-item" style="border-left:4px solid var(--orange)">
-        <div class="alert-icon">⚡</div>
-        <div style="flex:1">
-          <div class="alert-level level-alta">ALTA</div>
-          <div class="alert-title">CBAM entra en fase definitiva: Acero importado a la UE debe acreditar huella de carbono verificada</div>
-          <div class="alert-body">Desde el 1 enero de 2026, el Carbon Border Adjustment Mechanism requiere que los importadores de acero a Europa compren certificados CBAM proporcionales a las emisiones incorporadas. Datos de producción verificados por terceros son obligatorios. Esto encarece el acero chino (alta huella de carbono) y reorienta flujos de comercio. Los productores de acero europeos con menor intensidad de CO₂ (incluyendo forjas españolas/vascas como AFG) ganan competitividad comparativa en ambos lados del Atlántico.</div>
-          <div class="alert-source">
-            <a class="card-link" href="https://www.spglobal.com/energy/en/news-research/latest-news/metals/010726-europes-steel-industry-faces-its-2026-reckoning-with-cbam" target="_blank">→ S&P Global</a>
-            <a class="card-link" href="https://asuene.com/us/blog/cbam-enters-its-definitive-phase-on-january-1-2026-what-companies-must-be-ready-for" target="_blank">→ CBAM Definitivo 2026</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="alert-item" style="border-left:4px solid var(--orange)">
-        <div class="alert-icon">🔗</div>
-        <div style="flex:1">
-          <div class="alert-level level-alta">ALTA</div>
-          <div class="alert-title">Dependencia crítica de China en componentes de válvulas: Fabricantes USA en búsqueda de alternativas</div>
-          <div class="alert-body">Los aranceles acumulados (Section 301 + Section 232 reformada + posibles adicionales hasta el 145% reportado en negociaciones) hacen insostenible el sourcing chino de componentes de válvulas. Los fabricantes industriales en USA están activamente buscando proveedores alternativos con certificaciones API, PED y trazabilidad. El nearshoring hacia México + Europa es la tendencia dominante de 2026. AFG puede posicionarse como proveedor europeo de calidad premium con certificaciones equivalentes.</div>
-          <div class="alert-source">
-            <a class="card-link" href="https://imvservices.com/sourcing-industrial-valves-from-china-2026/" target="_blank">→ Estrategias sourcing válvulas China 2026</a>
-            <a class="card-link" href="https://www.realclearmarkets.com/articles/2026/04/03/us_steel_tariffs_hurt_america_help_china_1174431.html" target="_blank">→ RealClear Markets</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="alert-item" style="border-left:4px solid var(--accent2)">
-        <div class="alert-icon">🌎</div>
-        <div style="flex:1">
-          <div class="alert-level level-media">MEDIA</div>
-          <div class="alert-title">Revisión USMCA julio 2026: Incertidumbre en cadenas de suministro México–USA</div>
-          <div class="alert-body">La revisión del Tratado USMCA prevista para julio 2026 introduce incertidumbre en las cadenas de nearshoring México–USA. Si las reglas de origen cambian, las empresas que han deslocalizado producción a México podrían enfrentarse a nuevos costes arancelarios. Esto puede desviar demanda hacia proveedores europeos con acuerdos comerciales propios (UE–USA en negociación). El volumen de manufactura mexicana hacia USA alcanzó $535B en 2025.</div>
-          <div class="alert-source">
-            <a class="card-link" href="https://mexecution.com/en/blogs/2026-nearshoring-outlook-why-u-s-manufacturers-should-act-before-the-usmca-review" target="_blank">→ USMCA 2026 Outlook</a>
-            <a class="card-link" href="https://www.eawlogistics.com/mexico-in-focus-trade-nearshoring-and-the-2026-outlook/" target="_blank">→ Mexico Trade Outlook</a>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ════════════════════════════════ PROYECTOS ════════════════════════════════ -->
-  <section id="proyectos" class="section">
-    <div class="section-header">
-      <span class="section-icon">🏭</span>
-      <div>
-        <div class="section-title">Proyectos Relevantes</div>
-        <div class="section-desc">Pipeline de proyectos EPC/LNG/Midstream con demanda de componentes de válvulas en USA</div>
-      </div>
-    </div>
-
-    <div class="timeline">
-
-      <div class="timeline-item">
-        <div class="timeline-dot dot-active">🔥</div>
-        <div class="timeline-content">
-          <div class="timeline-header">
-            <div class="timeline-title">Golden Pass LNG — Trains 2 & 3</div>
-            <span class="phase-badge phase-execution">En Ejecución</span>
-          </div>
-          <div class="timeline-companies">EPC: <strong>McDermott + Chiyoda</strong> | Propietario: <strong>ExxonMobil (30%) + QatarEnergy (70%)</strong></div>
-          <div class="timeline-desc">El proyecto más grande de LNG activo en USA con 18 Mtpa de capacidad total en Sabine Pass, Jefferson County, Texas. Train 1 completado marzo 2026. Trains 2 y 3 requieren procurement activo de válvulas de proceso, bolas de acero inox para entornos criogénicos de alta presión. McDermott y Chiyoda son los puntos de contacto clave para subcontratación de componentes.</div>
-          <div class="timeline-tags">
-            <span class="meta-chip">🗺️ Sabine Pass, TX</span>
-            <span class="meta-chip">💰 $10B+</span>
-            <span class="meta-chip">🌊 LNG Export</span>
-            <span class="meta-chip">📦 Procurement abierto</span>
-          </div>
-          <a class="card-link" href="https://www.mcdermott.com/press-release-detail/123068/mcdermott-and-chiyoda-complete-construction-and-commissioning-golden-pass-lng-train-1" target="_blank">→ McDermott Press Release</a>
-          <a class="card-link" href="https://www.goldenpasslng.com/operations/export-project" target="_blank">→ Golden Pass LNG Ops</a>
-        </div>
-      </div>
-
-      <div class="timeline-item">
-        <div class="timeline-dot dot-execution">⚙️</div>
-        <div class="timeline-content">
-          <div class="timeline-header">
-            <div class="timeline-title">CP2 LNG Phase 2 — Commonwealth LNG</div>
-            <span class="phase-badge phase-execution">EPC Iniciado</span>
-          </div>
-          <div class="timeline-companies">EPC: <strong>Worley Field Services</strong> | Dueño: <strong>Commonwealth LNG</strong> | Equipos: <strong>Baker Hughes, Honeywell, Solar Turbines</strong></div>
-          <div class="timeline-desc">En enero 2026, Worley fue seleccionado como EPC contractor. Technip Energies ya ha emitido authorization para purchase orders de equipamiento clave. La ventana de procurement de componentes de válvulas está abierta. El proyecto de 9.5 Mtpa en Cameron Parish, Louisiana, es uno de los que más necesidad de componentes de proceso tiene en el corto plazo.</div>
-          <div class="timeline-tags">
-            <span class="meta-chip">🗺️ Cameron Parish, LA</span>
-            <span class="meta-chip">⚗️ 9.5 Mtpa</span>
-            <span class="meta-chip">🔑 FID Q1 2026</span>
-          </div>
-          <a class="card-link" href="https://investors.technipenergies.com/news-releases/news-release-details/technip-energies-awarded-large-authorization-commonwealth-lng" target="_blank">→ Technip Energies</a>
-        </div>
-      </div>
-
-      <div class="timeline-item">
-        <div class="timeline-dot dot-execution">🏗️</div>
-        <div class="timeline-content">
-          <div class="timeline-header">
-            <div class="timeline-title">Texas LNG Brownsville — Kiewit EPC</div>
-            <span class="phase-badge phase-execution">EPC Firmado</span>
-          </div>
-          <div class="timeline-companies">EPC: <strong>Kiewit Corporation</strong> | Puerto de Brownsville, Texas</div>
-          <div class="timeline-desc">Texas LNG Brownsville ha firmado su acuerdo EPC con Kiewit, iniciando la fase de procurement de equipos y componentes. Puerto de Brownsville es un hub logístico clave para el sur de Texas. Kiewit tiene un departamento de procurement centralizado que fuente componentes de válvulas directamente.</div>
-          <div class="timeline-tags">
-            <span class="meta-chip">🗺️ Brownsville, TX</span>
-            <span class="meta-chip">🏗️ EPC Activo</span>
-            <span class="meta-chip">🌊 LNG Export</span>
-          </div>
-          <a class="card-link" href="https://pemedianetwork.com/petroleum-economist/articles/gas-lng/2026/outlook-2026-the-americas-forging-the-future-of-global-lng-supply/" target="_blank">→ Petroleum Economist LNG</a>
-        </div>
-      </div>
-
-      <div class="timeline-item">
-        <div class="timeline-dot dot-active">⚡</div>
-        <div class="timeline-content">
-          <div class="timeline-header">
-            <div class="timeline-title">Plaquemines LNG — Operación plena 2026</div>
-            <span class="phase-badge phase-active">Operativo</span>
-          </div>
-          <div class="timeline-companies">Operador: <strong>Venture Global LNG</strong> | Ubicación: <strong>Luisiana, USA</strong></div>
-          <div class="timeline-desc">Primer año completo de operación en 2026. Las plantas en operación tienen necesidades continuas de MRO (mantenimiento, reparación y operaciones), incluyendo reemplazo de bolas de válvulas por desgaste, erosión o cambios de servicio. Alta rotación de componentes en entornos LNG criogénicos.</div>
-          <div class="timeline-tags">
-            <span class="meta-chip">🗺️ Louisiana</span>
-            <span class="meta-chip">🔧 MRO continuo</span>
-            <span class="meta-chip">✅ Operativo</span>
-          </div>
-          <a class="card-link" href="https://enkiai.com/lng/sustainability-initiatives/us-lng-expansion-2026-unlocking-the-modular-boom/" target="_blank">→ US LNG Expansion 2026</a>
-        </div>
-      </div>
-
-      <div class="timeline-item">
-        <div class="timeline-dot dot-planning">📋</div>
-        <div class="timeline-content">
-          <div class="timeline-header">
-            <div class="timeline-title">Corpus Christi LNG Stage 3 — Expansión online</div>
-            <span class="phase-badge phase-planning">Ramping Up</span>
-          </div>
-          <div class="timeline-companies">Operador: <strong>Cheniere Energy</strong> | Corpus Christi, Texas</div>
-          <div class="timeline-desc">Corpus Christi Stage 3 entra en producción en 2026. El inicio de operaciones genera demanda inmediata de componentes de repuesto y mantenimiento. Cheniere Energy es el mayor exportador de LNG de USA y tiene contratos de mantenimiento y MRO estructurados con largo plazo.</div>
-          <div class="timeline-tags">
-            <span class="meta-chip">🗺️ Corpus Christi, TX</span>
-            <span class="meta-chip">🔧 MRO + Expansión</span>
-            <span class="meta-chip">🏢 Cheniere</span>
-          </div>
-          <a class="card-link" href="https://naturalgasintel.com/news/clearer-timeline-emerges-for-next-wave-of-us-lng-projects-as-buildout-hits-overdrive/" target="_blank">→ Natural Gas Intel</a>
-        </div>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ════════════════════════════════ RIESGOS ════════════════════════════════ -->
-  <section id="riesgos" class="section">
-    <div class="section-header">
-      <span class="section-icon">📉</span>
-      <div>
-        <div class="section-title">Riesgos y Barreras</div>
-        <div class="section-desc">Factores que pueden limitar el acceso de AFG al mercado USA de bolas para válvulas</div>
-      </div>
-    </div>
-
-    <div class="risk-grid">
-
-      <div class="risk-card">
-        <div class="risk-header">
-          <span class="risk-emoji">🏛️</span>
-          <div class="risk-title">Barreras Regulatorias y de Certificación USA</div>
-        </div>
-        <div class="risk-level-bar"><div class="risk-level-fill" style="width:75%;background:var(--orange)"></div></div>
-        <ul class="risk-items">
-          <li>API 6D, API 608, ASME B16.34 son estándares obligatorios para válvulas en oil & gas USA. AFG debe certificar sus bolas como componentes conformes.</li>
-          <li>NACE MR0175 para ambientes con H₂S (sour service). Crítico en refinerías y upstream.</li>
-          <li>Trazabilidad material certificada (Mill Test Certificates) exigida por EPCs como McDermott, Bechtel o Fluor.</li>
-          <li>Homologación como "approved vendor" puede tardar 6–18 meses con los grandes OEMs.</li>
-        </ul>
-        <div style="margin-top:12px">
-          <a class="card-link" href="https://www.powellvalves.com/refining.html" target="_blank">→ Powell Valves (referencia)</a>
-        </div>
-      </div>
-
-      <div class="risk-card">
-        <div class="risk-header">
-          <span class="risk-emoji">🚢</span>
-          <div class="risk-title">Costes Logísticos y Tiempos de Entrega</div>
-        </div>
-        <div class="risk-level-bar"><div class="risk-level-fill" style="width:60%;background:var(--orange)"></div></div>
-        <ul class="risk-items">
-          <li>Distancia Europa–USA supone lead times de 3–6 semanas vs 2–4 semanas para proveedores locales o de México.</li>
-          <li>Costes de flete marítimo volátiles post-COVID; contenedores de piezas pesadas (bolas de 10kg) tienen coste-volumen subóptimo si no hay economías de escala.</li>
-          <li>Los proyectos EPC tienen ventanas de entrega muy ajustadas (just-in-time); retrasos pueden implicar penalizaciones contractuales.</li>
-          <li>Gestión de inventario local o en consignación USA puede ser necesaria para proyectos urgentes.</li>
-        </ul>
-      </div>
-
-      <div class="risk-card">
-        <div class="risk-header">
-          <span class="risk-emoji">🇨🇳</span>
-          <div class="risk-title">Competencia Residual China (a pesar de aranceles)</div>
-        </div>
-        <div class="risk-level-bar"><div class="risk-level-fill" style="width:50%;background:var(--accent2)"></div></div>
-        <ul class="risk-items">
-          <li>Algunos proveedores chinos triangulan a través de México, Vietnam o India para evitar aranceles. Riesgo de origen falso.</li>
-          <li>El mercado secundario / distribuidores de stock de origen chino con inventario previo a los aranceles sigue siendo un competidor de precio.</li>
-          <li>Los OEMs medianos pueden priorizar precio sobre calidad en componentes no críticos.</li>
-          <li>Noviembre 2025: acuerdo USA–China redujo aranceles temporalmente al 10% sobre ciertos productos hasta noviembre 2026 — posible ventana de competencia china.</li>
-        </ul>
-        <div style="margin-top:12px">
-          <a class="card-link" href="https://taxfoundation.org/research/all/federal/trump-tariffs-trade-war/" target="_blank">→ Tariff Tracker 2026</a>
-        </div>
-      </div>
-
-      <div class="risk-card">
-        <div class="risk-header">
-          <span class="risk-emoji">🌿</span>
-          <div class="risk-title">Presión Climática y Políticas Energéticas</div>
-        </div>
-        <div class="risk-level-bar"><div class="risk-level-fill" style="width:35%;background:var(--green)"></div></div>
-        <ul class="risk-items">
-          <li>Aunque Trump ha revertido políticas verdes en USA, la presión ESG de los inversores puede frenar capex en proyectos de hidrocarburo a largo plazo.</li>
-          <li>CBAM europeo requiere acreditación de huella de carbono del acero — AFG debe cuantificar y documentar sus emisiones Scope 1 y 2 para exportar a Europa (y para argumentar frente a clientes ESG en USA).</li>
-          <li>Normas de metano (EPA) pueden afectar a operaciones de válvulas en upstream — demanda de válvulas de baja emisión.</li>
-        </ul>
-        <div style="margin-top:12px">
-          <a class="card-link" href="https://www.omm.com/insights/alerts-publications/how-the-eu-s-new-default-emissions-values-under-cbam-impact-us-exporters-what-you-need-to-know-for-2026/" target="_blank">→ CBAM & US Exporters</a>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Tabla resumen de riesgos -->
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-top:8px">
-      <div style="font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px">📊 Matriz de Riesgo — Impacto vs Probabilidad</div>
-      <div style="overflow-x:auto">
-        <table style="width:100%;border-collapse:collapse;font-size:13px">
-          <thead>
-            <tr style="border-bottom:1px solid var(--border)">
-              <th style="text-align:left;padding:10px 12px;color:var(--text-muted);font-weight:600">Riesgo</th>
-              <th style="text-align:center;padding:10px 12px;color:var(--text-muted);font-weight:600">Probabilidad</th>
-              <th style="text-align:center;padding:10px 12px;color:var(--text-muted);font-weight:600">Impacto</th>
-              <th style="text-align:center;padding:10px 12px;color:var(--text-muted);font-weight:600">Mitigación</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr style="border-bottom:1px solid var(--border)">
-              <td style="padding:10px 12px;color:var(--text)">Barreras certificación API/ASME</td>
-              <td style="text-align:center;padding:10px 12px"><span style="color:#fbbf24">🟡 Alta</span></td>
-              <td style="text-align:center;padding:10px 12px"><span style="color:#ff6b6b">🔴 Alto</span></td>
-              <td style="padding:10px 12px;color:var(--text-muted)">Iniciar proceso aprobación con distribuidores USA</td>
-            </tr>
-            <tr style="border-bottom:1px solid var(--border)">
-              <td style="padding:10px 12px;color:var(--text)">Costes logísticos altos</td>
-              <td style="text-align:center;padding:10px 12px"><span style="color:#fbbf24">🟡 Media</span></td>
-              <td style="text-align:center;padding:10px 12px"><span style="color:#fbbf24">🟡 Medio</span></td>
-              <td style="padding:10px 12px;color:var(--text-muted)">Inventario en consignación en USA (distribuidor)</td>
-            </tr>
-            <tr style="border-bottom:1px solid var(--border)">
-              <td style="padding:10px 12px;color:var(--text)">Triangulación china por terceros países</td>
-              <td style="text-align:center;padding:10px 12px"><span style="color:#fbbf24">🟡 Media</span></td>
-              <td style="text-align:center;padding:10px 12px"><span style="color:#fbbf24">🟡 Medio</span></td>
-              <td style="padding:10px 12px;color:var(--text-muted)">Enfatizar origen europeo certificado + trazabilidad</td>
-            </tr>
-            <tr>
-              <td style="padding:10px 12px;color:var(--text)">Presión CBAM documentación</td>
-              <td style="text-align:center;padding:10px 12px"><span style="color:#4ade80">🟢 Baja</span></td>
-              <td style="text-align:center;padding:10px 12px"><span style="color:#4ade80">🟢 Bajo</span></td>
-              <td style="padding:10px 12px;color:var(--text-muted)">AFG como productor bajo carbono — ventaja competitiva</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </section>
-
-  <!-- ════════════════════════════════ ACCIONES ════════════════════════════════ -->
-  <section id="acciones" class="section">
-    <div class="section-header">
-      <span class="section-icon">🎯</span>
-      <div>
-        <div class="section-title">Acciones Recomendadas</div>
-        <div class="section-desc">Plan de acción prioritario para capturar oportunidades de mercado esta semana</div>
-      </div>
-    </div>
-
-    <div class="action-grid">
-
-      <div class="action-card urgent">
-        <div class="action-target">McDermott / Chiyoda — Golden Pass LNG</div>
-        <div class="action-type">🚨 URGENTE — Contacto directo procurement</div>
-        <div class="action-body">McDermott es el EPC de los trenes 2 y 3 de Golden Pass LNG en Texas. Tienen procurement activo de componentes de válvulas. Es el contacto más urgente dado que el proyecto está en plena ejecución y los tiempos de entrega son críticos.</div>
-        <div class="action-signals">
-          <span class="signal">Proyecto $10B+ en ejecución activa</span>
-          <span class="signal">Train 1 completado — Trains 2&3 en obra</span>
-          <span class="signal">Búsqueda de componentes de proceso, incluyendo bolas SS 316</span>
-          <span class="signal">EPC con departamento de procurement centralizado</span>
-        </div>
-        <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-          <a class="card-link" href="https://www.mcdermott.com" target="_blank">→ McDermott.com</a>
-          <a class="card-link" href="https://www.goldenpasslng.com" target="_blank">→ Golden Pass LNG</a>
-        </div>
-      </div>
-
-      <div class="action-card urgent">
-        <div class="action-target">Worley Field Services / Technip Energies — CP2 LNG</div>
-        <div class="action-type">🚨 URGENTE — Aprobación como proveedor</div>
-        <div class="action-body">Worley (EPC CP2 LNG) y Technip Energies tienen Purchase Orders activos para Commonwealth LNG. La ventana de aprobación como proveedor de componentes de válvulas está abierta en este momento. Technip es más accesible para nuevos proveedores que los grandes OEMs.</div>
-        <div class="action-signals">
-          <span class="signal">POs activos emitidos por Technip Energies</span>
-          <span class="signal">9.5 Mtpa — proyecto grande con muchos componentes</span>
-          <span class="signal">Cameron Parish, Louisiana — hub energético</span>
-          <span class="signal">Oportunidad de entrar en approved vendor list</span>
-        </div>
-        <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-          <a class="card-link" href="https://investors.technipenergies.com/news-releases/news-release-details/technip-energies-awarded-large-authorization-commonwealth-lng" target="_blank">→ Technip Energies</a>
-        </div>
-      </div>
-
-      <div class="action-card">
-        <div class="action-target">DNOW Inc. / ValveMan / Pioneer Industrial</div>
-        <div class="action-type">📦 DISTRIBUCIÓN — Acuerdo de canal USA</div>
-        <div class="action-body">Establecer acuerdo de distribución o consignación con un distribuidor especializado en válvulas para oil & gas en USA. DNOW (ex-NOV Distribution) es el mayor distribuidor de productos de proceso y válvulas para energy en USA, con presencia en Texas, Louisiana y Oklahoma.</div>
-        <div class="action-signals">
-          <span class="signal">Acceso inmediato a red de clientes oil & gas</span>
-          <span class="signal">Eliminación barrera logística — stock local en USA</span>
-          <span class="signal">DNOW tiene contratos MRO con major operators</span>
-          <span class="signal">Valveman.com: distribuidor online con catálogo abierto</span>
-        </div>
-        <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-          <a class="card-link" href="https://www.dnow.com" target="_blank">→ DNOW.com</a>
-          <a class="card-link" href="https://valveman.com" target="_blank">→ ValveMan</a>
-          <a class="card-link" href="https://www.pioneerindustrial.com" target="_blank">→ Pioneer Industrial</a>
-        </div>
-      </div>
-
-      <div class="action-card">
-        <div class="action-target">Flowserve / Emerson / Velan</div>
-        <div class="action-type">🤝 PARTNERSHIP — OEM de válvulas Tier 1</div>
-        <div class="action-body">Los grandes fabricantes de válvulas (Flowserve, Emerson, Velan) necesitan bolas de acero inox de alta calidad para sus líneas de producción y MRO. Un acuerdo de suministro como proveedor de componentes a un OEM Tier 1 es la vía más escalable y con menor riesgo de certificación individual.</div>
-        <div class="action-signals">
-          <span class="signal">Flowserve tiene contratos con todos los grandes LNG projects</span>
-          <span class="signal">Emerson (Valve & Actuator Div.) abastece a Exxon, Chevron, Shell</span>
-          <span class="signal">Velan — fabricante canadiense con planta USA, busca componentes europeos</span>
-          <span class="signal">Ruta más rápida para llegar a mercado sin certificación directa API</span>
-        </div>
-        <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-          <a class="card-link" href="https://www.flowserve.com" target="_blank">→ Flowserve</a>
-          <a class="card-link" href="https://velan.com" target="_blank">→ Velan</a>
-        </div>
-      </div>
-
-      <div class="action-card partner">
-        <div class="action-target">Posicionamiento Arancelario — Pitch Deck "Alternativa sin arancel"</div>
-        <div class="action-type">📣 COMUNICACIÓN — Capitalizar Section 232</div>
-        <div class="action-body">Preparar material comercial específico que cuantifique el sobrecoste de las bolas de válvulas de origen chino bajo la nueva Section 232 (25–50% sobre valor total). AFG como fabricante europeo no sujeto a esos aranceles puede ofrecer precio total (CIF Houston) competitivo o inferior al chino post-arancel.</div>
-        <div class="action-signals">
-          <span class="signal">Calcular precio CIF Houston AFG vs. precio chino + arancel 25%</span>
-          <span class="signal">Añadir argumento CBAM / huella de carbono para clientes ESG</span>
-          <span class="signal">Trazabilidad origen europeo como diferencial vs. triangulación asiática</span>
-          <span class="signal">Distribuir a procurement managers de EPCs activos en Texas/Louisiana</span>
-        </div>
-        <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
-          <a class="card-link" href="https://www.valvemagazine.com/articles/tariff-pressure-builds-on-valve-industry" target="_blank">→ Valve Magazine — Tariffs</a>
-          <a class="card-link" href="https://www.whitecase.com/insight-alert/united-states-modifies-steel-aluminum-and-copper-section-232-tariffs" target="_blank">→ White & Case Section 232</a>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Prioridad de acción -->
-    <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin-top:20px">
-      <div style="font-size:13px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:16px">⏱️ Secuencia de acción sugerida (próximas 4 semanas)</div>
-      <div style="display:flex;flex-direction:column;gap:10px">
-        <div style="display:flex;align-items:center;gap:14px;padding:12px;background:rgba(218,54,51,.07);border:1px solid rgba(218,54,51,.2);border-radius:8px">
-          <div style="font-size:20px;font-weight:800;color:#ff6b6b;min-width:28px">1</div>
-          <div><div style="font-size:13px;font-weight:700;color:var(--text)">Semana 1: Preparar análisis de precio CIF Houston + pitch "sin arancel"</div><div style="font-size:12px;color:var(--text-muted)">Cuantificar ventaja competitiva post-Section 232 y crear material comercial específico para USA</div></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:14px;padding:12px;background:rgba(218,54,51,.07);border:1px solid rgba(218,54,51,.2);border-radius:8px">
-          <div style="font-size:20px;font-weight:800;color:#ff6b6b;min-width:28px">2</div>
-          <div><div style="font-size:13px;font-weight:700;color:var(--text)">Semana 1–2: Contactar procurement de McDermott (Golden Pass Train 2&3)</div><div style="font-size:12px;color:var(--text-muted)">El proyecto más urgente con ventana de compra abierta. Sabine Pass, TX</div></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:14px;padding:12px;background:rgba(232,162,37,.07);border:1px solid rgba(232,162,37,.2);border-radius:8px">
-          <div style="font-size:20px;font-weight:800;color:#fbbf24;min-width:28px">3</div>
-          <div><div style="font-size:13px;font-weight:700;color:var(--text)">Semana 2–3: Iniciar conversaciones con DNOW o distribuidor especializado USA</div><div style="font-size:12px;color:var(--text-muted)">Canal de distribución local elimina barrera logística y acelera ciclo de ventas</div></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:14px;padding:12px;background:rgba(31,111,235,.07);border:1px solid rgba(31,111,235,.2);border-radius:8px">
-          <div style="font-size:20px;font-weight:800;color:#60a5fa;min-width:28px">4</div>
-          <div><div style="font-size:13px;font-weight:700;color:var(--text)">Semana 3–4: Acercamiento a Flowserve / Velan como OEM partner</div><div style="font-size:12px;color:var(--text-muted)">Ruta más escalable a largo plazo — acceso a contratos con majors sin certificación directa</div></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
+    <div class="client-grid" id="clients-grid"></div>
+  </div>
 </main>
 
-<footer>
-  <div>AFG Market Intelligence · Ball Valves USA · Oil & Gas</div>
-  <div style="margin-top:4px">Generado: 22 Abril 2026 · Fuentes: White House, S&P Global, Offshore Energy, Natural Gas Intel, Valve Magazine, EIA, Technip Energies, Petroleum Economist</div>
-</footer>
-
 <script>
-  function showSection(id) {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    event.currentTarget.classList.add('active');
+let DATA = null;
+let leafletMap = null;
+
+// ── Fetch data ──────────────────────────────────────────────────────────────
+async function loadData() {
+  try {
+    const r = await fetch('data.json?' + Date.now());
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    DATA = await r.json();
+    document.getElementById('loader').classList.add('hidden');
+    render();
+  } catch(e) {
+    document.getElementById('loader').classList.add('hidden');
+    document.getElementById('error-msg').style.display = 'block';
+    console.error('Error cargando data.json:', e);
+  }
+}
+
+// ── Tab switching ───────────────────────────────────────────────────────────
+function switchTab(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  el.classList.add('active');
+  if (id === 'clientes') setTimeout(initMap, 100);
+}
+
+// ── Main render ─────────────────────────────────────────────────────────────
+function render() {
+  if (!DATA) return;
+  const sum = DATA.summary || {};
+  const opps = DATA.opportunities || [];
+  const alerts = DATA.alerts || [];
+  const projects = DATA.projects || [];
+  const risks = DATA.risks || [];
+  const actions = DATA.actions || [];
+  const aiClients = DATA.potential_clients || [];
+  const manualClients = DATA.manual_clients || [];
+
+  // Header date
+  document.getElementById('date-badge').textContent = DATA.date || '—';
+
+  // KPIs
+  document.getElementById('kpi-opps').textContent = opps.length;
+  document.getElementById('kpi-alerts').textContent = alerts.length;
+  document.getElementById('kpi-projects').textContent = projects.length;
+  document.getElementById('kpi-actions').textContent = actions.length;
+
+  // Signal & temperature
+  document.getElementById('signal-text').textContent = sum.key_signal || '—';
+  const temp = sum.market_temp || 0;
+  document.getElementById('temp-val').textContent = temp;
+  document.getElementById('temp-fill').style.width = temp + '%';
+
+  // Dashboard previews
+  document.getElementById('dash-opps').innerHTML = opps.slice(0, 3).map(oppCard).join('');
+  document.getElementById('dash-alerts').innerHTML = alerts.slice(0, 3).map(alertCard).join('');
+
+  // Full sections
+  renderOpps();
+  document.getElementById('alerts-list').innerHTML = alerts.map(alertCard).join('');
+  document.getElementById('projects-grid').innerHTML = projects.map(projectCard).join('');
+  document.getElementById('risks-list').innerHTML = risks.map(riskCard).join('');
+  document.getElementById('actions-list').innerHTML = actions.map(actionCard).join('');
+  renderClients(aiClients, manualClients);
+}
+
+// ── Opportunity rendering (with filter) ────────────────────────────────────
+function renderOpps() {
+  if (!DATA) return;
+  const prob = document.getElementById('filter-prob').value;
+  const q = (document.getElementById('filter-search').value || '').toLowerCase();
+  let opps = DATA.opportunities || [];
+  if (prob) opps = opps.filter(o => o.probability === prob);
+  if (q) opps = opps.filter(o =>
+    (o.title||'').toLowerCase().includes(q) ||
+    (o.company||'').toLowerCase().includes(q) ||
+    (o.type||'').toLowerCase().includes(q) ||
+    (o.description||'').toLowerCase().includes(q)
+  );
+  document.getElementById('opps-count').textContent = opps.length;
+  document.getElementById('opps-grid').innerHTML = opps.map(oppCard).join('');
+}
+
+// ── Card builders ───────────────────────────────────────────────────────────
+function oppCard(o) {
+  const tags = (o.tags||[]).map(t => `<span class="tag">${esc(t)}</span>`).join('');
+  const srcLink = o.source_url ? `<a class="src-link" href="${esc(o.source_url)}" target="_blank" title="${esc(o.source_title||'')}">🔗 fuente</a>` : '';
+  return `<div class="opp">
+    <div class="opp-head">
+      <div>
+        <div class="opp-title">${esc(o.title||'')}</div>
+        <div class="opp-co">${esc(o.company||'')}${o.location?' · '+esc(o.location):''}</div>
+      </div>
+      <span class="badge badge-${o.probability||'Baja'}">${o.probability||'Baja'}</span>
+    </div>
+    <div class="opp-desc">${esc(o.description||'')}</div>
+    <div class="opp-foot">${tags}${srcLink}</div>
+  </div>`;
+}
+
+function alertCard(a) {
+  const lvl = a.level || 'Media';
+  const srcLink = a.source_url ? `<a href="${esc(a.source_url)}" target="_blank" style="font-size:11px;color:var(--muted)">🔗 fuente</a>` : '';
+  return `<div class="alert alert-${lvl}">
+    <div class="alert-head">
+      <div class="alert-dot dot-${lvl}"></div>
+      <div class="alert-title">${esc(a.title||'')}</div>
+      <span class="badge badge-${lvl}" style="margin-left:auto">${lvl}</span>
+    </div>
+    <div class="alert-body">${esc(a.body||'')}</div>
+    ${srcLink ? '<div style="margin-top:8px">'+srcLink+'</div>' : ''}
+  </div>`;
+}
+
+function projectCard(p) {
+  const phase = p.phase || 'planificacion';
+  const phaseLabel = {planificacion:'Planificación',ejecucion:'Ejecución',operativo:'Operativo'}[phase] || phase;
+  const srcLink = p.source_url ? `<a href="${esc(p.source_url)}" target="_blank" style="font-size:11px;color:var(--muted)">🔗 fuente</a>` : '';
+  return `<div class="project">
+    <div class="proj-head">
+      <div class="proj-name">${esc(p.name||'')}</div>
+      <span class="proj-phase phase-${phase}">${phaseLabel}</span>
+    </div>
+    <div class="proj-co">${esc(p.companies||'')} · ${esc(p.location||'')}</div>
+    <div class="proj-desc">${esc(p.description||'')}</div>
+    ${p.capex?`<div class="proj-capex">💰 ${esc(p.capex)}</div>`:''}
+    ${srcLink ? '<div style="margin-top:10px">'+srcLink+'</div>' : ''}
+  </div>`;
+}
+
+function riskCard(r) {
+  return `<div class="risk">
+    <div class="risk-head">
+      <div class="risk-title">${esc(r.title||'')}</div>
+      <span class="imp-${r.impact||'Medio'}" style="font-weight:700;font-size:13px">${r.impact||'Medio'}</span>
+    </div>
+    <div class="risk-desc">${esc(r.description||'')}</div>
+    ${r.mitigation?`<div class="risk-mit">✅ ${esc(r.mitigation)}</div>`:''}
+  </div>`;
+}
+
+function actionCard(a) {
+  const type = (a.type||'comunicacion').replace(/\s/g,'');
+  const sigs = (a.signals||[]).map(s=>`<span class="sig">${esc(s)}</span>`).join('');
+  const link = a.url ? `<a href="${esc(a.url)}" target="_blank" style="font-size:12px">🔗 ver más</a>` : '';
+  return `<div class="action">
+    <div class="act-head">
+      <div class="act-target">${esc(a.target||'')}</div>
+      <span class="act-type type-${type}">${esc(a.type||'')}</span>
+    </div>
+    <div class="act-desc">${esc(a.description||'')}</div>
+    ${sigs?`<div class="signals">${sigs}</div>`:''}
+    ${link?`<div style="margin-top:8px">${link}</div>`:''}
+  </div>`;
+}
+
+// ── Clients section ─────────────────────────────────────────────────────────
+function renderClients(aiClients, manualClients) {
+  const all = [
+    ...aiClients.map(c => ({...c, _manual: false})),
+    ...manualClients
+  ];
+  document.getElementById('clients-count').textContent = all.length;
+  document.getElementById('clients-grid').innerHTML = all.map(clientCard).join('');
+}
+
+function clientCard(c) {
+  const manualTag = c._manual ? `<span class="manual-badge">MANUAL</span>` : '';
+  const nameLink = c.url ? `<a href="${esc(c.url)}" target="_blank">${esc(c.name||'')}</a>` : esc(c.name||'');
+  return `<div class="client">
+    <div class="client-head">
+      <div class="client-name">${nameLink} ${manualTag}</div>
+      <span class="client-type">${esc(c.type||'')}</span>
+    </div>
+    <div class="client-city">📍 ${esc(c.city||c.location||'')}</div>
+    <div class="client-reason">${esc(c.reason||c.notes||'')}</div>
+    ${c.priority?`<div style="margin-top:8px"><span class="badge badge-${c.priority}">${c.priority}</span></div>`:''}
+  </div>`;
+}
+
+// ── Leaflet map ─────────────────────────────────────────────────────────────
+function initMap() {
+  if (!DATA) return;
+  if (leafletMap) {
+    leafletMap.invalidateSize();
+    return;
   }
 
-  function filterCards(chip, tag) {
-    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-    chip.classList.add('active');
-    const cards = document.querySelectorAll('#oportunidades-grid .card');
-    cards.forEach(card => {
-      if (tag === 'all') {
-        card.style.display = '';
-      } else {
-        const tags = card.getAttribute('data-tags') || '';
-        card.style.display = tags.includes(tag) ? '' : 'none';
-      }
-    });
-  }
+  leafletMap = L.map('map').setView([37.5, -95], 4);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors',
+    maxZoom: 18
+  }).addTo(leafletMap);
+
+  // AFG Michigan plant
+  const afgIcon = L.divIcon({
+    html: '<div style="background:#3fb950;color:#fff;font-weight:800;font-size:10px;padding:3px 7px;border-radius:10px;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.5)">AFG Michigan</div>',
+    className: '', iconAnchor: [45, 12]
+  });
+  L.marker([44.3148, -85.6024], {icon: afgIcon})
+    .addTo(leafletMap)
+    .bindPopup('<strong>AFG – Planta Michigan</strong><br>Stainless Steel Balls · Oil & Gas USA');
+
+  // AI clients (blue)
+  const blueIcon = L.divIcon({
+    html: '<div style="width:12px;height:12px;background:#1f6feb;border:2px solid #fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.5)"></div>',
+    className: '', iconAnchor: [6, 6]
+  });
+
+  // Manual clients (orange)
+  const orangeIcon = L.divIcon({
+    html: '<div style="width:12px;height:12px;background:#e8a225;border:2px solid #fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.5)"></div>',
+    className: '', iconAnchor: [6, 6]
+  });
+
+  (DATA.potential_clients || []).forEach(c => {
+    if (!c.lat || !c.lng) return;
+    L.marker([c.lat, c.lng], {icon: blueIcon})
+      .addTo(leafletMap)
+      .bindPopup(`<strong>${esc(c.name||'')}</strong><br>${esc(c.type||'')}<br>${esc(c.city||'')}<br><em>${esc(c.reason||'')}</em>`);
+  });
+
+  (DATA.manual_clients || []).forEach(c => {
+    if (!c.lat || !c.lng) return;
+    L.marker([c.lat, c.lng], {icon: orangeIcon})
+      .addTo(leafletMap)
+      .bindPopup(`<strong>${esc(c.name||'')}</strong> <span style="color:#e8a225;font-weight:700">[Manual]</span><br>${esc(c.type||'')}<br>${esc(c.city||'')}<br><em>${esc(c.notes||c.reason||'')}</em>`);
+  });
+}
+
+// ── Utility ─────────────────────────────────────────────────────────────────
+function esc(str) {
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+// ── Init ────────────────────────────────────────────────────────────────────
+loadData();
 </script>
-
 </body>
 </html>

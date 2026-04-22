@@ -1,0 +1,32 @@
+{
+  "_instructions": "Añade clientes manualmente aquí. Aparecerán en el mapa marcados en naranja. Usa coordenadas lat/lng de Google Maps.",
+  "clients": [
+    {
+      "name": "McDermott International",
+      "type": "EPC Contractor",
+      "url": "https://www.mcdermott.com",
+      "city": "Houston, TX",
+      "lat": 29.7604,
+      "lng": -95.3698,
+      "notes": "EPC principal de Golden Pass LNG Trains 2&3"
+    },
+    {
+      "name": "Flowserve Corporation",
+      "type": "Valve OEM",
+      "url": "https://www.flowserve.com",
+      "city": "Irving, TX",
+      "lat": 32.8140,
+      "lng": -96.9489,
+      "notes": "Mayor fabricante de válvulas en USA — target para suministro de bolas"
+    },
+    {
+      "name": "DNOW Inc.",
+      "type": "Distribuidor Industrial",
+      "url": "https://www.dnow.com",
+      "city": "Houston, TX",
+      "lat": 29.8174,
+      "lng": -95.3647,
+      "notes": "Mayor distribuidor de componentes para oil & gas en USA"
+    }
+  ]
+}
