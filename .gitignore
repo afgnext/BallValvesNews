@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+.env
+.env.*
+venv/
+.venv/
+
+# Secrets (nunca subir al repo)
+*.key
+secrets.json
+
+# macOS / Windows
+.DS_Store
+Thumbs.db
