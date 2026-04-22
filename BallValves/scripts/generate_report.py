@@ -24,7 +24,7 @@ ANTHROPIC_KEY    = os.environ["ANTHROPIC_API_KEY"]
 TAVILY_KEY       = os.environ["TAVILY_API_KEY"]
 DATABASE_URL     = os.environ["NEON_DATABASE_URL"]
 MODEL            = "claude-sonnet-4-6"
-OUTPUT_HTML      = Path(__file__).parent.parent / "public" / "index.html"
+OUTPUT_HTML      = Path(__file__).parent.parent / "index.html"
 
 SEARCH_QUERIES = [
     f"ball valve failure oil gas refinery USA {TODAY.year}",
