@@ -133,6 +133,14 @@
     .sec-title{font-size:18px;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:10px}
     .sec-count{background:var(--border);font-size:12px;padding:2px 8px;border-radius:10px;color:var(--muted)}
 
+    /* ── CLIENT FORM ── */
+    .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .form-group{display:flex;flex-direction:column;gap:5px}
+    .form-group label{font-size:12px;color:var(--muted);font-weight:600}
+    .form-group input,.form-group select,.form-group textarea{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:9px 12px;border-radius:8px;font-size:13px;font-family:inherit}
+    .form-group textarea{resize:vertical;min-height:72px}
+    .form-hint{font-size:11px;color:var(--muted);margin-top:2px}
+
     /* ── TEST EMAIL MODAL ── */
     .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:.2s}
     .modal-overlay.open{opacity:1;pointer-events:all}
@@ -161,6 +169,67 @@
   </style>
 </head>
 <body>
+
+<!-- Add client modal -->
+<div class="modal-overlay" id="client-modal">
+  <div class="modal" style="max-width:520px">
+    <h3>➕ Añadir cliente potencial</h3>
+    <p>El cliente se guardará en la base de datos y aparecerá en el mapa marcado en naranja.</p>
+    <div class="form-row" style="margin-bottom:12px">
+      <div class="form-group">
+        <label>Nombre *</label>
+        <input type="text" id="cl-name" placeholder="Ej: Flowserve Corporation"/>
+      </div>
+      <div class="form-group">
+        <label>Tipo *</label>
+        <select id="cl-type">
+          <option value="EPC">EPC Contractor</option>
+          <option value="Operator">Operator</option>
+          <option value="Distributor">Distributor</option>
+          <option value="OEM">OEM / Valve Manufacturer</option>
+          <option value="MRO">MRO</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row" style="margin-bottom:12px">
+      <div class="form-group">
+        <label>Web</label>
+        <input type="url" id="cl-url" placeholder="https://www.empresa.com"/>
+      </div>
+      <div class="form-group">
+        <label>Ciudad</label>
+        <input type="text" id="cl-city" placeholder="Ej: Houston, TX"/>
+      </div>
+    </div>
+    <div class="form-row" style="margin-bottom:12px">
+      <div class="form-group">
+        <label>Latitud</label>
+        <input type="number" id="cl-lat" placeholder="29.7604" step="0.0001"/>
+        <span class="form-hint">Búscala en Google Maps</span>
+      </div>
+      <div class="form-group">
+        <label>Longitud</label>
+        <input type="number" id="cl-lng" placeholder="-95.3698" step="0.0001"/>
+      </div>
+    </div>
+    <div class="form-group" style="margin-bottom:12px">
+      <label>Motivo / Notas</label>
+      <textarea id="cl-notes" placeholder="Por qué es un cliente interesante para AFG…"></textarea>
+    </div>
+    <div class="form-group" style="margin-bottom:18px">
+      <label>Prioridad</label>
+      <select id="cl-priority">
+        <option value="Alta">Alta</option>
+        <option value="Media" selected>Media</option>
+        <option value="Baja">Baja</option>
+      </select>
+    </div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeClientModal()">Cancelar</button>
+      <button class="btn btn-primary" id="save-client-btn" onclick="saveClient()">Guardar cliente</button>
+    </div>
+  </div>
+</div>
 
 <!-- Test email modal -->
 <div class="modal-overlay" id="email-modal">
@@ -283,7 +352,10 @@
 
   <!-- CLIENTES -->
   <div id="tab-clientes" class="section">
-    <div class="sec-title">🗺️ Clientes Potenciales USA</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <div class="sec-title" style="margin-bottom:0">🗺️ Clientes Potenciales USA</div>
+      <button class="btn btn-primary" onclick="openClientModal()" style="font-size:13px">➕ Añadir cliente</button>
+    </div>
     <div id="map"></div>
     <div class="sec-title" style="margin-top:8px">
       Listado <span class="sec-count" id="clients-count"></span>
@@ -573,6 +645,80 @@ function esc(str) {
     .replace(/</g,'&lt;')
     .replace(/>/g,'&gt;')
     .replace(/"/g,'&quot;');
+}
+
+// ── Add client modal ────────────────────────────────────────────────────────
+function openClientModal() {
+  document.getElementById('client-modal').classList.add('open');
+  document.getElementById('cl-name').focus();
+}
+function closeClientModal() {
+  document.getElementById('client-modal').classList.remove('open');
+  ['cl-name','cl-url','cl-city','cl-lat','cl-lng','cl-notes'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('cl-type').value = 'EPC';
+  document.getElementById('cl-priority').value = 'Media';
+}
+document.getElementById('client-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeClientModal();
+});
+
+async function saveClient() {
+  const name = document.getElementById('cl-name').value.trim();
+  const type = document.getElementById('cl-type').value;
+  if (!name) { showToast('El nombre es obligatorio', false); return; }
+
+  const btn = document.getElementById('save-client-btn');
+  btn.disabled = true; btn.textContent = 'Guardando…';
+
+  const payload = {
+    name, type,
+    url:      document.getElementById('cl-url').value.trim() || null,
+    city:     document.getElementById('cl-city').value.trim() || null,
+    lat:      parseFloat(document.getElementById('cl-lat').value) || null,
+    lng:      parseFloat(document.getElementById('cl-lng').value) || null,
+    notes:    document.getElementById('cl-notes').value.trim() || null,
+    priority: document.getElementById('cl-priority').value,
+  };
+
+  try {
+    const r = await fetch('/api/clients', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    const data = await r.json();
+    if (r.ok) {
+      showToast(`✅ Cliente "${name}" guardado correctamente`, true);
+      closeClientModal();
+      // Añadir al listado y mapa sin recargar
+      const newClient = {...data.client, _manual: true};
+      if (DATA) {
+        DATA.manual_clients = DATA.manual_clients || [];
+        DATA.manual_clients.push(newClient);
+        renderClients(DATA.potential_clients || [], DATA.manual_clients);
+        if (leafletMap) addClientMarker(newClient, true);
+      }
+    } else {
+      showToast('❌ ' + (data.error || 'Error al guardar'), false);
+    }
+  } catch(e) {
+    showToast('❌ Error de conexión', false);
+  } finally {
+    btn.disabled = false; btn.textContent = 'Guardar cliente';
+  }
+}
+
+function addClientMarker(c, isManual) {
+  if (!leafletMap || !c.lat || !c.lng) return;
+  const icon = L.divIcon({
+    html: `<div style="width:12px;height:12px;background:${isManual?'#e8a225':'#1f6feb'};border:2px solid #fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.5)"></div>`,
+    className: '', iconAnchor: [6,6]
+  });
+  L.marker([c.lat, c.lng], {icon})
+    .addTo(leafletMap)
+    .bindPopup(`<strong>${esc(c.name||'')}</strong>${isManual?' <span style="color:#e8a225">[Manual]</span>':''}<br>${esc(c.type||'')}<br>${esc(c.city||'')}<br><em>${esc(c.notes||c.reason||'')}</em>`);
 }
 
 // ── Test email modal ────────────────────────────────────────────────────────
