@@ -301,26 +301,30 @@ let leafletMap = null;
 
 // ── Fetch data ──────────────────────────────────────────────────────────────
 async function loadData() {
-  // Carga el informe más reciente (data.json) y las fechas disponibles
+  // 1. Carga el informe más reciente (data.json) — crítico
   try {
-    const [dataRes, datesRes] = await Promise.all([
-      fetch('data.json?' + Date.now()),
-      fetch('/api/reports')
-    ]);
+    const dataRes = await fetch('data.json?' + Date.now());
     if (!dataRes.ok) throw new Error('HTTP ' + dataRes.status);
     DATA = await dataRes.json();
     document.getElementById('loader').classList.add('hidden');
     render();
-
-    // Poblar selector de fechas
-    if (datesRes.ok) {
-      const { dates } = await datesRes.json();
-      populateDateSelect(dates, DATA.date);
-    }
   } catch(e) {
     document.getElementById('loader').classList.add('hidden');
     document.getElementById('error-msg').style.display = 'block';
     console.error('Error cargando data.json:', e);
+    return;
+  }
+
+  // 2. Carga las fechas disponibles — opcional, no bloquea el render
+  try {
+    const datesRes = await fetch('/api/reports');
+    if (datesRes.ok) {
+      const { dates } = await datesRes.json();
+      populateDateSelect(dates);
+    }
+  } catch(e) {
+    console.warn('No se pudieron cargar las fechas históricas:', e.message);
+    document.getElementById('date-select').innerHTML = '<option value="">📅 Sin historial aún</option>';
   }
 }
 
