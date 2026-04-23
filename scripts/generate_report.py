@@ -205,7 +205,8 @@ Devuelve este JSON exacto:
   }}],
   "potential_clients": [{{
     "name": "", "type": "EPC|Operator|Distributor|OEM|MRO",
-    "url": "", "city": "", "lat": 0.0, "lng": 0.0,
+    "url": "<URL OFICIAL de la web corporativa de la empresa, NO la del articulo. Ej: https://www.saipem.com>",
+    "city": "", "lat": 0.0, "lng": 0.0,
     "reason": "", "priority": "Alta|Media|Baja"
   }}]
 }}
