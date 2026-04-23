@@ -375,8 +375,7 @@ function render() {
   const aiClients = DATA.potential_clients || [];
   const manualClients = DATA.manual_clients || [];
 
-  // Header date
-  document.getElementById('date-badge').textContent = DATA.date || '—';
+  // Header date — se muestra en el selector si está disponible
 
   // KPIs
   document.getElementById('kpi-opps').textContent = opps.length;
