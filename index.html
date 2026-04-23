@@ -165,6 +165,32 @@
     .toast-ok{background:#3fb950;color:#fff}
     .toast-err{background:#f85149;color:#fff}
 
+    /* ── CHAT ── */
+    .chat-wrap{display:flex;flex-direction:column;height:calc(100vh - 220px);min-height:400px;max-width:860px;margin:0 auto}
+    .chat-user-bar{display:flex;align-items:center;gap:12px;margin-bottom:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 18px}
+    .chat-user-bar label{font-size:13px;color:var(--muted);white-space:nowrap}
+    .chat-user-bar select{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:7px 12px;border-radius:8px;font-size:14px;font-weight:600;flex:1}
+    .chat-messages{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding:4px 2px;margin-bottom:16px}
+    .chat-msg{display:flex;gap:10px;align-items:flex-start;max-width:75%}
+    .chat-msg.mine{align-self:flex-end;flex-direction:row-reverse}
+    .chat-avatar{width:34px;height:34px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+    .chat-bubble{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 14px;max-width:100%}
+    .chat-msg.mine .chat-bubble{background:rgba(232,162,37,.12);border-color:rgba(232,162,37,.3)}
+    .chat-name{font-size:11px;font-weight:700;color:var(--amber);margin-bottom:3px}
+    .chat-msg.mine .chat-name{text-align:right}
+    .chat-text{font-size:14px;line-height:1.5;word-break:break-word}
+    .chat-time{font-size:10px;color:var(--muted);margin-top:4px}
+    .chat-msg.mine .chat-time{text-align:right}
+    .chat-day-sep{text-align:center;font-size:11px;color:var(--muted);padding:6px 0;position:relative}
+    .chat-day-sep::before,.chat-day-sep::after{content:'';position:absolute;top:50%;width:35%;height:1px;background:var(--border)}
+    .chat-day-sep::before{left:0}.chat-day-sep::after{right:0}
+    .chat-input-row{display:flex;gap:10px}
+    .chat-input{flex:1;background:var(--surface);border:1px solid var(--border);color:var(--text);padding:12px 16px;border-radius:10px;font-size:14px;font-family:inherit;resize:none;height:48px;line-height:1.4;transition:border-color .2s}
+    .chat-input:focus{outline:none;border-color:var(--amber)}
+    .chat-send{background:var(--amber);color:#000;border:none;border-radius:10px;padding:0 20px;font-weight:700;font-size:14px;cursor:pointer;white-space:nowrap}
+    .chat-send:disabled{opacity:.5;cursor:not-allowed}
+    .chat-empty{text-align:center;color:var(--muted);font-size:14px;padding:40px 0}
+
     /* ── LOADER ── */
     #loader{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:9999}
     .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--amber);border-radius:50%;animation:spin .8s linear infinite}
@@ -279,6 +305,7 @@
   <div class="tab" onclick="switchTab('riesgos',this)">⚠️ Riesgos</div>
   <div class="tab" onclick="switchTab('acciones',this)">⚡ Acciones</div>
   <div class="tab" onclick="switchTab('clientes',this)">🗺️ Clientes</div>
+  <div class="tab" onclick="switchTab('chat',this)">💬 Chat</div>
 </nav>
 
 <main>
@@ -394,6 +421,25 @@
     </div>
     <div class="client-grid" id="clients-grid"></div>
   </div>
+  <!-- CHAT -->
+  <div id="tab-chat" class="section">
+    <div class="chat-wrap">
+      <div class="chat-user-bar">
+        <label>👤 Eres:</label>
+        <select id="chat-user-select" onchange="setChatUser()">
+          <option value="">— Selecciona tu nombre —</option>
+        </select>
+        <span id="chat-status" style="font-size:12px;color:var(--muted)"></span>
+      </div>
+      <div class="chat-messages" id="chat-messages">
+        <div class="chat-empty">Cargando mensajes…</div>
+      </div>
+      <div class="chat-input-row">
+        <textarea class="chat-input" id="chat-input" placeholder="Escribe un comentario o pregunta…" onkeydown="chatKeydown(event)" rows="1"></textarea>
+        <button class="chat-send" id="chat-send-btn" onclick="sendMessage()" disabled>Enviar</button>
+      </div>
+    </div>
+  </div>
 </main>
 
 <script>
@@ -462,6 +508,7 @@ function switchTab(id, el) {
   document.getElementById('tab-' + id).classList.add('active');
   el.classList.add('active');
   if (id === 'clientes') setTimeout(initMap, 100);
+  if (id === 'chat') setTimeout(initChat, 100);
 }
 
 // ── Main render ─────────────────────────────────────────────────────────────
@@ -844,6 +891,129 @@ function showToast(msg, ok) {
   t.textContent = msg;
   t.className = 'toast show ' + (ok ? 'toast-ok' : 'toast-err');
   setTimeout(() => t.className = 'toast', 3500);
+}
+
+// ── Chat ─────────────────────────────────────────────────────────────────────
+let chatUser = null;
+let chatAvatar = '👤';
+let chatRefreshInterval = null;
+let lastMessageId = 0;
+
+function initChat() {
+  // Poblar usuarios desde data.json
+  const users = (DATA && DATA.chat_users) || [];
+  const sel = document.getElementById('chat-user-select');
+  sel.innerHTML = '<option value="">— Selecciona tu nombre —</option>' +
+    users.map(u => `<option value="${esc(u.name)}" data-avatar="${esc(u.avatar||'👤')}">${esc(u.avatar||'👤')} ${esc(u.name)}</option>`).join('');
+
+  // Restaurar usuario de sesión si existe
+  if (chatUser) {
+    sel.value = chatUser;
+    document.getElementById('chat-send-btn').disabled = false;
+  }
+
+  loadMessages();
+  if (!chatRefreshInterval) {
+    chatRefreshInterval = setInterval(loadMessages, 30000);
+  }
+}
+
+function setChatUser() {
+  const sel = document.getElementById('chat-user-select');
+  const opt = sel.options[sel.selectedIndex];
+  chatUser   = sel.value || null;
+  chatAvatar = opt?.dataset?.avatar || '👤';
+  document.getElementById('chat-send-btn').disabled = !chatUser;
+  document.getElementById('chat-status').textContent = chatUser ? `Escribiendo como ${chatUser}` : '';
+}
+
+async function loadMessages() {
+  try {
+    const r = await fetch('/api/messages');
+    if (!r.ok) return;
+    const { messages } = await r.json();
+    renderMessages(messages);
+  } catch(e) {
+    console.warn('Chat load error:', e.message);
+  }
+}
+
+function renderMessages(messages) {
+  const container = document.getElementById('chat-messages');
+  if (!messages || messages.length === 0) {
+    container.innerHTML = '<div class="chat-empty">Aún no hay mensajes. ¡Sé el primero en escribir!</div>';
+    return;
+  }
+
+  const wasAtBottom = container.scrollHeight - container.scrollTop - container.clientHeight < 60;
+  let html = '';
+  let lastDay = '';
+
+  messages.forEach(m => {
+    const dt  = new Date(m.created_at);
+    const day = dt.toLocaleDateString('es-ES', {weekday:'long', day:'numeric', month:'long'});
+    const time = dt.toLocaleTimeString('es-ES', {hour:'2-digit', minute:'2-digit'});
+    const isMe = m.user_name === chatUser;
+
+    if (day !== lastDay) {
+      html += `<div class="chat-day-sep">${day}</div>`;
+      lastDay = day;
+    }
+
+    html += `<div class="chat-msg${isMe?' mine':''}">
+      <div class="chat-avatar">${esc(m.avatar||'👤')}</div>
+      <div class="chat-bubble">
+        <div class="chat-name">${esc(m.user_name)}</div>
+        <div class="chat-text">${esc(m.message)}</div>
+        <div class="chat-time">${time}</div>
+      </div>
+    </div>`;
+
+    if (m.id > lastMessageId) lastMessageId = m.id;
+  });
+
+  container.innerHTML = html;
+  if (wasAtBottom || lastMessageId === 0) {
+    container.scrollTop = container.scrollHeight;
+  }
+}
+
+async function sendMessage() {
+  if (!chatUser) { showToast('Selecciona tu nombre antes de enviar', false); return; }
+  const input = document.getElementById('chat-input');
+  const text  = input.value.trim();
+  if (!text) return;
+
+  const btn = document.getElementById('chat-send-btn');
+  btn.disabled = true;
+
+  try {
+    const r = await fetch('/api/messages', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ user_name: chatUser, avatar: chatAvatar, message: text })
+    });
+    if (r.ok) {
+      input.value = '';
+      await loadMessages();
+    } else {
+      const d = await r.json();
+      showToast('❌ ' + (d.error || 'Error al enviar'), false);
+    }
+  } catch(e) {
+    showToast('❌ Error de conexión', false);
+  } finally {
+    btn.disabled = !chatUser;
+    input.focus();
+  }
+}
+
+function chatKeydown(e) {
+  // Enter envía, Shift+Enter hace salto de línea
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage();
+  }
 }
 
 // ── Init ────────────────────────────────────────────────────────────────────
