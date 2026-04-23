@@ -74,6 +74,25 @@ def store_in_neon(data: dict):
     conn.commit(); cur.close(); conn.close()
     print("  OK guardado en Neon")
 
+def load_previous_report() -> dict:
+    """Carga el informe del día anterior para evitar repetir contenido."""
+    try:
+        conn = psycopg2.connect(DATABASE_URL)
+        cur  = conn.cursor()
+        cur.execute("""
+            SELECT raw_data FROM reports
+            WHERE report_date < %s
+            ORDER BY report_date DESC LIMIT 1
+        """, (TODAY,))
+        row = cur.fetchone()
+        cur.close(); conn.close()
+        if row:
+            print("  OK informe anterior cargado para deduplicación")
+            return row[0]
+    except Exception as e:
+        print(f"  WARN load_previous_report: {e}")
+    return {}
+
 # ── Web search ─────────────────────────────────────────────────────────────────
 def search(query: str) -> list[dict]:
     try:
@@ -148,20 +167,35 @@ Devuelve este JSON exacto:
 
 Minimo: 4 oportunidades, 3 alertas, 3 proyectos, 3 riesgos, 4 acciones, 6 clientes.
 NUNCA incluir coste logistico desde Europa como riesgo (AFG tiene planta Michigan).
+{dedup_section}
 Solo hallazgos respaldados por los resultados. Solo JSON."""
 
-def analyze(results: list[dict]) -> dict:
+def build_dedup_section(prev: dict) -> str:
+    """Genera el bloque de deduplicación a partir del informe anterior."""
+    if not prev: return ""
+    lines = ["IMPORTANTE — Ya se reportaron ayer los siguientes items. NO los repitas, busca contenido NUEVO:"]
+    for o in prev.get("opportunities", [])[:6]:
+        lines.append(f"  - Oportunidad ya vista: {o.get('title','')} ({o.get('company','')})")
+    for a in prev.get("alerts", [])[:4]:
+        lines.append(f"  - Alerta ya vista: {a.get('title','')}")
+    for p in prev.get("projects", [])[:4]:
+        lines.append(f"  - Proyecto ya visto: {p.get('name','')}")
+    return "\n".join(lines)
+
+def analyze(results: list[dict], prev_report: dict = None) -> dict:
     ctx = "\n\n---\n\n".join(
         f"TITULO: {r.get('title','')}\nURL: {r.get('url','')}\n"
         f"FECHA: {r.get('published_date','')}\nCONT: {r.get('content','')[:600]}"
         for r in results[:40]
     )
+    dedup = build_dedup_section(prev_report or {})
     client = anthropic.Anthropic(api_key=ANTHROPIC_KEY)
     msg = client.messages.create(
         model=MODEL, max_tokens=16000,
         system=SYSTEM,
         messages=[{"role":"user","content":PROMPT.format(
-            today=TODAY.strftime("%d %B %Y"), context=ctx
+            today=TODAY.strftime("%d %B %Y"), context=ctx,
+            dedup_section=dedup
         )}],
     )
     raw = msg.content[0].text.strip()
@@ -244,7 +278,8 @@ if __name__ == "__main__":
     results = run_searches()
 
     print("\n[3/7] Analizando con Claude...")
-    data = analyze(results)
+    prev_report = load_previous_report()
+    data = analyze(results, prev_report)
     opps     = data.get("opportunities",[])
     projects = data.get("projects",[])
     clients  = data.get("potential_clients",[])
