@@ -3,6 +3,7 @@
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/$1" },
     { "src": "/data.json", "dest": "/data.json" },
+    { "src": "/config/chat_users.json", "dest": "/config/chat_users.json" },
     { "src": "/(.*)", "dest": "/index.html" }
   ]
 }

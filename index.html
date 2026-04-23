@@ -899,17 +899,24 @@ let chatAvatar = '👤';
 let chatRefreshInterval = null;
 let lastMessageId = 0;
 
-function initChat() {
-  // Poblar usuarios desde data.json
-  const users = (DATA && DATA.chat_users) || [];
-  const sel = document.getElementById('chat-user-select');
-  sel.innerHTML = '<option value="">— Selecciona tu nombre —</option>' +
-    users.map(u => `<option value="${esc(u.name)}" data-avatar="${esc(u.avatar||'👤')}">${esc(u.avatar||'👤')} ${esc(u.name)}</option>`).join('');
-
-  // Restaurar usuario de sesión si existe
-  if (chatUser) {
-    sel.value = chatUser;
-    document.getElementById('chat-send-btn').disabled = false;
+async function initChat() {
+  // Cargar usuarios directamente desde config/chat_users.json (archivo estático en Vercel)
+  // No requiere ejecutar el workflow — basta con editar el archivo en GitHub
+  try {
+    const r = await fetch('/config/chat_users.json?' + Date.now());
+    if (r.ok) {
+      const data = await r.json();
+      const users = data.users || [];
+      const sel = document.getElementById('chat-user-select');
+      sel.innerHTML = '<option value="">— Selecciona tu nombre —</option>' +
+        users.map(u => `<option value="${esc(u.name)}" data-avatar="${esc(u.avatar||'👤')}">${esc(u.avatar||'👤')} ${esc(u.name)}</option>`).join('');
+      if (chatUser) {
+        sel.value = chatUser;
+        document.getElementById('chat-send-btn').disabled = false;
+      }
+    }
+  } catch(e) {
+    console.warn('No se pudieron cargar los usuarios del chat:', e.message);
   }
 
   loadMessages();
