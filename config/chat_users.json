@@ -1,9 +1,11 @@
 {
   "_instructions": "Añade aquí los usuarios del chat. Aparecerán en el desplegable al entrar. avatar puede ser cualquier emoji.",
   "users": [
-    { "name": "Alcorta Boss",  "avatar": "👔" },
-    { "name": "Comercial USA", "avatar": "🇺🇸" },
-    { "name": "Dirección",     "avatar": "🏢" },
-    { "name": "Marketing",     "avatar": "📣" }
+    { "name": "Lorenzo Mendieta",  "avatar": "🏢" },
+    { "name": "Oscar Andres", "avatar": "👔" },
+    { "name": "Ruben de la Peña",     "avatar": "👔" },
+    { "name": "Martin Barañano",     "avatar": "👔" },
+    { "name": "Javier Alvarez",  "avatar": "🇺🇸" },
+    { "name": "Agente AFG Next", "avatar": "🤖" }
   ]
 }
