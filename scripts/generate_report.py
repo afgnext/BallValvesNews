@@ -58,8 +58,43 @@ def ensure_schema():
             updated_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
         );
         CREATE INDEX IF NOT EXISTS idx_reports_date ON reports(report_date DESC);
+
+        CREATE TABLE IF NOT EXISTS clients (
+            id             SERIAL       PRIMARY KEY,
+            name           TEXT         NOT NULL,
+            type           TEXT         NOT NULL DEFAULT 'EPC',
+            url            TEXT,
+            city           TEXT,
+            lat            FLOAT,
+            lng            FLOAT,
+            notes          TEXT,
+            priority       TEXT         NOT NULL DEFAULT 'Media',
+            priority_order INT          NOT NULL DEFAULT 2,
+            created_at     TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+        );
     """)
-    conn.commit(); cur.close(); conn.close()
+    conn.commit()
+
+    # Migrar clientes de manual_clients.json si la tabla está vacía
+    cur.execute("SELECT COUNT(*) FROM clients")
+    if cur.fetchone()[0] == 0 and MANUAL_CLI_F.exists():
+        try:
+            data = json.loads(MANUAL_CLI_F.read_text(encoding="utf-8"))
+            for c in data.get("clients", []):
+                prio = c.get("priority", "Media")
+                porder = {"Alta":1,"Media":2,"Baja":3}.get(prio, 2)
+                cur.execute("""
+                    INSERT INTO clients (name, type, url, city, lat, lng, notes, priority, priority_order)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                """, (c.get("name",""), c.get("type","EPC"), c.get("url"),
+                      c.get("city"), c.get("lat"), c.get("lng"),
+                      c.get("notes"), prio, porder))
+            conn.commit()
+            print(f"  OK {len(data.get('clients',[]))} clientes migrados desde manual_clients.json")
+        except Exception as e:
+            print(f"  WARN migración clientes: {e}")
+
+    cur.close(); conn.close()
     print("  OK schema Neon")
 
 def store_in_neon(data: dict):
@@ -205,16 +240,20 @@ def analyze(results: list[dict], prev_report: dict = None) -> dict:
         raw = raw.rsplit("```",1)[0]
     return json.loads(raw.strip())
 
-# ── Manual clients ─────────────────────────────────────────────────────────────
+# ── Manual clients desde Neon ───────────────────────────────────────────────────
 def load_manual_clients() -> list[dict]:
-    if not MANUAL_CLI_F.exists(): return []
     try:
-        data = json.loads(MANUAL_CLI_F.read_text(encoding="utf-8"))
-        clients = data.get("clients", [])
+        conn = psycopg2.connect(DATABASE_URL)
+        cur  = conn.cursor()
+        cur.execute("SELECT name, type, url, city, lat, lng, notes, priority FROM clients ORDER BY priority_order, created_at DESC")
+        rows = cur.fetchall()
+        cur.close(); conn.close()
+        cols = ["name","type","url","city","lat","lng","notes","priority"]
+        clients = [dict(zip(cols, r)) for r in rows]
         for c in clients: c["_manual"] = True
         return clients
     except Exception as e:
-        print(f"  WARN manual_clients: {e}"); return []
+        print(f"  WARN load_manual_clients: {e}"); return []
 
 # ── Email vía Gmail SMTP ────────────────────────────────────────────────────────
 def load_recipients() -> list[str]:
