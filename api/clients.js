@@ -1,5 +1,6 @@
-// GET  /api/clients        — lista todos los clientes manuales
-// POST /api/clients        — añade un cliente nuevo
+// GET    /api/clients      — lista todos los clientes manuales
+// POST   /api/clients      — añade un cliente nuevo
+// DELETE /api/clients?id=X — elimina un cliente por ID
 const { Pool } = require('pg');
 
 const pool = new Pool({
@@ -9,7 +10,7 @@ const pool = new Pool({
 
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
@@ -44,6 +45,22 @@ module.exports = async function handler(req, res) {
       return res.status(201).json({ client: result.rows[0] });
     } catch (e) {
       console.error('clients POST error:', e.message);
+      return res.status(500).json({ error: e.message });
+    }
+  }
+
+  // ── DELETE: eliminar cliente ────────────────────────────────────────────
+  if (req.method === 'DELETE') {
+    const id = req.query?.id;
+    if (!id || isNaN(parseInt(id))) {
+      return res.status(400).json({ error: 'Parámetro id requerido' });
+    }
+    try {
+      const result = await pool.query('DELETE FROM clients WHERE id=$1 RETURNING id', [parseInt(id)]);
+      if (result.rowCount === 0) return res.status(404).json({ error: 'Cliente no encontrado' });
+      return res.status(200).json({ ok: true, deleted: parseInt(id) });
+    } catch (e) {
+      console.error('clients DELETE error:', e.message);
       return res.status(500).json({ error: e.message });
     }
   }
