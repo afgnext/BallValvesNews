@@ -507,7 +507,7 @@ function switchTab(id, el) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-' + id).classList.add('active');
   el.classList.add('active');
-  if (id === 'clientes') setTimeout(initMap, 100);
+  if (id === 'clientes') setTimeout(loadAndRenderClients, 100);
   if (id === 'chat') setTimeout(initChat, 100);
 }
 
@@ -642,14 +642,24 @@ function actionCard(a) {
 
 // ── Clients section ─────────────────────────────────────────────────────────
 let activeTypeFilter = '';
+let ALL_CLIENTS = [];
 
-function renderClients(aiClients, manualClients) {
-  const all = [
-    ...aiClients.map(c => ({...c, _manual: false})),
-    ...manualClients
-  ];
-  const filtered = activeTypeFilter ? all.filter(c => c.type === activeTypeFilter) : all;
-  document.getElementById('clients-count').textContent = filtered.length + (activeTypeFilter ? ` de ${all.length}` : '');
+async function loadAndRenderClients() {
+  try {
+    const r = await fetch('/api/clients');
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const { clients } = await r.json();
+    ALL_CLIENTS = clients;
+    renderClients(ALL_CLIENTS);
+    initMap(ALL_CLIENTS);
+  } catch(e) {
+    console.warn('Error cargando clientes:', e.message);
+  }
+}
+
+function renderClients(clients) {
+  const filtered = activeTypeFilter ? clients.filter(c => c.type === activeTypeFilter) : clients;
+  document.getElementById('clients-count').textContent = filtered.length + (activeTypeFilter ? ` de ${clients.length}` : '');
   document.getElementById('clients-grid').innerHTML = filtered.map(clientCard).join('');
 }
 
@@ -657,18 +667,21 @@ function filterClients(type, btn) {
   activeTypeFilter = type;
   document.querySelectorAll('.filter-type-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  if (DATA) renderClients(DATA.potential_clients || [], DATA.manual_clients || []);
+  renderClients(ALL_CLIENTS);
 }
 
 function clientCard(c) {
-  const manualTag = c._manual ? `<span class="manual-badge">MANUAL</span>` : '';
+  const isManual = c.source === 'manual';
+  const sourceBadge = isManual
+    ? `<span class="manual-badge">MANUAL</span>`
+    : `<span style="background:rgba(31,111,235,.15);color:#79c0ff;font-size:10px;padding:1px 6px;border-radius:8px;font-weight:700">IA</span>`;
   const nameLink = c.url ? `<a href="${esc(c.url)}" target="_blank">${esc(c.name||'')}</a>` : esc(c.name||'');
-  const deleteBtn = c._manual && c.id
+  const deleteBtn = isManual && c.id
     ? `<button class="delete-btn" onclick="deleteClient(${c.id},'${esc(c.name||'')}')" title="Eliminar cliente">🗑️</button>`
     : '';
   return `<div class="client" data-id="${c.id||''}" data-type="${esc(c.type||'')}">
     <div class="client-head">
-      <div class="client-name">${nameLink} ${manualTag}</div>
+      <div class="client-name">${nameLink} ${sourceBadge}</div>
       <div style="display:flex;align-items:center;gap:4px">
         <span class="client-type">${esc(c.type||'')}</span>
         ${deleteBtn}
@@ -687,11 +700,8 @@ async function deleteClient(id, name) {
     const data = await r.json();
     if (r.ok) {
       showToast(`🗑️ "${name}" eliminado`, true);
-      // Quitar del DATA y re-renderizar
-      if (DATA) {
-        DATA.manual_clients = (DATA.manual_clients || []).filter(c => c.id !== id);
-        renderClients(DATA.potential_clients || [], DATA.manual_clients);
-      }
+      ALL_CLIENTS = ALL_CLIENTS.filter(c => c.id !== id);
+      renderClients(ALL_CLIENTS);
     } else {
       showToast('❌ ' + (data.error || 'Error al eliminar'), false);
     }
@@ -701,11 +711,10 @@ async function deleteClient(id, name) {
 }
 
 // ── Leaflet map ─────────────────────────────────────────────────────────────
-function initMap() {
-  if (!DATA) return;
+function initMap(clients) {
   if (leafletMap) {
-    leafletMap.invalidateSize();
-    return;
+    leafletMap.remove();
+    leafletMap = null;
   }
 
   leafletMap = L.map('map').setView([37.5, -95], 4);
@@ -723,30 +732,23 @@ function initMap() {
     .addTo(leafletMap)
     .bindPopup('<strong>AFG – Planta Michigan</strong><br>Stainless Steel Balls · Oil & Gas USA');
 
-  // AI clients (blue)
   const blueIcon = L.divIcon({
     html: '<div style="width:12px;height:12px;background:#1f6feb;border:2px solid #fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.5)"></div>',
     className: '', iconAnchor: [6, 6]
   });
-
-  // Manual clients (orange)
   const orangeIcon = L.divIcon({
     html: '<div style="width:12px;height:12px;background:#e8a225;border:2px solid #fff;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,.5)"></div>',
     className: '', iconAnchor: [6, 6]
   });
 
-  (DATA.potential_clients || []).forEach(c => {
+  (clients || []).forEach(c => {
     if (!c.lat || !c.lng) return;
-    L.marker([c.lat, c.lng], {icon: blueIcon})
+    const isManual = c.source === 'manual';
+    const icon = isManual ? orangeIcon : blueIcon;
+    const label = isManual ? ' <span style="color:#e8a225;font-weight:700">[Manual]</span>' : ' <span style="color:#79c0ff;font-weight:700">[IA]</span>';
+    L.marker([c.lat, c.lng], {icon})
       .addTo(leafletMap)
-      .bindPopup(`<strong>${esc(c.name||'')}</strong><br>${esc(c.type||'')}<br>${esc(c.city||'')}<br><em>${esc(c.reason||'')}</em>`);
-  });
-
-  (DATA.manual_clients || []).forEach(c => {
-    if (!c.lat || !c.lng) return;
-    L.marker([c.lat, c.lng], {icon: orangeIcon})
-      .addTo(leafletMap)
-      .bindPopup(`<strong>${esc(c.name||'')}</strong> <span style="color:#e8a225;font-weight:700">[Manual]</span><br>${esc(c.type||'')}<br>${esc(c.city||'')}<br><em>${esc(c.notes||c.reason||'')}</em>`);
+      .bindPopup(`<strong>${esc(c.name||'')}</strong>${label}<br>${esc(c.type||'')}<br>${esc(c.city||'')}<br><em>${esc(c.notes||c.reason||'')}</em>`);
   });
 }
 
@@ -818,14 +820,9 @@ async function saveClient() {
     if (r.ok) {
       showToast(`✅ Cliente "${name}" guardado correctamente`, true);
       closeClientModal();
-      // Añadir al listado y mapa sin recargar
-      const newClient = {...data.client, _manual: true};
-      if (DATA) {
-        DATA.manual_clients = DATA.manual_clients || [];
-        DATA.manual_clients.push(newClient);
-        renderClients(DATA.potential_clients || [], DATA.manual_clients);
-        if (leafletMap) addClientMarker(newClient, true);
-      }
+      ALL_CLIENTS.push(data.client);
+      renderClients(ALL_CLIENTS);
+      initMap(ALL_CLIENTS);
     } else {
       showToast('❌ ' + (data.error || 'Error al guardar'), false);
     }
