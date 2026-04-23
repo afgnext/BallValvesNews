@@ -184,9 +184,11 @@
 <header>
   <div class="logo">AFG</div>
   <div class="header-title">Market Intelligence Radar</div>
-  <div class="header-sub" style="display:flex;gap:10px;align-items:center">
-    <span id="date-badge">—</span>
+  <div class="header-sub" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
     <span style="font-size:12px;color:var(--muted)">Stainless Steel Balls · Oil &amp; Gas USA · Planta Michigan</span>
+    <select id="date-select" onchange="loadByDate(this.value)" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:4px 10px;border-radius:6px;font-size:12px;cursor:pointer">
+      <option value="">📅 Cargando fechas…</option>
+    </select>
     <button class="btn btn-ghost" onclick="openEmailModal()" style="font-size:12px;padding:5px 12px">✉️ Test email</button>
   </div>
 </header>
@@ -299,17 +301,53 @@ let leafletMap = null;
 
 // ── Fetch data ──────────────────────────────────────────────────────────────
 async function loadData() {
+  // Carga el informe más reciente (data.json) y las fechas disponibles
   try {
-    const r = await fetch('data.json?' + Date.now());
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    DATA = await r.json();
+    const [dataRes, datesRes] = await Promise.all([
+      fetch('data.json?' + Date.now()),
+      fetch('/api/reports')
+    ]);
+    if (!dataRes.ok) throw new Error('HTTP ' + dataRes.status);
+    DATA = await dataRes.json();
     document.getElementById('loader').classList.add('hidden');
     render();
+
+    // Poblar selector de fechas
+    if (datesRes.ok) {
+      const { dates } = await datesRes.json();
+      populateDateSelect(dates, DATA.date);
+    }
   } catch(e) {
     document.getElementById('loader').classList.add('hidden');
     document.getElementById('error-msg').style.display = 'block';
     console.error('Error cargando data.json:', e);
   }
+}
+
+async function loadByDate(date) {
+  if (!date) return;
+  document.getElementById('loader').classList.remove('hidden');
+  try {
+    const r = await fetch(`/api/report?date=${date}`);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    DATA = await r.json();
+    document.getElementById('loader').classList.add('hidden');
+    if (leafletMap) { leafletMap.remove(); leafletMap = null; }
+    render();
+  } catch(e) {
+    document.getElementById('loader').classList.add('hidden');
+    showToast('❌ Error cargando informe: ' + e.message, false);
+  }
+}
+
+function populateDateSelect(dates, currentDate) {
+  const sel = document.getElementById('date-select');
+  // Convertir fecha del informe actual a YYYY-MM-DD para comparar
+  const todayIso = dates[0] || '';
+  sel.innerHTML = dates.map(d => {
+    const label = d === todayIso ? `📅 ${d} (hoy)` : `📅 ${d}`;
+    return `<option value="${d}" ${d === todayIso ? 'selected' : ''}>${label}</option>`;
+  }).join('');
 }
 
 // ── Tab switching ───────────────────────────────────────────────────────────
