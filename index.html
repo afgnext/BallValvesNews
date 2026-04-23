@@ -133,6 +133,23 @@
     .sec-title{font-size:18px;font-weight:700;margin-bottom:18px;display:flex;align-items:center;gap:10px}
     .sec-count{background:var(--border);font-size:12px;padding:2px 8px;border-radius:10px;color:var(--muted)}
 
+    /* ── TEST EMAIL MODAL ── */
+    .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:.2s}
+    .modal-overlay.open{opacity:1;pointer-events:all}
+    .modal{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:28px;width:100%;max-width:420px;box-shadow:0 8px 32px rgba(0,0,0,.5)}
+    .modal h3{font-size:16px;font-weight:700;margin-bottom:6px}
+    .modal p{font-size:13px;color:var(--muted);margin-bottom:18px}
+    .modal input{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:8px;font-size:14px;margin-bottom:14px}
+    .modal-btns{display:flex;gap:10px;justify-content:flex-end}
+    .btn{padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none}
+    .btn-primary{background:var(--amber);color:#000}
+    .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--border)}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+    .toast{position:fixed;bottom:24px;right:24px;padding:12px 18px;border-radius:8px;font-size:13px;font-weight:600;z-index:300;opacity:0;transition:.3s;pointer-events:none}
+    .toast.show{opacity:1}
+    .toast-ok{background:#3fb950;color:#fff}
+    .toast-err{background:#f85149;color:#fff}
+
     /* ── LOADER ── */
     #loader{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:9999}
     .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--amber);border-radius:50%;animation:spin .8s linear infinite}
@@ -145,6 +162,20 @@
 </head>
 <body>
 
+<!-- Test email modal -->
+<div class="modal-overlay" id="email-modal">
+  <div class="modal">
+    <h3>✉️ Enviar email de prueba</h3>
+    <p>Comprueba que las notificaciones diarias funcionan correctamente.</p>
+    <input type="email" id="test-email-to" placeholder="destinatario@alcortagroup.com"/>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="closeEmailModal()">Cancelar</button>
+      <button class="btn btn-primary" id="send-test-btn" onclick="sendTestEmail()">Enviar prueba</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
 <div id="loader">
   <div class="spinner"></div>
   <div style="color:var(--muted);font-size:14px">Cargando inteligencia de mercado…</div>
@@ -156,6 +187,7 @@
   <div class="header-sub" style="display:flex;gap:10px;align-items:center">
     <span id="date-badge">—</span>
     <span style="font-size:12px;color:var(--muted)">Stainless Steel Balls · Oil &amp; Gas USA · Planta Michigan</span>
+    <button class="btn btn-ghost" onclick="openEmailModal()" style="font-size:12px;padding:5px 12px">✉️ Test email</button>
   </div>
 </header>
 
@@ -500,6 +532,52 @@ function esc(str) {
     .replace(/</g,'&lt;')
     .replace(/>/g,'&gt;')
     .replace(/"/g,'&quot;');
+}
+
+// ── Test email modal ────────────────────────────────────────────────────────
+function openEmailModal() {
+  document.getElementById('email-modal').classList.add('open');
+  document.getElementById('test-email-to').focus();
+}
+function closeEmailModal() {
+  document.getElementById('email-modal').classList.remove('open');
+}
+document.getElementById('email-modal').addEventListener('click', function(e) {
+  if (e.target === this) closeEmailModal();
+});
+
+async function sendTestEmail() {
+  const to = document.getElementById('test-email-to').value.trim();
+  if (!to || !to.includes('@')) { showToast('Introduce un email válido', false); return; }
+  const btn = document.getElementById('send-test-btn');
+  btn.disabled = true;
+  btn.textContent = 'Enviando…';
+  try {
+    const r = await fetch('/api/test-email', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ to })
+    });
+    const data = await r.json();
+    if (r.ok) {
+      showToast('✅ ' + data.message, true);
+      closeEmailModal();
+    } else {
+      showToast('❌ ' + (data.error || 'Error desconocido'), false);
+    }
+  } catch(e) {
+    showToast('❌ Error de conexión: ' + e.message, false);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Enviar prueba';
+  }
+}
+
+function showToast(msg, ok) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (ok ? 'toast-ok' : 'toast-err');
+  setTimeout(() => t.className = 'toast', 3500);
 }
 
 // ── Init ────────────────────────────────────────────────────────────────────
