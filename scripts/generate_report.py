@@ -21,6 +21,7 @@ ROOT         = Path(__file__).parent.parent
 OUTPUT_JSON  = ROOT / "data.json"
 RECIPIENTS_F = ROOT / "config" / "email_recipients.txt"
 MANUAL_CLI_F = ROOT / "config" / "manual_clients.json"
+CHAT_USERS_F = ROOT / "config" / "chat_users.json"
 
 ANTHROPIC_KEY = os.environ["ANTHROPIC_API_KEY"]
 TAVILY_KEY    = os.environ["TAVILY_API_KEY"]
@@ -58,6 +59,15 @@ def ensure_schema():
             updated_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
         );
         CREATE INDEX IF NOT EXISTS idx_reports_date ON reports(report_date DESC);
+
+        CREATE TABLE IF NOT EXISTS messages (
+            id         SERIAL       PRIMARY KEY,
+            user_name  TEXT         NOT NULL,
+            avatar     TEXT         NOT NULL DEFAULT '👤',
+            message    TEXT         NOT NULL,
+            created_at TIMESTAMPTZ  NOT NULL DEFAULT NOW()
+        );
+        CREATE INDEX IF NOT EXISTS idx_messages_date ON messages(created_at DESC);
 
         CREATE TABLE IF NOT EXISTS clients (
             id             SERIAL       PRIMARY KEY,
@@ -324,12 +334,18 @@ if __name__ == "__main__":
     clients  = data.get("potential_clients",[])
     print(f"  OK {len(opps)} oport | {len(projects)} proyectos | {len(clients)} clientes")
 
-    print("\n[4/7] Clientes manuales...")
+    print("\n[4/7] Clientes manuales y usuarios chat...")
     manual = load_manual_clients()
     data["manual_clients"] = manual
     data["sources"] = [{"title": r.get("title",""), "url": r.get("url","")}
                        for r in results[:15] if r.get("url")]
-    print(f"  OK {len(manual)} manuales")
+    # Incluir usuarios del chat en data.json
+    try:
+        chat_data = json.loads(CHAT_USERS_F.read_text(encoding="utf-8"))
+        data["chat_users"] = chat_data.get("users", [])
+    except Exception:
+        data["chat_users"] = []
+    print(f"  OK {len(manual)} manuales | {len(data['chat_users'])} usuarios chat")
 
     print("\n[5/7] Guardando en Neon...")
     store_in_neon(data)
