@@ -5,7 +5,7 @@ Genera data.json (leído por index.html) y lo guarda en Neon.
 
 Secrets requeridos en GitHub:
   ANTHROPIC_API_KEY, TAVILY_API_KEY, NEON_DATABASE_URL
-  SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, REPORT_URL
+  SMTP_USER, SMTP_PASS (Gmail App Password), REPORT_URL
 """
 import os, json, smtplib, psycopg2
 from email.mime.multipart import MIMEMultipart
@@ -25,10 +25,8 @@ MANUAL_CLI_F = ROOT / "config" / "manual_clients.json"
 ANTHROPIC_KEY = os.environ["ANTHROPIC_API_KEY"]
 TAVILY_KEY    = os.environ["TAVILY_API_KEY"]
 DATABASE_URL  = os.environ["NEON_DATABASE_URL"]
-SMTP_HOST     = os.environ.get("SMTP_HOST","")
-SMTP_PORT     = int(os.environ.get("SMTP_PORT","587"))
-SMTP_USER     = os.environ.get("SMTP_USER","")
-SMTP_PASS     = os.environ.get("SMTP_PASS","")
+SMTP_USER     = os.environ.get("SMTP_USER","")   # afgnext100@gmail.com
+SMTP_PASS     = os.environ.get("SMTP_PASS","")   # Gmail App Password (16 chars)
 REPORT_URL    = os.environ.get("REPORT_URL","https://tu-proyecto.vercel.app")
 MODEL         = "claude-sonnet-4-6"
 
@@ -184,7 +182,7 @@ def load_manual_clients() -> list[dict]:
     except Exception as e:
         print(f"  WARN manual_clients: {e}"); return []
 
-# ── Email ──────────────────────────────────────────────────────────────────────
+# ── Email vía Gmail SMTP ────────────────────────────────────────────────────────
 def load_recipients() -> list[str]:
     if not RECIPIENTS_F.exists(): return []
     return [l.strip() for l in RECIPIENTS_F.read_text().splitlines()
@@ -192,8 +190,8 @@ def load_recipients() -> list[str]:
 
 def send_email(recipients, key_signal, n_opps, n_projects):
     if not recipients: print("  WARN sin destinatarios"); return
-    if not all([SMTP_HOST, SMTP_USER, SMTP_PASS]):
-        print("  WARN SMTP no configurado"); return
+    if not all([SMTP_USER, SMTP_PASS]):
+        print("  WARN Gmail SMTP no configurado"); return
     today_str = TODAY.strftime("%d %B %Y")
     msg = MIMEMultipart("alternative")
     msg["Subject"] = f"AFG Market Radar actualizado: {today_str}"
@@ -228,7 +226,7 @@ def send_email(recipients, key_signal, n_opps, n_projects):
 </div></body></html>"""
     msg.attach(MIMEText(body, "html"))
     try:
-        with smtplib.SMTP(SMTP_HOST, SMTP_PORT) as s:
+        with smtplib.SMTP("smtp.gmail.com", 587) as s:
             s.ehlo(); s.starttls(); s.login(SMTP_USER, SMTP_PASS)
             s.sendmail(SMTP_USER, recipients, msg.as_string())
         print(f"  OK email a {len(recipients)} destinatarios")
