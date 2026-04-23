@@ -113,6 +113,13 @@
     .signals{display:flex;flex-wrap:wrap;gap:6px}
     .sig{background:var(--bg);border:1px solid var(--border);font-size:11px;padding:2px 8px;border-radius:12px;color:var(--muted)}
 
+    /* ── TYPE FILTER BUTTONS ── */
+    .filter-type-btn{background:var(--surface);border:1px solid var(--border);color:var(--muted);padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;transition:.15s}
+    .filter-type-btn:hover{border-color:var(--amber);color:var(--text)}
+    .filter-type-btn.active{background:rgba(232,162,37,.15);border-color:var(--amber);color:var(--amber)}
+    .delete-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:2px 5px;border-radius:4px;line-height:1;transition:.15s}
+    .delete-btn:hover{color:var(--red);background:rgba(248,81,73,.1)}
+
     /* ── CLIENT MAP ── */
     #map{height:460px;border-radius:10px;border:1px solid var(--border);margin-bottom:24px}
     .client-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
@@ -182,13 +189,15 @@
       </div>
       <div class="form-group">
         <label>Tipo *</label>
-        <select id="cl-type">
+        <select id="cl-type" onchange="updateTypeHint()">
           <option value="EPC">EPC Contractor</option>
           <option value="Operator">Operator</option>
           <option value="Distributor">Distributor</option>
           <option value="OEM">OEM / Valve Manufacturer</option>
           <option value="MRO">MRO</option>
+          <option value="BallMfg">Ball Manufacturer</option>
         </select>
+        <span class="form-hint" id="type-hint" style="color:#79c0ff">Constructoras que contratan componentes en fase de obra (Bechtel, McDermott…)</span>
       </div>
     </div>
     <div class="form-row" style="margin-bottom:12px">
@@ -356,7 +365,27 @@
       <div class="sec-title" style="margin-bottom:0">🗺️ Clientes Potenciales USA</div>
       <button class="btn btn-primary" onclick="openClientModal()" style="font-size:13px">➕ Añadir cliente</button>
     </div>
+    <details style="margin-bottom:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px">
+      <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--amber);list-style:none">ℹ️ Tipos de cliente — ¿qué significa cada uno?</summary>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:12px">
+        <div style="font-size:12px;line-height:1.5"><strong style="color:#79c0ff">EPC</strong> · Engineering, Procurement & Construction<br><span style="color:var(--muted)">Constructoras de plantas y refinerías. Contratan componentes en fase de obra (Bechtel, McDermott, Fluor…)</span></div>
+        <div style="font-size:12px;line-height:1.5"><strong style="color:#79c0ff">Operator</strong> · Operador de activos<br><span style="color:var(--muted)">Compañías que operan refinerías y plantas. Compran para mantenimiento y reemplazos (ExxonMobil, Chevron, Shell…)</span></div>
+        <div style="font-size:12px;line-height:1.5"><strong style="color:#79c0ff">Distributor</strong> · Distribuidor industrial<br><span style="color:var(--muted)">Revenden componentes a múltiples clientes. Canal rápido sin necesidad de homologación directa (DNOW, Ferguson…)</span></div>
+        <div style="font-size:12px;line-height:1.5"><strong style="color:#79c0ff">OEM</strong> · Fabricante de válvulas<br><span style="color:var(--muted)">Compran bolas como componente para ensamblar su válvula completa. Alto volumen (Flowserve, Emerson, Neles…)</span></div>
+        <div style="font-size:12px;line-height:1.5"><strong style="color:#79c0ff">MRO</strong> · Maintenance, Repair & Operations<br><span style="color:var(--muted)">Suministro de repuestos para plantas en operación. Pedidos recurrentes y urgentes, margen alto.</span></div>
+        <div style="font-size:12px;line-height:1.5"><strong style="color:#79c0ff">Ball Mfg</strong> · Mecanizador / Fabricante de bolas<br><span style="color:var(--muted)">Competidores directos de AFG o posibles socios y subcontratistas en el mercado de bolas para válvulas.</span></div>
+      </div>
+    </details>
     <div id="map"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 12px">
+      <button class="filter-type-btn active" onclick="filterClients('',this)">Todos</button>
+      <button class="filter-type-btn" onclick="filterClients('EPC',this)">EPC</button>
+      <button class="filter-type-btn" onclick="filterClients('Operator',this)">Operator</button>
+      <button class="filter-type-btn" onclick="filterClients('Distributor',this)">Distributor</button>
+      <button class="filter-type-btn" onclick="filterClients('OEM',this)">OEM</button>
+      <button class="filter-type-btn" onclick="filterClients('MRO',this)">MRO</button>
+      <button class="filter-type-btn" onclick="filterClients('BallMfg',this)">Ball Mfg</button>
+    </div>
     <div class="sec-title" style="margin-top:8px">
       Listado <span class="sec-count" id="clients-count"></span>
       <span style="font-size:12px;font-weight:400;color:var(--muted);margin-left:8px">
@@ -565,27 +594,63 @@ function actionCard(a) {
 }
 
 // ── Clients section ─────────────────────────────────────────────────────────
+let activeTypeFilter = '';
+
 function renderClients(aiClients, manualClients) {
   const all = [
     ...aiClients.map(c => ({...c, _manual: false})),
     ...manualClients
   ];
-  document.getElementById('clients-count').textContent = all.length;
-  document.getElementById('clients-grid').innerHTML = all.map(clientCard).join('');
+  const filtered = activeTypeFilter ? all.filter(c => c.type === activeTypeFilter) : all;
+  document.getElementById('clients-count').textContent = filtered.length + (activeTypeFilter ? ` de ${all.length}` : '');
+  document.getElementById('clients-grid').innerHTML = filtered.map(clientCard).join('');
+}
+
+function filterClients(type, btn) {
+  activeTypeFilter = type;
+  document.querySelectorAll('.filter-type-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (DATA) renderClients(DATA.potential_clients || [], DATA.manual_clients || []);
 }
 
 function clientCard(c) {
   const manualTag = c._manual ? `<span class="manual-badge">MANUAL</span>` : '';
   const nameLink = c.url ? `<a href="${esc(c.url)}" target="_blank">${esc(c.name||'')}</a>` : esc(c.name||'');
-  return `<div class="client">
+  const deleteBtn = c._manual && c.id
+    ? `<button class="delete-btn" onclick="deleteClient(${c.id},'${esc(c.name||'')}')" title="Eliminar cliente">🗑️</button>`
+    : '';
+  return `<div class="client" data-id="${c.id||''}" data-type="${esc(c.type||'')}">
     <div class="client-head">
       <div class="client-name">${nameLink} ${manualTag}</div>
-      <span class="client-type">${esc(c.type||'')}</span>
+      <div style="display:flex;align-items:center;gap:4px">
+        <span class="client-type">${esc(c.type||'')}</span>
+        ${deleteBtn}
+      </div>
     </div>
     <div class="client-city">📍 ${esc(c.city||c.location||'')}</div>
     <div class="client-reason">${esc(c.reason||c.notes||'')}</div>
     ${c.priority?`<div style="margin-top:8px"><span class="badge badge-${c.priority}">${c.priority}</span></div>`:''}
   </div>`;
+}
+
+async function deleteClient(id, name) {
+  if (!confirm(`¿Eliminar el cliente "${name}"? Esta acción no se puede deshacer.`)) return;
+  try {
+    const r = await fetch(`/api/clients?id=${id}`, { method: 'DELETE' });
+    const data = await r.json();
+    if (r.ok) {
+      showToast(`🗑️ "${name}" eliminado`, true);
+      // Quitar del DATA y re-renderizar
+      if (DATA) {
+        DATA.manual_clients = (DATA.manual_clients || []).filter(c => c.id !== id);
+        renderClients(DATA.potential_clients || [], DATA.manual_clients);
+      }
+    } else {
+      showToast('❌ ' + (data.error || 'Error al eliminar'), false);
+    }
+  } catch(e) {
+    showToast('❌ Error de conexión', false);
+  }
 }
 
 // ── Leaflet map ─────────────────────────────────────────────────────────────
@@ -645,6 +710,20 @@ function esc(str) {
     .replace(/</g,'&lt;')
     .replace(/>/g,'&gt;')
     .replace(/"/g,'&quot;');
+}
+
+// ── Type hints ──────────────────────────────────────────────────────────────
+const TYPE_HINTS = {
+  EPC:         'Constructoras de plantas y refinerías. Contratan componentes en fase de obra (Bechtel, McDermott…)',
+  Operator:    'Operan refinerías y plantas. Compran para mantenimiento y reemplazos (ExxonMobil, Chevron, Shell…)',
+  Distributor: 'Revenden componentes a múltiples clientes. Canal rápido sin homologación directa (DNOW, Ferguson…)',
+  OEM:         'Fabricantes de válvulas que compran bolas como componente para su producto final (Flowserve, Emerson…)',
+  MRO:         'Suministro de repuestos para plantas en operación. Pedidos recurrentes y urgentes, margen alto.',
+  BallMfg:     'Mecanizadores y fabricantes de bolas de válvula. Competidores directos o posibles socios/subcontratistas.',
+};
+function updateTypeHint() {
+  const type = document.getElementById('cl-type').value;
+  document.getElementById('type-hint').textContent = TYPE_HINTS[type] || '';
 }
 
 // ── Add client modal ────────────────────────────────────────────────────────
