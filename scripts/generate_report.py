@@ -80,9 +80,14 @@ def ensure_schema():
             notes          TEXT,
             priority       TEXT         NOT NULL DEFAULT 'Media',
             priority_order INT          NOT NULL DEFAULT 2,
+            source         TEXT         NOT NULL DEFAULT 'manual',
             created_at     TIMESTAMPTZ  NOT NULL DEFAULT NOW()
         );
     """)
+    conn.commit()
+
+    # Añadir columna source si la tabla ya existía sin ella
+    cur.execute("ALTER TABLE clients ADD COLUMN IF NOT EXISTS source TEXT NOT NULL DEFAULT 'manual'")
     conn.commit()
 
     # Migrar clientes de manual_clients.json si la tabla está vacía
@@ -94,8 +99,8 @@ def ensure_schema():
                 prio = c.get("priority", "Media")
                 porder = {"Alta":1,"Media":2,"Baja":3}.get(prio, 2)
                 cur.execute("""
-                    INSERT INTO clients (name, type, url, city, lat, lng, notes, priority, priority_order)
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                    INSERT INTO clients (name, type, url, city, lat, lng, notes, priority, priority_order, source)
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,'manual')
                 """, (c.get("name",""), c.get("type","EPC"), c.get("url"),
                       c.get("city"), c.get("lat"), c.get("lng"),
                       c.get("notes"), prio, porder))
@@ -251,20 +256,31 @@ def analyze(results: list[dict], prev_report: dict = None) -> dict:
         raw = raw.rsplit("```",1)[0]
     return json.loads(raw.strip())
 
-# ── Manual clients desde Neon ───────────────────────────────────────────────────
-def load_manual_clients() -> list[dict]:
+# ── Upsert AI clients en Neon ──────────────────────────────────────────────────
+def upsert_ai_clients(ai_clients: list[dict]) -> int:
+    """Añade a la BD los clientes encontrados por la IA que no existan ya (por nombre)."""
+    if not ai_clients: return 0
     try:
         conn = psycopg2.connect(DATABASE_URL)
         cur  = conn.cursor()
-        cur.execute("SELECT name, type, url, city, lat, lng, notes, priority FROM clients ORDER BY priority_order, created_at DESC")
-        rows = cur.fetchall()
-        cur.close(); conn.close()
-        cols = ["name","type","url","city","lat","lng","notes","priority"]
-        clients = [dict(zip(cols, r)) for r in rows]
-        for c in clients: c["_manual"] = True
-        return clients
+        added = 0
+        for c in ai_clients:
+            name = (c.get("name") or "").strip()
+            if not name: continue
+            cur.execute("SELECT id FROM clients WHERE LOWER(name) = LOWER(%s)", (name,))
+            if cur.fetchone(): continue   # ya existe
+            prio   = c.get("priority","Media")
+            porder = {"Alta":1,"Media":2,"Baja":3}.get(prio, 2)
+            cur.execute("""
+                INSERT INTO clients (name, type, url, city, lat, lng, notes, priority, priority_order, source)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,'ai')
+            """, (name, c.get("type","EPC"), c.get("url"), c.get("city"),
+                  c.get("lat"), c.get("lng"), c.get("reason"), prio, porder))
+            added += 1
+        conn.commit(); cur.close(); conn.close()
+        return added
     except Exception as e:
-        print(f"  WARN load_manual_clients: {e}"); return []
+        print(f"  WARN upsert_ai_clients: {e}"); return 0
 
 # ── Email vía Gmail SMTP ────────────────────────────────────────────────────────
 def load_recipients() -> list[str]:
@@ -335,9 +351,9 @@ if __name__ == "__main__":
     clients  = data.get("potential_clients",[])
     print(f"  OK {len(opps)} oport | {len(projects)} proyectos | {len(clients)} clientes")
 
-    print("\n[4/7] Clientes manuales y usuarios chat...")
-    manual = load_manual_clients()
-    data["manual_clients"] = manual
+    print("\n[4/7] Guardando clientes IA en Neon y cargando usuarios chat...")
+    ai_clients = data.get("potential_clients", [])
+    nuevos = upsert_ai_clients(ai_clients)
     data["sources"] = [{"title": r.get("title",""), "url": r.get("url","")}
                        for r in results[:15] if r.get("url")]
     # Incluir usuarios del chat en data.json
@@ -346,7 +362,7 @@ if __name__ == "__main__":
         data["chat_users"] = chat_data.get("users", [])
     except Exception:
         data["chat_users"] = []
-    print(f"  OK {len(manual)} manuales | {len(data['chat_users'])} usuarios chat")
+    print(f"  OK {nuevos} clientes nuevos añadidos a BD | {len(data['chat_users'])} usuarios chat")
 
     print("\n[5/7] Guardando en Neon...")
     store_in_neon(data)
