@@ -247,9 +247,16 @@
         <input type="number" id="cl-lng" placeholder="-95.3698" step="0.0001"/>
       </div>
     </div>
-    <div class="form-group" style="margin-bottom:12px">
-      <label>Motivo / Notas</label>
-      <textarea id="cl-notes" placeholder="Por qué es un cliente interesante para AFG…"></textarea>
+    <div class="form-row" style="margin-bottom:12px">
+      <div class="form-group">
+        <label>Motivo / Notas (ES)</label>
+        <textarea id="cl-notes" placeholder="Por qué es un cliente interesante para AFG…"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Notes (EN)</label>
+        <textarea id="cl-notes-en" placeholder="Why is this a potential client for AFG…"></textarea>
+        <span class="form-hint">Opcional — para la versión en inglés</span>
+      </div>
     </div>
     <div class="form-group" style="margin-bottom:18px">
       <label>Prioridad</label>
@@ -394,14 +401,14 @@
       <button class="btn btn-primary" onclick="openClientModal()" style="font-size:13px" data-i18n="add_client">➕ Añadir cliente</button>
     </div>
     <details style="margin-bottom:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px">
-      <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--amber);list-style:none">ℹ️ Tipos de cliente — ¿qué significa cada uno?</summary>
+      <summary id="client-types-summary" style="cursor:pointer;font-size:13px;font-weight:600;color:var(--amber);list-style:none">ℹ️ Tipos de cliente — ¿qué significa cada uno?</summary>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px;margin-top:12px">
-        <div style="font-size:12px;line-height:1.5"><strong style="color:#79c0ff">EPC</strong> · Engineering, Procurement & Construction<br><span style="color:var(--muted)">Constructoras de plantas y refinerías. Contratan componentes en fase de obra (Bechtel, McDermott, Fluor…)</span></div>
-        <div style="font-size:12px;line-height:1.5"><strong style="color:#79c0ff">Operator</strong> · Operador de activos<br><span style="color:var(--muted)">Compañías que operan refinerías y plantas. Compran para mantenimiento y reemplazos (ExxonMobil, Chevron, Shell…)</span></div>
-        <div style="font-size:12px;line-height:1.5"><strong style="color:#79c0ff">Distributor</strong> · Distribuidor industrial<br><span style="color:var(--muted)">Revenden componentes a múltiples clientes. Canal rápido sin necesidad de homologación directa (DNOW, Ferguson…)</span></div>
-        <div style="font-size:12px;line-height:1.5"><strong style="color:#79c0ff">OEM</strong> · Fabricante de válvulas<br><span style="color:var(--muted)">Compran bolas como componente para ensamblar su válvula completa. Alto volumen (Flowserve, Emerson, Neles…)</span></div>
-        <div style="font-size:12px;line-height:1.5"><strong style="color:#79c0ff">MRO</strong> · Maintenance, Repair & Operations<br><span style="color:var(--muted)">Suministro de repuestos para plantas en operación. Pedidos recurrentes y urgentes, margen alto.</span></div>
-        <div style="font-size:12px;line-height:1.5"><strong style="color:#79c0ff">Ball Mfg</strong> · Mecanizador / Fabricante de bolas<br><span style="color:var(--muted)">Competidores directos de AFG o posibles socios y subcontratistas en el mercado de bolas para válvulas.</span></div>
+        <div style="font-size:12px;line-height:1.5"><strong style="color:#79c0ff">EPC</strong> <span id="type-subtitle-EPC">· Engineering, Procurement & Construction</span><br><span id="type-desc-EPC" style="color:var(--muted)">Constructoras de plantas y refinerías. Contratan componentes en fase de obra (Bechtel, McDermott, Fluor…)</span></div>
+        <div style="font-size:12px;line-height:1.5"><strong style="color:#79c0ff">Operator</strong> <span id="type-subtitle-Operator">· Operador de activos</span><br><span id="type-desc-Operator" style="color:var(--muted)">Compañías que operan refinerías y plantas. Compran para mantenimiento y reemplazos (ExxonMobil, Chevron, Shell…)</span></div>
+        <div style="font-size:12px;line-height:1.5"><strong style="color:#79c0ff">Distributor</strong> <span id="type-subtitle-Distributor">· Distribuidor industrial</span><br><span id="type-desc-Distributor" style="color:var(--muted)">Revenden componentes a múltiples clientes. Canal rápido sin necesidad de homologación directa (DNOW, Ferguson…)</span></div>
+        <div style="font-size:12px;line-height:1.5"><strong style="color:#79c0ff">OEM</strong> <span id="type-subtitle-OEM">· Fabricante de válvulas</span><br><span id="type-desc-OEM" style="color:var(--muted)">Compran bolas como componente para ensamblar su válvula completa. Alto volumen (Flowserve, Emerson, Neles…)</span></div>
+        <div style="font-size:12px;line-height:1.5"><strong style="color:#79c0ff">MRO</strong> <span id="type-subtitle-MRO">· Maintenance, Repair & Operations</span><br><span id="type-desc-MRO" style="color:var(--muted)">Suministro de repuestos para plantas en operación. Pedidos recurrentes y urgentes, margen alto.</span></div>
+        <div style="font-size:12px;line-height:1.5"><strong style="color:#79c0ff">Ball Mfg</strong> <span id="type-subtitle-BallMfg">· Mecanizador / Fabricante de bolas</span><br><span id="type-desc-BallMfg" style="color:var(--muted)">Competidores directos de AFG o posibles socios y subcontratistas en el mercado de bolas para válvulas.</span></div>
       </div>
     </details>
     <div id="map"></div>
@@ -648,6 +655,7 @@ function actionCard(a) {
 // ── Clients section ─────────────────────────────────────────────────────────
 let activeTypeFilter = '';
 let ALL_CLIENTS = [];
+let newestClientDate = null;  // Fecha (YYYY-MM-DD) del lote más reciente en BD
 
 async function loadAndRenderClients() {
   try {
@@ -655,6 +663,12 @@ async function loadAndRenderClients() {
     if (!r.ok) throw new Error('HTTP ' + r.status);
     const { clients } = await r.json();
     ALL_CLIENTS = clients;
+    // Calcular la fecha del lote más reciente para el badge NEW
+    newestClientDate = ALL_CLIENTS.reduce((max, c) => {
+      if (!c.created_at) return max;
+      const d = c.created_at.substring(0, 10);
+      return d > max ? d : max;
+    }, '');
     renderClients(ALL_CLIENTS);
     initMap(ALL_CLIENTS);
   } catch(e) {
@@ -675,26 +689,39 @@ function filterClients(type, btn) {
   renderClients(ALL_CLIENTS);
 }
 
+function isNewClient(c) {
+  if (!c.created_at || !newestClientDate) return false;
+  return c.created_at.substring(0, 10) === newestClientDate;
+}
+
 function clientCard(c) {
   const isManual = c.source === 'manual';
   const sourceBadge = isManual
     ? `<span class="manual-badge">MANUAL</span>`
     : `<span style="background:rgba(31,111,235,.15);color:#79c0ff;font-size:10px;padding:1px 6px;border-radius:8px;font-weight:700">IA</span>`;
+  const newBadge = isNewClient(c)
+    ? `<span style="background:rgba(63,185,80,.2);color:var(--green);font-size:10px;padding:2px 7px;border-radius:8px;font-weight:800;letter-spacing:.5px">★ NEW</span>`
+    : '';
   const nameLink = c.url ? `<a href="${esc(c.url)}" target="_blank">${esc(c.name||'')}</a>` : esc(c.name||'');
   const deleteBtn = isManual && c.id
     ? `<button class="delete-btn" onclick="deleteClient(${c.id},'${esc(c.name||'')}')" title="Eliminar cliente">🗑️</button>`
     : '';
+  // Mostrar notas en el idioma activo
+  const displayNotes = (LANG === 'en' && c.notes_en) ? c.notes_en : (c.reason || c.notes || '');
+  // Traducir prioridad para mostrar
+  const prob = c.priority;
+  const probLabel = prob ? {Alta: t('prob_alta'), Media: t('prob_media'), Baja: t('prob_baja')}[prob] || prob : null;
   return `<div class="client" data-id="${c.id||''}" data-type="${esc(c.type||'')}">
     <div class="client-head">
-      <div class="client-name">${nameLink} ${sourceBadge}</div>
+      <div class="client-name">${nameLink} ${sourceBadge} ${newBadge}</div>
       <div style="display:flex;align-items:center;gap:4px">
         <span class="client-type">${esc(c.type||'')}</span>
         ${deleteBtn}
       </div>
     </div>
     <div class="client-city">📍 ${esc(c.city||c.location||'')}</div>
-    <div class="client-reason">${esc(c.reason||c.notes||'')}</div>
-    ${c.priority?`<div style="margin-top:8px"><span class="badge badge-${c.priority}">${c.priority}</span></div>`:''}
+    <div class="client-reason">${esc(displayNotes)}</div>
+    ${probLabel?`<div style="margin-top:8px"><span class="badge badge-${prob}">${probLabel}</span></div>`:''}
   </div>`;
 }
 
@@ -766,18 +793,10 @@ function esc(str) {
     .replace(/"/g,'&quot;');
 }
 
-// ── Type hints ──────────────────────────────────────────────────────────────
-const TYPE_HINTS = {
-  EPC:         'Constructoras de plantas y refinerías. Contratan componentes en fase de obra (Bechtel, McDermott…)',
-  Operator:    'Operan refinerías y plantas. Compran para mantenimiento y reemplazos (ExxonMobil, Chevron, Shell…)',
-  Distributor: 'Revenden componentes a múltiples clientes. Canal rápido sin homologación directa (DNOW, Ferguson…)',
-  OEM:         'Fabricantes de válvulas que compran bolas como componente para su producto final (Flowserve, Emerson…)',
-  MRO:         'Suministro de repuestos para plantas en operación. Pedidos recurrentes y urgentes, margen alto.',
-  BallMfg:     'Mecanizadores y fabricantes de bolas de válvula. Competidores directos o posibles socios/subcontratistas.',
-};
+// ── Type hints (usa las traducciones del idioma activo) ─────────────────────
 function updateTypeHint() {
   const type = document.getElementById('cl-type').value;
-  document.getElementById('type-hint').textContent = TYPE_HINTS[type] || '';
+  document.getElementById('type-hint').textContent = t('type_hint_' + type) || '';
 }
 
 // ── Add client modal ────────────────────────────────────────────────────────
@@ -787,7 +806,7 @@ function openClientModal() {
 }
 function closeClientModal() {
   document.getElementById('client-modal').classList.remove('open');
-  ['cl-name','cl-url','cl-city','cl-lat','cl-lng','cl-notes'].forEach(id => {
+  ['cl-name','cl-url','cl-city','cl-lat','cl-lng','cl-notes','cl-notes-en'].forEach(id => {
     document.getElementById(id).value = '';
   });
   document.getElementById('cl-type').value = 'EPC';
@@ -812,6 +831,7 @@ async function saveClient() {
     lat:      parseFloat(document.getElementById('cl-lat').value) || null,
     lng:      parseFloat(document.getElementById('cl-lng').value) || null,
     notes:    document.getElementById('cl-notes').value.trim() || null,
+    notes_en: document.getElementById('cl-notes-en').value.trim() || null,
     priority: document.getElementById('cl-priority').value,
   };
 
@@ -1070,6 +1090,20 @@ const TRANSLATIONS = {
     action_more: '🔗 ver más',
     mitigation:  '✅',
     filter_search_lbl: 'Buscar:',
+    // Client type definitions
+    client_types_title: 'ℹ️ Tipos de cliente — ¿qué significa cada uno?',
+    type_subtitle_EPC:        '· Engineering, Procurement & Construction',
+    type_subtitle_Operator:   '· Operador de activos',
+    type_subtitle_Distributor:'· Distribuidor industrial',
+    type_subtitle_OEM:        '· Fabricante de válvulas',
+    type_subtitle_MRO:        '· Maintenance, Repair & Operations',
+    type_subtitle_BallMfg:    '· Mecanizador / Fabricante de bolas',
+    type_desc_EPC:        'Constructoras de plantas y refinerías. Contratan componentes en fase de obra (Bechtel, McDermott, Fluor…)',
+    type_desc_Operator:   'Compañías que operan refinerías y plantas. Compran para mantenimiento y reemplazos (ExxonMobil, Chevron, Shell…)',
+    type_desc_Distributor:'Revenden componentes a múltiples clientes. Canal rápido sin necesidad de homologación directa (DNOW, Ferguson…)',
+    type_desc_OEM:        'Compran bolas como componente para ensamblar su válvula completa. Alto volumen (Flowserve, Emerson, Neles…)',
+    type_desc_MRO:        'Suministro de repuestos para plantas en operación. Pedidos recurrentes y urgentes, margen alto.',
+    type_desc_BallMfg:    'Competidores directos de AFG o posibles socios y subcontratistas en el mercado de bolas para válvulas.',
     // Clients
     add_client:  '➕ Añadir cliente',
     client_list: 'Listado',
@@ -1146,6 +1180,20 @@ const TRANSLATIONS = {
     action_more: '🔗 see more',
     mitigation:  '✅',
     filter_search_lbl: 'Search:',
+    // Client type definitions
+    client_types_title: 'ℹ️ Client types — what does each one mean?',
+    type_subtitle_EPC:        '· Engineering, Procurement & Construction',
+    type_subtitle_Operator:   '· Asset Operator',
+    type_subtitle_Distributor:'· Industrial Distributor',
+    type_subtitle_OEM:        '· Valve Manufacturer',
+    type_subtitle_MRO:        '· Maintenance, Repair & Operations',
+    type_subtitle_BallMfg:    '· Ball Manufacturer / Machinist',
+    type_desc_EPC:        'Plant and refinery builders. They procure components during the construction phase (Bechtel, McDermott, Fluor…)',
+    type_desc_Operator:   'Companies that operate refineries and plants. They buy for maintenance and replacements (ExxonMobil, Chevron, Shell…)',
+    type_desc_Distributor:'Resell components to multiple clients. Fast channel without direct qualification requirements (DNOW, Ferguson…)',
+    type_desc_OEM:        'Buy balls as a component for their complete valve assembly. High volume (Flowserve, Emerson, Neles…)',
+    type_desc_MRO:        'Spare parts supply for operating plants. Recurring and urgent orders, high margin.',
+    type_desc_BallMfg:    'Direct competitors of AFG or potential partners and subcontractors in the ball valve market.',
     // Clients
     add_client:  '➕ Add client',
     client_list: 'List',
@@ -1237,6 +1285,15 @@ function applyLang() {
     const hint = document.getElementById('type-hint');
     if (hint) hint.textContent = t('type_hint_' + clType.value) || '';
   }
+  // Client type definitions accordion
+  const summary = document.getElementById('client-types-summary');
+  if (summary) summary.textContent = t('client_types_title');
+  ['EPC','Operator','Distributor','OEM','MRO','BallMfg'].forEach(type => {
+    const desc = document.getElementById('type-desc-' + type);
+    if (desc) desc.textContent = t('type_desc_' + type);
+    const sub = document.getElementById('type-subtitle-' + type);
+    if (sub) sub.textContent = t('type_subtitle_' + type);
+  });
 }
 
 // ── Init ────────────────────────────────────────────────────────────────────
