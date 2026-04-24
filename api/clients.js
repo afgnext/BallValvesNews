@@ -29,18 +29,18 @@ module.exports = async function handler(req, res) {
 
   // ── POST: añadir cliente ────────────────────────────────────────────────
   if (req.method === 'POST') {
-    const { name, type, url, city, lat, lng, notes, priority } = req.body || {};
+    const { name, type, url, city, lat, lng, notes, notes_en, priority } = req.body || {};
     if (!name || !type) {
       return res.status(400).json({ error: 'name y type son obligatorios' });
     }
     const priorityOrder = { Alta: 1, Media: 2, Baja: 3 }[priority] || 2;
     try {
       const result = await pool.query(
-        `INSERT INTO clients (name, type, url, city, lat, lng, notes, priority, priority_order, source)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,'manual') RETURNING *`,
+        `INSERT INTO clients (name, type, url, city, lat, lng, notes, notes_en, priority, priority_order, source)
+         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,'manual') RETURNING *`,
         [name, type, url || null, city || null,
          lat ? parseFloat(lat) : null, lng ? parseFloat(lng) : null,
-         notes || null, priority || 'Media', priorityOrder]
+         notes || null, notes_en || null, priority || 'Media', priorityOrder]
       );
       return res.status(201).json({ client: result.rows[0] });
     } catch (e) {
