@@ -37,6 +37,7 @@ jobs:
           SMTP_USER:         ${{ secrets.SMTP_USER }}
           SMTP_PASS:         ${{ secrets.SMTP_PASS }}
           REPORT_URL:        ${{ secrets.REPORT_URL }}
+          OPENAI_API_KEY:    ${{ secrets.OPENAI_API_KEY }}
         run: python scripts/generate_report.py
 
       - name: Commit & push updated report
