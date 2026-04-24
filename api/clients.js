@@ -18,7 +18,7 @@ module.exports = async function handler(req, res) {
   if (req.method === 'GET') {
     try {
       const result = await pool.query(
-        'SELECT * FROM clients ORDER BY priority_order, created_at DESC'
+        'SELECT * FROM clients ORDER BY created_at DESC, priority_order'
       );
       return res.status(200).json({ clients: result.rows });
     } catch (e) {
