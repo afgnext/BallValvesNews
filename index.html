@@ -124,8 +124,8 @@
     #map{height:460px;border-radius:10px;border:1px solid var(--border);margin-bottom:24px}
     .client-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
     .client{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px}
-    .client-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
-    .client-name{font-weight:600;font-size:14px}
+    .client-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px}
+    .client-name{font-weight:600;font-size:14px;display:flex;flex-wrap:wrap;align-items:center;gap:4px;flex:1;min-width:0}
     .client-type{font-size:11px;color:var(--muted);padding:2px 7px;border:1px solid var(--border);border-radius:10px}
     .client-city{font-size:12px;color:var(--muted);margin-bottom:6px}
     .client-reason{font-size:13px;color:#cdd9e5;line-height:1.5}
@@ -554,7 +554,8 @@ function render() {
   document.getElementById('projects-grid').innerHTML = projects.map(projectCard).join('');
   document.getElementById('risks-list').innerHTML = risks.map(riskCard).join('');
   document.getElementById('actions-list').innerHTML = actions.map(actionCard).join('');
-  renderClients(aiClients, manualClients);
+  // Nota: la pestaña Clientes siempre carga desde /api/clients (loadAndRenderClients)
+  // nunca desde el JSON del informe — no llamar renderClients aquí
 }
 
 // ── Opportunity rendering (with filter) ────────────────────────────────────
@@ -1240,16 +1241,22 @@ function toggleLang() {
   LANG = LANG === 'es' ? 'en' : 'es';
   document.getElementById('lang-btn').textContent = LANG === 'es' ? '🌐 EN' : '🌐 ES';
   applyLang();
-  // Recargar el informe del día actual en el nuevo idioma (desde Neon)
-  if (currentDate) {
-    loadByDate(currentDate);
-  } else if (DATA) {
-    render();
+
+  const onClients = document.getElementById('tab-clientes').classList.contains('active');
+  const onChat    = document.getElementById('tab-chat').classList.contains('active');
+
+  if (onClients) {
+    // Clientes: los datos vienen de la API, no del JSON del informe.
+    // Basta con re-renderizar las tarjetas (notes ES/EN, badge prioridad).
+    // El mapa no se toca — ya está cargado y funciona.
+    if (ALL_CLIENTS.length > 0) renderClients(ALL_CLIENTS);
+  } else {
+    // Resto de pestañas: recargar el informe en el nuevo idioma desde Neon
+    if (currentDate) loadByDate(currentDate);
+    else if (DATA) render();
   }
-  // Refresh chat si está activo (actualiza locale de fechas)
-  if (document.getElementById('tab-chat').classList.contains('active')) {
-    loadMessages();
-  }
+
+  if (onChat) loadMessages();
 }
 
 function applyLang() {
