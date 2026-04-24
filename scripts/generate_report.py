@@ -122,6 +122,10 @@ def ensure_schema():
     cur.execute("ALTER TABLE clients ADD COLUMN IF NOT EXISTS source TEXT NOT NULL DEFAULT 'manual'")
     conn.commit()
 
+    # Añadir columna notes_en a clients para la descripción en inglés
+    cur.execute("ALTER TABLE clients ADD COLUMN IF NOT EXISTS notes_en TEXT")
+    conn.commit()
+
     # Migrar clientes de manual_clients.json si la tabla está vacía
     cur.execute("SELECT COUNT(*) FROM clients")
     if cur.fetchone()[0] == 0 and MANUAL_CLI_F.exists():
@@ -289,26 +293,55 @@ def analyze(results: list[dict], prev_report: dict = None) -> dict:
     return json.loads(raw.strip())
 
 # ── Upsert AI clients en Neon ──────────────────────────────────────────────────
-def upsert_ai_clients(ai_clients: list[dict]) -> int:
-    """Añade a la BD los clientes encontrados por la IA que no existan ya (por nombre)."""
-    if not ai_clients: return 0
+def upsert_ai_clients(ai_clients_es: list[dict], ai_clients_en: list[dict] = None) -> int:
+    """Añade clientes IA nuevos. Dedup por nombre (case-insensitive) Y por URL corporativa."""
+    if not ai_clients_es: return 0
+
+    # Construir lookup de notas EN por nombre de cliente
+    en_notes = {}
+    if ai_clients_en:
+        for c in ai_clients_en:
+            name = (c.get("name") or "").strip()
+            if name:
+                en_notes[name.lower()] = (c.get("reason") or "").strip()
+
     try:
         conn = psycopg2.connect(DATABASE_URL)
         cur  = conn.cursor()
         added = 0
-        for c in ai_clients:
+        for c in ai_clients_es:
             name = (c.get("name") or "").strip()
             if not name: continue
+            url  = (c.get("url")  or "").strip() or None
+
+            # Dedup 1: por nombre exacto (insensible a mayúsculas)
             cur.execute("SELECT id FROM clients WHERE LOWER(name) = LOWER(%s)", (name,))
-            if cur.fetchone(): continue   # ya existe
-            prio   = c.get("priority","Media")
-            porder = {"Alta":1,"Media":2,"Baja":3}.get(prio, 2)
+            if cur.fetchone():
+                print(f"    SKIP (nombre duplicado): {name}")
+                continue
+
+            # Dedup 2: por URL corporativa (si existe en ambos)
+            if url:
+                cur.execute(
+                    "SELECT id FROM clients WHERE url IS NOT NULL AND LOWER(TRIM(url)) = LOWER(TRIM(%s))",
+                    (url,)
+                )
+                if cur.fetchone():
+                    print(f"    SKIP (URL duplicada): {url}")
+                    continue
+
+            prio   = c.get("priority", "Media")
+            porder = {"Alta": 1, "Media": 2, "Baja": 3}.get(prio, 2)
+            notes_en = en_notes.get(name.lower()) or None
+
             cur.execute("""
-                INSERT INTO clients (name, type, url, city, lat, lng, notes, priority, priority_order, source)
-                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,'ai')
-            """, (name, c.get("type","EPC"), c.get("url"), c.get("city"),
-                  c.get("lat"), c.get("lng"), c.get("reason"), prio, porder))
+                INSERT INTO clients
+                    (name, type, url, city, lat, lng, notes, notes_en, priority, priority_order, source)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,'ai')
+            """, (name, c.get("type","EPC"), url, c.get("city"),
+                  c.get("lat"), c.get("lng"), c.get("reason"), notes_en, prio, porder))
             added += 1
+            print(f"    + {name}")
         conn.commit(); cur.close(); conn.close()
         return added
     except Exception as e:
@@ -430,13 +463,12 @@ if __name__ == "__main__":
     print("\n[3/8] Analizando con Claude (ES)...")
     prev_report = load_previous_report()
     data = analyze(results, prev_report)
-    opps     = data.get("opportunities",[])
-    projects = data.get("projects",[])
-    clients  = data.get("potential_clients",[])
+    opps     = data.get("opportunities", [])
+    projects = data.get("projects", [])
+    clients  = data.get("potential_clients", [])
     print(f"  OK {len(opps)} oport | {len(projects)} proyectos | {len(clients)} clientes")
 
-    print("\n[4/8] Guardando clientes IA en Neon y cargando usuarios chat...")
-    nuevos = upsert_ai_clients(data.get("potential_clients", []))
+    # Completar data con metadatos antes de traducir
     data["sources"] = [{"title": r.get("title",""), "url": r.get("url","")}
                        for r in results[:15] if r.get("url")]
     try:
@@ -444,14 +476,19 @@ if __name__ == "__main__":
         data["chat_users"] = chat_data.get("users", [])
     except Exception:
         data["chat_users"] = []
-    print(f"  OK {nuevos} clientes nuevos añadidos a BD | {len(data['chat_users'])} usuarios chat")
 
-    print("\n[5/8] Traduciendo a inglés con GPT-4o-mini...")
+    print("\n[4/8] Traduciendo a inglés con GPT-4o-mini...")
     data_en = translate_to_english(data)
+
+    print("\n[5/8] Guardando clientes IA en Neon (ES + notes_en)...")
+    ai_clients_en = data_en.get("potential_clients", []) if data_en else []
+    nuevos = upsert_ai_clients(clients, ai_clients_en)
+    print(f"  OK {nuevos} clientes nuevos | {len(data['chat_users'])} usuarios chat")
 
     print("\n[6/8] Guardando en Neon (ES + EN)...")
     store_in_neon(data, lang='es')
     if data_en:
+        data_en["chat_users"] = data["chat_users"]   # mismos usuarios en ambas versiones
         store_in_neon(data_en, lang='en')
     else:
         print("  SKIP versión EN no disponible (sin OPENAI_API_KEY o error de traducción)")
@@ -463,7 +500,7 @@ if __name__ == "__main__":
     print("\n[8/8] Enviando email...")
     send_email(
         load_recipients(),
-        data.get("summary",{}).get("key_signal",""),
+        data.get("summary", {}).get("key_signal", ""),
         len(opps), len(projects)
     )
 
