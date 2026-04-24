@@ -206,8 +206,8 @@
 <!-- Add client modal -->
 <div class="modal-overlay" id="client-modal">
   <div class="modal" style="max-width:520px">
-    <h3>➕ Añadir cliente potencial</h3>
-    <p>El cliente se guardará en la base de datos y aparecerá en el mapa marcado en naranja.</p>
+    <h3 data-i18n="client_modal_title">➕ Añadir cliente potencial</h3>
+    <p data-i18n="client_modal_sub">El cliente se guardará en la base de datos y aparecerá en el mapa marcado en naranja.</p>
     <div class="form-row" style="margin-bottom:12px">
       <div class="form-group">
         <label>Nombre *</label>
@@ -260,8 +260,8 @@
       </select>
     </div>
     <div class="modal-btns">
-      <button class="btn btn-ghost" onclick="closeClientModal()">Cancelar</button>
-      <button class="btn btn-primary" id="save-client-btn" onclick="saveClient()">Guardar cliente</button>
+      <button class="btn btn-ghost" onclick="closeClientModal()" data-i18n="client_cancel">Cancelar</button>
+      <button class="btn btn-primary" id="save-client-btn" onclick="saveClient()" data-i18n="client_save">Guardar cliente</button>
     </div>
   </div>
 </div>
@@ -269,12 +269,12 @@
 <!-- Test email modal -->
 <div class="modal-overlay" id="email-modal">
   <div class="modal">
-    <h3>✉️ Enviar email de prueba</h3>
-    <p>Comprueba que las notificaciones diarias funcionan correctamente.</p>
+    <h3 data-i18n="email_modal_title">✉️ Enviar email de prueba</h3>
+    <p data-i18n="email_modal_sub">Comprueba que las notificaciones diarias funcionan correctamente.</p>
     <input type="email" id="test-email-to" placeholder="destinatario@alcortagroup.com"/>
     <div class="modal-btns">
-      <button class="btn btn-ghost" onclick="closeEmailModal()">Cancelar</button>
-      <button class="btn btn-primary" id="send-test-btn" onclick="sendTestEmail()">Enviar prueba</button>
+      <button class="btn btn-ghost" onclick="closeEmailModal()" data-i18n="email_cancel">Cancelar</button>
+      <button class="btn btn-primary" id="send-test-btn" onclick="sendTestEmail()" data-i18n="email_send">Enviar prueba</button>
     </div>
   </div>
 </div>
@@ -293,19 +293,20 @@
     <select id="date-select" onchange="loadByDate(this.value)" style="background:var(--surface);border:1px solid var(--border);color:var(--text);padding:4px 10px;border-radius:6px;font-size:12px;cursor:pointer">
       <option value="">📅 Cargando fechas…</option>
     </select>
+    <button class="btn btn-ghost" onclick="toggleLang()" id="lang-btn" style="font-size:12px;padding:5px 12px;font-weight:700">🌐 EN</button>
     <button class="btn btn-ghost" onclick="openEmailModal()" style="font-size:12px;padding:5px 12px">✉️ Test email</button>
   </div>
 </header>
 
 <nav>
-  <div class="tab active" onclick="switchTab('dashboard',this)">📊 Dashboard</div>
-  <div class="tab" onclick="switchTab('oportunidades',this)">🎯 Oportunidades</div>
-  <div class="tab" onclick="switchTab('alertas',this)">🚨 Alertas</div>
-  <div class="tab" onclick="switchTab('proyectos',this)">🏗️ Proyectos</div>
-  <div class="tab" onclick="switchTab('riesgos',this)">⚠️ Riesgos</div>
-  <div class="tab" onclick="switchTab('acciones',this)">⚡ Acciones</div>
-  <div class="tab" onclick="switchTab('clientes',this)">🗺️ Clientes</div>
-  <div class="tab" onclick="switchTab('chat',this)">💬 Chat</div>
+  <div class="tab active" onclick="switchTab('dashboard',this)" data-i18n="tab_dashboard">📊 Dashboard</div>
+  <div class="tab" onclick="switchTab('oportunidades',this)" data-i18n="tab_oportunidades">🎯 Oportunidades</div>
+  <div class="tab" onclick="switchTab('alertas',this)" data-i18n="tab_alertas">🚨 Alertas</div>
+  <div class="tab" onclick="switchTab('proyectos',this)" data-i18n="tab_proyectos">🏗️ Proyectos</div>
+  <div class="tab" onclick="switchTab('riesgos',this)" data-i18n="tab_riesgos">⚠️ Riesgos</div>
+  <div class="tab" onclick="switchTab('acciones',this)" data-i18n="tab_acciones">⚡ Acciones</div>
+  <div class="tab" onclick="switchTab('clientes',this)" data-i18n="tab_clientes">🗺️ Clientes</div>
+  <div class="tab" onclick="switchTab('chat',this)" data-i18n="tab_chat">💬 Chat</div>
 </nav>
 
 <main>
@@ -317,17 +318,17 @@
   <!-- DASHBOARD -->
   <div id="tab-dashboard" class="section active">
     <div class="signal-box" id="signal-box">
-      <div class="signal-label">🔥 Señal clave del día</div>
+      <div class="signal-label" data-i18n="signal_label">🔥 Señal clave del día</div>
       <div class="signal-text"><span class="sarrow">&#8594;</span><span id="signal-text">—</span></div>
     </div>
     <div class="grid-4">
-      <div class="card kpi"><div class="val" id="kpi-opps">—</div><div class="lbl">Oportunidades</div></div>
-      <div class="card kpi"><div class="val" id="kpi-alerts">—</div><div class="lbl">Alertas</div></div>
-      <div class="card kpi"><div class="val" id="kpi-projects">—</div><div class="lbl">Proyectos</div></div>
-      <div class="card kpi"><div class="val" id="kpi-actions">—</div><div class="lbl">Acciones</div></div>
+      <div class="card kpi"><div class="val" id="kpi-opps">—</div><div class="lbl" data-i18n="kpi_opps">Oportunidades</div></div>
+      <div class="card kpi"><div class="val" id="kpi-alerts">—</div><div class="lbl" data-i18n="kpi_alerts">Alertas</div></div>
+      <div class="card kpi"><div class="val" id="kpi-projects">—</div><div class="lbl" data-i18n="kpi_projects">Proyectos</div></div>
+      <div class="card kpi"><div class="val" id="kpi-actions">—</div><div class="lbl" data-i18n="kpi_actions">Acciones</div></div>
     </div>
     <div class="card" style="margin-bottom:24px">
-      <div style="font-size:13px;color:var(--muted);margin-bottom:8px">Temperatura de mercado</div>
+      <div style="font-size:13px;color:var(--muted);margin-bottom:8px" data-i18n="market_temp">Temperatura de mercado</div>
       <div style="display:flex;align-items:center;gap:12px">
         <div class="temp-bar" style="flex:1"><div class="temp-fill" id="temp-fill" style="width:0%"></div></div>
         <div id="temp-val" style="font-size:22px;font-weight:800;color:var(--amber)">—</div>
@@ -335,11 +336,11 @@
     </div>
     <div class="grid-2">
       <div>
-        <div class="sec-title">🎯 Top Oportunidades</div>
+        <div class="sec-title" data-i18n="top_opps">🎯 Top Oportunidades</div>
         <div id="dash-opps"></div>
       </div>
       <div>
-        <div class="sec-title">🚨 Alertas Recientes</div>
+        <div class="sec-title" data-i18n="recent_alerts">🚨 Alertas Recientes</div>
         <div id="dash-alerts"></div>
       </div>
     </div>
@@ -348,49 +349,49 @@
   <!-- OPORTUNIDADES -->
   <div id="tab-oportunidades" class="section">
     <div class="filters">
-      <label>Probabilidad:</label>
+      <label data-i18n="filter_prob">Probabilidad:</label>
       <select id="filter-prob" onchange="renderOpps()">
-        <option value="">Todas</option>
+        <option value="" data-i18n="filter_all">Todas</option>
         <option value="Alta">Alta</option>
         <option value="Media">Media</option>
         <option value="Baja">Baja</option>
       </select>
-      <label>Buscar:</label>
+      <label data-i18n="filter_search_lbl">Buscar:</label>
       <input type="text" id="filter-search" placeholder="empresa, tipo…" oninput="renderOpps()"/>
     </div>
-    <div class="sec-title">🎯 Oportunidades <span class="sec-count" id="opps-count"></span></div>
+    <div class="sec-title"><span data-i18n="sec_oportunidades">🎯 Oportunidades</span> <span class="sec-count" id="opps-count"></span></div>
     <div class="grid-3" id="opps-grid"></div>
   </div>
 
   <!-- ALERTAS -->
   <div id="tab-alertas" class="section">
-    <div class="sec-title">🚨 Alertas de Mercado</div>
+    <div class="sec-title" data-i18n="sec_alertas">🚨 Alertas de Mercado</div>
     <div id="alerts-list"></div>
   </div>
 
   <!-- PROYECTOS -->
   <div id="tab-proyectos" class="section">
-    <div class="sec-title">🏗️ Proyectos EPC &amp; Capex</div>
+    <div class="sec-title" data-i18n="sec_proyectos">🏗️ Proyectos EPC &amp; Capex</div>
     <div class="grid-3" id="projects-grid"></div>
   </div>
 
   <!-- RIESGOS -->
   <div id="tab-riesgos" class="section">
-    <div class="sec-title">⚠️ Mapa de Riesgos</div>
+    <div class="sec-title" data-i18n="sec_riesgos">⚠️ Mapa de Riesgos</div>
     <div id="risks-list"></div>
   </div>
 
   <!-- ACCIONES -->
   <div id="tab-acciones" class="section">
-    <div class="sec-title">⚡ Acciones Comerciales Recomendadas</div>
+    <div class="sec-title" data-i18n="sec_acciones">⚡ Acciones Comerciales Recomendadas</div>
     <div id="actions-list"></div>
   </div>
 
   <!-- CLIENTES -->
   <div id="tab-clientes" class="section">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
-      <div class="sec-title" style="margin-bottom:0">🗺️ Clientes Potenciales USA</div>
-      <button class="btn btn-primary" onclick="openClientModal()" style="font-size:13px">➕ Añadir cliente</button>
+      <div class="sec-title" style="margin-bottom:0" data-i18n="sec_clientes">🗺️ Clientes Potenciales USA</div>
+      <button class="btn btn-primary" onclick="openClientModal()" style="font-size:13px" data-i18n="add_client">➕ Añadir cliente</button>
     </div>
     <details style="margin-bottom:16px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px">
       <summary style="cursor:pointer;font-size:13px;font-weight:600;color:var(--amber);list-style:none">ℹ️ Tipos de cliente — ¿qué significa cada uno?</summary>
@@ -414,10 +415,8 @@
       <button class="filter-type-btn" onclick="filterClients('BallMfg',this)">Ball Mfg</button>
     </div>
     <div class="sec-title" style="margin-top:8px">
-      Listado <span class="sec-count" id="clients-count"></span>
-      <span style="font-size:12px;font-weight:400;color:var(--muted);margin-left:8px">
-        🔵 Identificados por IA &nbsp;|&nbsp; 🟠 Añadidos manualmente &nbsp;|&nbsp; 🟢 AFG Planta Michigan
-      </span>
+      <span data-i18n="client_list">Listado</span> <span class="sec-count" id="clients-count"></span>
+      <span style="font-size:12px;font-weight:400;color:var(--muted);margin-left:8px" data-i18n="map_legend">🔵 Identificados por IA &nbsp;|&nbsp; 🟠 Añadidos manualmente &nbsp;|&nbsp; 🟢 AFG Planta Michigan</span>
     </div>
     <div class="client-grid" id="clients-grid"></div>
   </div>
@@ -425,9 +424,9 @@
   <div id="tab-chat" class="section">
     <div class="chat-wrap">
       <div class="chat-user-bar">
-        <label>👤 Eres:</label>
+        <label data-i18n="chat_you">👤 Eres:</label>
         <select id="chat-user-select" onchange="setChatUser()">
-          <option value="">— Selecciona tu nombre —</option>
+          <option value="" data-i18n="chat_select">— Selecciona tu nombre —</option>
         </select>
         <span id="chat-status" style="font-size:12px;color:var(--muted)"></span>
       </div>
@@ -436,7 +435,7 @@
       </div>
       <div class="chat-input-row">
         <textarea class="chat-input" id="chat-input" placeholder="Escribe un comentario o pregunta…" onkeydown="chatKeydown(event)" rows="1"></textarea>
-        <button class="chat-send" id="chat-send-btn" onclick="sendMessage()" disabled>Enviar</button>
+        <button class="chat-send" id="chat-send-btn" onclick="sendMessage()" disabled data-i18n="chat_send">Enviar</button>
       </div>
     </div>
   </div>
@@ -445,41 +444,42 @@
 <script>
 let DATA = null;
 let leafletMap = null;
+let currentDate = null;
 
 // ── Fetch data ──────────────────────────────────────────────────────────────
 async function loadData() {
-  // 1. Carga el informe más reciente (data.json) — crítico
+  // 1. Obtener lista de fechas disponibles
   try {
-    const dataRes = await fetch('data.json?' + Date.now());
-    if (!dataRes.ok) throw new Error('HTTP ' + dataRes.status);
-    DATA = await dataRes.json();
-    document.getElementById('loader').classList.add('hidden');
-    render();
+    const datesRes = await fetch('/api/reports');
+    if (!datesRes.ok) throw new Error('HTTP ' + datesRes.status);
+    const { dates } = await datesRes.json();
+    if (!dates || dates.length === 0) {
+      document.getElementById('loader').classList.add('hidden');
+      document.getElementById('error-msg').style.display = 'block';
+      return;
+    }
+    populateDateSelect(dates);
+    // 2. Cargar el informe más reciente en el idioma actual
+    await loadByDate(dates[0]);
   } catch(e) {
     document.getElementById('loader').classList.add('hidden');
     document.getElementById('error-msg').style.display = 'block';
-    console.error('Error cargando data.json:', e);
-    return;
-  }
-
-  // 2. Carga las fechas disponibles — opcional, no bloquea el render
-  try {
-    const datesRes = await fetch('/api/reports');
-    if (datesRes.ok) {
-      const { dates } = await datesRes.json();
-      populateDateSelect(dates);
-    }
-  } catch(e) {
-    console.warn('No se pudieron cargar las fechas históricas:', e.message);
-    document.getElementById('date-select').innerHTML = '<option value="">📅 Sin historial aún</option>';
+    console.error('Error cargando datos:', e);
   }
 }
 
 async function loadByDate(date) {
   if (!date) return;
+  currentDate = date;
   document.getElementById('loader').classList.remove('hidden');
   try {
-    const r = await fetch(`/api/report?date=${date}`);
+    // Intentar cargar en el idioma activo
+    let r = await fetch(`/api/report?date=${date}&lang=${LANG}`);
+    // Fallback a ES si la versión EN no está disponible aún
+    if (!r.ok && LANG === 'en') {
+      console.warn(`Versión EN no disponible para ${date}, usando ES`);
+      r = await fetch(`/api/report?date=${date}&lang=es`);
+    }
     if (!r.ok) throw new Error('HTTP ' + r.status);
     DATA = await r.json();
     document.getElementById('loader').classList.add('hidden');
@@ -569,15 +569,17 @@ function renderOpps() {
 
 // ── Card builders ───────────────────────────────────────────────────────────
 function oppCard(o) {
-  const tags = (o.tags||[]).map(t => `<span class="tag">${esc(t)}</span>`).join('');
-  const srcLink = o.source_url ? `<a class="src-link" href="${esc(o.source_url)}" target="_blank" title="${esc(o.source_title||'')}">🔗 fuente</a>` : '';
+  const tags = (o.tags||[]).map(tg => `<span class="tag">${esc(tg)}</span>`).join('');
+  const srcLink = o.source_url ? `<a class="src-link" href="${esc(o.source_url)}" target="_blank" title="${esc(o.source_title||'')}">${t('src_link')}</a>` : '';
+  const prob = o.probability || 'Baja';
+  const probLabel = {Alta: t('prob_alta'), Media: t('prob_media'), Baja: t('prob_baja')}[prob] || prob;
   return `<div class="opp">
     <div class="opp-head">
       <div>
         <div class="opp-title">${esc(o.title||'')}</div>
         <div class="opp-co">${esc(o.company||'')}${o.location?' · '+esc(o.location):''}</div>
       </div>
-      <span class="badge badge-${o.probability||'Baja'}">${o.probability||'Baja'}</span>
+      <span class="badge badge-${prob}">${probLabel}</span>
     </div>
     <div class="opp-desc">${esc(o.description||'')}</div>
     <div class="opp-foot">${tags}${srcLink}</div>
@@ -586,12 +588,13 @@ function oppCard(o) {
 
 function alertCard(a) {
   const lvl = a.level || 'Media';
-  const srcLink = a.source_url ? `<a href="${esc(a.source_url)}" target="_blank" style="font-size:11px;color:var(--muted)">🔗 fuente</a>` : '';
+  const lvlLabel = {Critica: t('lvl_critica'), Alta: t('lvl_alta'), Media: t('lvl_media')}[lvl] || lvl;
+  const srcLink = a.source_url ? `<a href="${esc(a.source_url)}" target="_blank" style="font-size:11px;color:var(--muted)">${t('src_link')}</a>` : '';
   return `<div class="alert alert-${lvl}">
     <div class="alert-head">
       <div class="alert-dot dot-${lvl}"></div>
       <div class="alert-title">${esc(a.title||'')}</div>
-      <span class="badge badge-${lvl}" style="margin-left:auto">${lvl}</span>
+      <span class="badge badge-${lvl}" style="margin-left:auto">${lvlLabel}</span>
     </div>
     <div class="alert-body">${esc(a.body||'')}</div>
     ${srcLink ? '<div style="margin-top:8px">'+srcLink+'</div>' : ''}
@@ -600,8 +603,8 @@ function alertCard(a) {
 
 function projectCard(p) {
   const phase = p.phase || 'planificacion';
-  const phaseLabel = {planificacion:'Planificación',ejecucion:'Ejecución',operativo:'Operativo'}[phase] || phase;
-  const srcLink = p.source_url ? `<a href="${esc(p.source_url)}" target="_blank" style="font-size:11px;color:var(--muted)">🔗 fuente</a>` : '';
+  const phaseLabel = {planificacion: t('phase_plan'), ejecucion: t('phase_ejec'), operativo: t('phase_op')}[phase] || phase;
+  const srcLink = p.source_url ? `<a href="${esc(p.source_url)}" target="_blank" style="font-size:11px;color:var(--muted)">${t('src_link')}</a>` : '';
   return `<div class="project">
     <div class="proj-head">
       <div class="proj-name">${esc(p.name||'')}</div>
@@ -615,10 +618,12 @@ function projectCard(p) {
 }
 
 function riskCard(r) {
+  const imp = r.impact || 'Medio';
+  const impLabel = {Alto: t('imp_alto'), Medio: t('imp_medio'), Bajo: t('imp_bajo')}[imp] || imp;
   return `<div class="risk">
     <div class="risk-head">
       <div class="risk-title">${esc(r.title||'')}</div>
-      <span class="imp-${r.impact||'Medio'}" style="font-weight:700;font-size:13px">${r.impact||'Medio'}</span>
+      <span class="imp-${imp}" style="font-weight:700;font-size:13px">${impLabel}</span>
     </div>
     <div class="risk-desc">${esc(r.description||'')}</div>
     ${r.mitigation?`<div class="risk-mit">✅ ${esc(r.mitigation)}</div>`:''}
@@ -628,7 +633,7 @@ function riskCard(r) {
 function actionCard(a) {
   const type = (a.type||'comunicacion').replace(/\s/g,'');
   const sigs = (a.signals||[]).map(s=>`<span class="sig">${esc(s)}</span>`).join('');
-  const link = a.url ? `<a href="${esc(a.url)}" target="_blank" style="font-size:12px">🔗 ver más</a>` : '';
+  const link = a.url ? `<a href="${esc(a.url)}" target="_blank" style="font-size:12px">${t('action_more')}</a>` : '';
   return `<div class="action">
     <div class="act-head">
       <div class="act-target">${esc(a.target||'')}</div>
@@ -798,7 +803,7 @@ async function saveClient() {
   if (!name) { showToast('El nombre es obligatorio', false); return; }
 
   const btn = document.getElementById('save-client-btn');
-  btn.disabled = true; btn.textContent = 'Guardando…';
+  btn.disabled = true; btn.textContent = t('client_saving');
 
   const payload = {
     name, type,
@@ -829,7 +834,7 @@ async function saveClient() {
   } catch(e) {
     showToast('❌ Error de conexión', false);
   } finally {
-    btn.disabled = false; btn.textContent = 'Guardar cliente';
+    btn.disabled = false; btn.textContent = t('client_save');
   }
 }
 
@@ -861,7 +866,7 @@ async function sendTestEmail() {
   if (!to || !to.includes('@')) { showToast('Introduce un email válido', false); return; }
   const btn = document.getElementById('send-test-btn');
   btn.disabled = true;
-  btn.textContent = 'Enviando…';
+  btn.textContent = t('email_sending');
   try {
     const r = await fetch('/api/test-email', {
       method: 'POST',
@@ -879,7 +884,7 @@ async function sendTestEmail() {
     showToast('❌ Error de conexión: ' + e.message, false);
   } finally {
     btn.disabled = false;
-    btn.textContent = 'Enviar prueba';
+    btn.textContent = t('email_send');
   }
 }
 
@@ -905,7 +910,7 @@ async function initChat() {
       const data = await r.json();
       const users = data.users || [];
       const sel = document.getElementById('chat-user-select');
-      sel.innerHTML = '<option value="">— Selecciona tu nombre —</option>' +
+      sel.innerHTML = `<option value="">${t('chat_select')}</option>` +
         users.map(u => `<option value="${esc(u.name)}" data-avatar="${esc(u.avatar||'👤')}">${esc(u.avatar||'👤')} ${esc(u.name)}</option>`).join('');
       if (chatUser) {
         sel.value = chatUser;
@@ -928,7 +933,7 @@ function setChatUser() {
   chatUser   = sel.value || null;
   chatAvatar = opt?.dataset?.avatar || '👤';
   document.getElementById('chat-send-btn').disabled = !chatUser;
-  document.getElementById('chat-status').textContent = chatUser ? `Escribiendo como ${chatUser}` : '';
+  document.getElementById('chat-status').textContent = chatUser ? `${t('chat_writing_as')} ${chatUser}` : '';
 }
 
 async function loadMessages() {
@@ -945,7 +950,7 @@ async function loadMessages() {
 function renderMessages(messages) {
   const container = document.getElementById('chat-messages');
   if (!messages || messages.length === 0) {
-    container.innerHTML = '<div class="chat-empty">Aún no hay mensajes. ¡Sé el primero en escribir!</div>';
+    container.innerHTML = `<div class="chat-empty">${t('chat_empty')}</div>`;
     return;
   }
 
@@ -955,8 +960,9 @@ function renderMessages(messages) {
 
   messages.forEach(m => {
     const dt  = new Date(m.created_at);
-    const day = dt.toLocaleDateString('es-ES', {weekday:'long', day:'numeric', month:'long'});
-    const time = dt.toLocaleTimeString('es-ES', {hour:'2-digit', minute:'2-digit'});
+    const locale = LANG === 'es' ? 'es-ES' : 'en-US';
+    const day = dt.toLocaleDateString(locale, {weekday:'long', day:'numeric', month:'long'});
+    const time = dt.toLocaleTimeString(locale, {hour:'2-digit', minute:'2-digit'});
     const isMe = m.user_name === chatUser;
 
     if (day !== lastDay) {
@@ -983,7 +989,7 @@ function renderMessages(messages) {
 }
 
 async function sendMessage() {
-  if (!chatUser) { showToast('Selecciona tu nombre antes de enviar', false); return; }
+  if (!chatUser) { showToast(t('chat_select'), false); return; }
   const input = document.getElementById('chat-input');
   const text  = input.value.trim();
   if (!text) return;
@@ -1017,6 +1023,219 @@ function chatKeydown(e) {
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault();
     sendMessage();
+  }
+}
+
+// ── i18n ─────────────────────────────────────────────────────────────────────
+let LANG = 'es';
+
+const TRANSLATIONS = {
+  es: {
+    // Tabs
+    tab_dashboard:     '📊 Dashboard',
+    tab_oportunidades: '🎯 Oportunidades',
+    tab_alertas:       '🚨 Alertas',
+    tab_proyectos:     '🏗️ Proyectos',
+    tab_riesgos:       '⚠️ Riesgos',
+    tab_acciones:      '⚡ Acciones',
+    tab_clientes:      '🗺️ Clientes',
+    tab_chat:          '💬 Chat',
+    // Dashboard
+    signal_label:      '🔥 Señal clave del día',
+    kpi_opps:          'Oportunidades',
+    kpi_alerts:        'Alertas',
+    kpi_projects:      'Proyectos',
+    kpi_actions:       'Acciones',
+    market_temp:       'Temperatura de mercado',
+    top_opps:          '🎯 Top Oportunidades',
+    recent_alerts:     '🚨 Alertas Recientes',
+    // Sections
+    sec_oportunidades: '🎯 Oportunidades',
+    sec_alertas:       '🚨 Alertas de Mercado',
+    sec_proyectos:     '🏗️ Proyectos EPC & Capex',
+    sec_riesgos:       '⚠️ Mapa de Riesgos',
+    sec_acciones:      '⚡ Acciones Comerciales Recomendadas',
+    sec_clientes:      '🗺️ Clientes Potenciales USA',
+    // Filters
+    filter_prob:       'Probabilidad:',
+    filter_all:        'Todas',
+    filter_search:     'empresa, tipo…',
+    filter_types_all:  'Todos',
+    // Cards
+    prob_alta:  'Alta',  prob_media:  'Media',  prob_baja:  'Baja',
+    imp_alto:   'Alto',  imp_medio:   'Medio',  imp_bajo:   'Bajo',
+    lvl_critica:'Crítica',lvl_alta:   'Alta',   lvl_media:  'Media',
+    phase_plan: 'Planificación', phase_ejec: 'Ejecución', phase_op: 'Operativo',
+    src_link:    '🔗 fuente',
+    action_more: '🔗 ver más',
+    mitigation:  '✅',
+    filter_search_lbl: 'Buscar:',
+    // Clients
+    add_client:  '➕ Añadir cliente',
+    client_list: 'Listado',
+    map_legend:  '🔵 Identificados por IA &nbsp;|&nbsp; 🟠 Añadidos manualmente &nbsp;|&nbsp; 🟢 AFG Planta Michigan',
+    // Chat
+    chat_you:        '👤 Eres:',
+    chat_select:     '— Selecciona tu nombre —',
+    chat_writing_as: 'Escribiendo como',
+    chat_placeholder:'Escribe un comentario o pregunta…',
+    chat_send:       'Enviar',
+    chat_empty:      '¡Aún no hay mensajes. Sé el primero en escribir!',
+    chat_loading:    'Cargando mensajes…',
+    // Loader
+    loader_text:     'Cargando inteligencia de mercado…',
+    // Error
+    error_msg:       'No se pudo cargar data.json',
+    error_sub:       'Ejecuta el script generate_report.py para generar los datos, o verifica que data.json existe en la raíz del proyecto.',
+    // Modals
+    email_modal_title: '✉️ Enviar email de prueba',
+    email_modal_sub:   'Comprueba que las notificaciones diarias funcionan correctamente.',
+    email_cancel:      'Cancelar',
+    email_send:        'Enviar prueba',
+    email_sending:     'Enviando…',
+    client_modal_title:'➕ Añadir cliente potencial',
+    client_modal_sub:  'El cliente se guardará en la base de datos y aparecerá en el mapa marcado en naranja.',
+    client_save:       'Guardar cliente',
+    client_saving:     'Guardando…',
+    client_cancel:     'Cancelar',
+    // Type hints
+    type_hint_EPC:        'Constructoras de plantas y refinerías. Contratan componentes en fase de obra (Bechtel, McDermott…)',
+    type_hint_Operator:   'Operan refinerías y plantas. Compran para mantenimiento y reemplazos (ExxonMobil, Chevron, Shell…)',
+    type_hint_Distributor:'Revenden componentes a múltiples clientes. Canal rápido sin homologación directa (DNOW, Ferguson…)',
+    type_hint_OEM:        'Fabricantes de válvulas que compran bolas como componente para su producto final (Flowserve, Emerson…)',
+    type_hint_MRO:        'Suministro de repuestos para plantas en operación. Pedidos recurrentes y urgentes, margen alto.',
+    type_hint_BallMfg:    'Mecanizadores y fabricantes de bolas de válvula. Competidores directos o posibles socios/subcontratistas.',
+  },
+  en: {
+    // Tabs
+    tab_dashboard:     '📊 Dashboard',
+    tab_oportunidades: '🎯 Opportunities',
+    tab_alertas:       '🚨 Alerts',
+    tab_proyectos:     '🏗️ Projects',
+    tab_riesgos:       '⚠️ Risks',
+    tab_acciones:      '⚡ Actions',
+    tab_clientes:      '🗺️ Clients',
+    tab_chat:          '💬 Chat',
+    // Dashboard
+    signal_label:      '🔥 Key signal of the day',
+    kpi_opps:          'Opportunities',
+    kpi_alerts:        'Alerts',
+    kpi_projects:      'Projects',
+    kpi_actions:       'Actions',
+    market_temp:       'Market temperature',
+    top_opps:          '🎯 Top Opportunities',
+    recent_alerts:     '🚨 Recent Alerts',
+    // Sections
+    sec_oportunidades: '🎯 Opportunities',
+    sec_alertas:       '🚨 Market Alerts',
+    sec_proyectos:     '🏗️ EPC & Capex Projects',
+    sec_riesgos:       '⚠️ Risk Map',
+    sec_acciones:      '⚡ Recommended Commercial Actions',
+    sec_clientes:      '🗺️ Potential Clients USA',
+    // Filters
+    filter_prob:       'Probability:',
+    filter_all:        'All',
+    filter_search:     'company, type…',
+    filter_types_all:  'All',
+    // Cards
+    prob_alta:  'High',  prob_media:  'Medium',  prob_baja:  'Low',
+    imp_alto:   'High',  imp_medio:   'Medium',  imp_bajo:   'Low',
+    lvl_critica:'Critical',lvl_alta:  'High',    lvl_media:  'Medium',
+    phase_plan: 'Planning', phase_ejec: 'Execution', phase_op: 'Operational',
+    src_link:    '🔗 source',
+    action_more: '🔗 see more',
+    mitigation:  '✅',
+    filter_search_lbl: 'Search:',
+    // Clients
+    add_client:  '➕ Add client',
+    client_list: 'List',
+    map_legend:  '🔵 AI-identified &nbsp;|&nbsp; 🟠 Manually added &nbsp;|&nbsp; 🟢 AFG Michigan Plant',
+    // Chat
+    chat_you:        '👤 You are:',
+    chat_select:     '— Select your name —',
+    chat_writing_as: 'Writing as',
+    chat_placeholder:'Write a comment or question…',
+    chat_send:       'Send',
+    chat_empty:      'No messages yet. Be the first to write!',
+    chat_loading:    'Loading messages…',
+    // Loader
+    loader_text:     'Loading market intelligence…',
+    // Error
+    error_msg:       'Could not load data.json',
+    error_sub:       'Run the generate_report.py script to generate data, or verify that data.json exists in the project root.',
+    // Modals
+    email_modal_title: '✉️ Send test email',
+    email_modal_sub:   'Check that daily notifications are working correctly.',
+    email_cancel:      'Cancel',
+    email_send:        'Send test',
+    email_sending:     'Sending…',
+    client_modal_title:'➕ Add potential client',
+    client_modal_sub:  'The client will be saved in the database and appear on the map in orange.',
+    client_save:       'Save client',
+    client_saving:     'Saving…',
+    client_cancel:     'Cancel',
+    // Type hints
+    type_hint_EPC:        'Plant and refinery builders. They procure components during the construction phase (Bechtel, McDermott…)',
+    type_hint_Operator:   'Companies that operate refineries and plants. They buy for maintenance and replacements (ExxonMobil, Chevron…)',
+    type_hint_Distributor:'Resell components to multiple clients. Fast channel without direct qualification (DNOW, Ferguson…)',
+    type_hint_OEM:        'Valve manufacturers that buy balls as a component for their final product (Flowserve, Emerson…)',
+    type_hint_MRO:        'Spare parts supply for operating plants. Recurring and urgent orders, high margin.',
+    type_hint_BallMfg:    'Ball manufacturers and machinists. Direct competitors or potential partners/subcontractors.',
+  }
+};
+
+function t(key) {
+  return TRANSLATIONS[LANG][key] || TRANSLATIONS['es'][key] || key;
+}
+
+function toggleLang() {
+  LANG = LANG === 'es' ? 'en' : 'es';
+  document.getElementById('lang-btn').textContent = LANG === 'es' ? '🌐 EN' : '🌐 ES';
+  applyLang();
+  // Recargar el informe del día actual en el nuevo idioma (desde Neon)
+  if (currentDate) {
+    loadByDate(currentDate);
+  } else if (DATA) {
+    render();
+  }
+  // Refresh chat si está activo (actualiza locale de fechas)
+  if (document.getElementById('tab-chat').classList.contains('active')) {
+    loadMessages();
+  }
+}
+
+function applyLang() {
+  // Actualizar elementos con data-i18n
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const val = TRANSLATIONS[LANG][key];
+    if (val !== undefined) {
+      // Use innerHTML for elements that may contain HTML entities (&nbsp; etc.)
+      // Use textContent for plain-text elements (inputs, options, buttons)
+      if (el.tagName === 'OPTION' || el.tagName === 'INPUT' || el.tagName === 'LABEL') {
+        el.textContent = val;
+      } else {
+        el.innerHTML = val;
+      }
+    }
+  });
+  // Subtítulo header
+  document.querySelector('header .header-sub span:first-child').textContent =
+    LANG === 'es' ? 'Stainless Steel Balls · Oil & Gas USA · Planta Michigan'
+                  : 'Stainless Steel Balls · Oil & Gas USA · Michigan Plant';
+  // Loader
+  document.querySelector('#loader div:last-child').textContent = t('loader_text');
+  // Chat placeholder
+  const inp = document.getElementById('chat-input');
+  if (inp) inp.placeholder = t('chat_placeholder');
+  // Filter search placeholder
+  const fsearch = document.getElementById('filter-search');
+  if (fsearch) fsearch.placeholder = t('filter_search');
+  // Type hint in client modal (refresh current selection)
+  const clType = document.getElementById('cl-type');
+  if (clType) {
+    const hint = document.getElementById('type-hint');
+    if (hint) hint.textContent = t('type_hint_' + clType.value) || '';
   }
 }
 
