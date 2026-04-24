@@ -29,6 +29,7 @@ DATABASE_URL  = os.environ["NEON_DATABASE_URL"]
 SMTP_USER     = os.environ.get("SMTP_USER","")   # afgnext100@gmail.com
 SMTP_PASS     = os.environ.get("SMTP_PASS","")   # Gmail App Password (16 chars)
 REPORT_URL    = os.environ.get("REPORT_URL","https://tu-proyecto.vercel.app")
+OPENAI_KEY    = os.environ.get("OPENAI_API_KEY","")
 MODEL         = "claude-sonnet-4-6"
 
 QUERIES = [
@@ -53,7 +54,8 @@ def ensure_schema():
     cur.execute("""
         CREATE TABLE IF NOT EXISTS reports (
             id           SERIAL      PRIMARY KEY,
-            report_date  DATE        NOT NULL UNIQUE,
+            report_date  DATE        NOT NULL,
+            lang         TEXT        NOT NULL DEFAULT 'es',
             raw_data     JSONB       NOT NULL,
             created_at   TIMESTAMPTZ NOT NULL DEFAULT NOW(),
             updated_at   TIMESTAMPTZ NOT NULL DEFAULT NOW()
@@ -86,7 +88,37 @@ def ensure_schema():
     """)
     conn.commit()
 
-    # Añadir columna source si la tabla ya existía sin ella
+    # ── Migraciones para bases de datos ya existentes ──────────────────────────
+    # Añadir columna lang a reports si no existe
+    cur.execute("ALTER TABLE reports ADD COLUMN IF NOT EXISTS lang TEXT NOT NULL DEFAULT 'es'")
+    conn.commit()
+
+    # Actualizar unique constraint: de solo report_date → (report_date, lang)
+    cur.execute("""
+        DO $$
+        BEGIN
+            -- Eliminar constraint antiguo de una sola columna
+            IF EXISTS (
+                SELECT 1 FROM pg_constraint
+                WHERE conname = 'reports_report_date_key'
+                  AND conrelid = 'reports'::regclass
+            ) THEN
+                ALTER TABLE reports DROP CONSTRAINT reports_report_date_key;
+            END IF;
+            -- Añadir constraint compuesto si no existe
+            IF NOT EXISTS (
+                SELECT 1 FROM pg_constraint
+                WHERE conname = 'reports_date_lang_unique'
+                  AND conrelid = 'reports'::regclass
+            ) THEN
+                ALTER TABLE reports
+                    ADD CONSTRAINT reports_date_lang_unique UNIQUE (report_date, lang);
+            END IF;
+        END $$
+    """)
+    conn.commit()
+
+    # Añadir columna source a clients si la tabla ya existía sin ella
     cur.execute("ALTER TABLE clients ADD COLUMN IF NOT EXISTS source TEXT NOT NULL DEFAULT 'manual'")
     conn.commit()
 
@@ -112,26 +144,26 @@ def ensure_schema():
     cur.close(); conn.close()
     print("  OK schema Neon")
 
-def store_in_neon(data: dict):
+def store_in_neon(data: dict, lang: str = 'es'):
     conn = psycopg2.connect(DATABASE_URL)
     cur  = conn.cursor()
     cur.execute("""
-        INSERT INTO reports(report_date, raw_data)
-        VALUES(%s,%s)
-        ON CONFLICT(report_date) DO UPDATE
+        INSERT INTO reports(report_date, lang, raw_data)
+        VALUES(%s, %s, %s)
+        ON CONFLICT(report_date, lang) DO UPDATE
           SET raw_data=EXCLUDED.raw_data, updated_at=NOW()
-    """, (TODAY, Json(data)))
+    """, (TODAY, lang, Json(data)))
     conn.commit(); cur.close(); conn.close()
-    print("  OK guardado en Neon")
+    print(f"  OK guardado en Neon [{lang.upper()}]")
 
 def load_previous_report() -> dict:
-    """Carga el informe del día anterior para evitar repetir contenido."""
+    """Carga el informe del día anterior (versión ES) para evitar repetir contenido."""
     try:
         conn = psycopg2.connect(DATABASE_URL)
         cur  = conn.cursor()
         cur.execute("""
             SELECT raw_data FROM reports
-            WHERE report_date < %s
+            WHERE report_date < %s AND lang = 'es'
             ORDER BY report_date DESC LIMIT 1
         """, (TODAY,))
         row = cur.fetchone()
@@ -282,6 +314,58 @@ def upsert_ai_clients(ai_clients: list[dict]) -> int:
     except Exception as e:
         print(f"  WARN upsert_ai_clients: {e}"); return 0
 
+# ── Traducción EN con OpenAI ───────────────────────────────────────────────────
+def translate_to_english(data_es: dict) -> dict | None:
+    """Traduce el informe JSON de español a inglés usando GPT-4o-mini.
+    Preserva los valores de enums usados como clases CSS (Alta, Media, Baja, etc.)"""
+    if not OPENAI_KEY:
+        print("  WARN OPENAI_API_KEY no configurado — versión EN omitida")
+        return None
+
+    system = (
+        "You are a professional translator for oil & gas market intelligence reports. "
+        "Translate Spanish text to English inside the JSON I provide. Strict rules:\n"
+        "1. Translate ONLY these human-readable fields: title, description, body, reason, "
+        "   notes, mitigation, key_signal, signals (array items), source_title, companies, "
+        "   capex, target, tags (array items).\n"
+        "2. NEVER translate: JSON keys, urls, source_url, company names, proper nouns, "
+        "   city names, country names, date strings, numeric values.\n"
+        "3. KEEP EXACTLY these enum values unchanged (used as CSS class identifiers):\n"
+        "   - probability: Alta | Media | Baja\n"
+        "   - impact:      Alto | Medio | Bajo\n"
+        "   - level:       Critica | Alta | Media\n"
+        "   - phase:       planificacion | ejecucion | operativo\n"
+        "   - type (actions): urgente | distribucion | partnership | comunicacion\n"
+        "   - type (clients): EPC | Operator | Distributor | OEM | MRO | BallMfg\n"
+        "   - priority:    Alta | Media | Baja\n"
+        "4. Return ONLY valid JSON with exactly the same structure and keys."
+    )
+
+    headers = {"Authorization": f"Bearer {OPENAI_KEY}", "Content-Type": "application/json"}
+    body = {
+        "model": "gpt-4o-mini",
+        "messages": [
+            {"role": "system", "content": system},
+            {"role": "user",   "content": json.dumps(data_es, ensure_ascii=False)},
+        ],
+        "temperature": 0.1,
+        "response_format": {"type": "json_object"},
+    }
+    try:
+        r = requests.post(
+            "https://api.openai.com/v1/chat/completions",
+            headers=headers, json=body, timeout=120
+        )
+        r.raise_for_status()
+        content = r.json()["choices"][0]["message"]["content"].strip()
+        result = json.loads(content)
+        print(f"  OK traducción EN generada ({len(content):,} chars)")
+        return result
+    except Exception as e:
+        print(f"  WARN translate_to_english: {e}")
+        return None
+
+
 # ── Email vía Gmail SMTP ────────────────────────────────────────────────────────
 def load_recipients() -> list[str]:
     if not RECIPIENTS_F.exists(): return []
@@ -337,13 +421,13 @@ def send_email(recipients, key_signal, n_opps, n_projects):
 if __name__ == "__main__":
     print(f"\n{'='*55}\n  AFG Market Intelligence - {TODAY}\n{'='*55}\n")
 
-    print("[1/7] Schema Neon...")
+    print("[1/8] Schema Neon...")
     ensure_schema()
 
-    print("\n[2/7] Buscando en la web...")
+    print("\n[2/8] Buscando en la web...")
     results = run_searches()
 
-    print("\n[3/7] Analizando con Claude...")
+    print("\n[3/8] Analizando con Claude (ES)...")
     prev_report = load_previous_report()
     data = analyze(results, prev_report)
     opps     = data.get("opportunities",[])
@@ -351,12 +435,10 @@ if __name__ == "__main__":
     clients  = data.get("potential_clients",[])
     print(f"  OK {len(opps)} oport | {len(projects)} proyectos | {len(clients)} clientes")
 
-    print("\n[4/7] Guardando clientes IA en Neon y cargando usuarios chat...")
-    ai_clients = data.get("potential_clients", [])
-    nuevos = upsert_ai_clients(ai_clients)
+    print("\n[4/8] Guardando clientes IA en Neon y cargando usuarios chat...")
+    nuevos = upsert_ai_clients(data.get("potential_clients", []))
     data["sources"] = [{"title": r.get("title",""), "url": r.get("url","")}
                        for r in results[:15] if r.get("url")]
-    # Incluir usuarios del chat en data.json
     try:
         chat_data = json.loads(CHAT_USERS_F.read_text(encoding="utf-8"))
         data["chat_users"] = chat_data.get("users", [])
@@ -364,14 +446,21 @@ if __name__ == "__main__":
         data["chat_users"] = []
     print(f"  OK {nuevos} clientes nuevos añadidos a BD | {len(data['chat_users'])} usuarios chat")
 
-    print("\n[5/7] Guardando en Neon...")
-    store_in_neon(data)
+    print("\n[5/8] Traduciendo a inglés con GPT-4o-mini...")
+    data_en = translate_to_english(data)
 
-    print("\n[6/7] Escribiendo data.json...")
+    print("\n[6/8] Guardando en Neon (ES + EN)...")
+    store_in_neon(data, lang='es')
+    if data_en:
+        store_in_neon(data_en, lang='en')
+    else:
+        print("  SKIP versión EN no disponible (sin OPENAI_API_KEY o error de traducción)")
+
+    print("\n[7/8] Escribiendo data.json...")
     OUTPUT_JSON.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"  OK {OUTPUT_JSON}")
 
-    print("\n[7/7] Enviando email...")
+    print("\n[8/8] Enviando email...")
     send_email(
         load_recipients(),
         data.get("summary",{}).get("key_signal",""),
