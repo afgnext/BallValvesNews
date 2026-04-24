@@ -12,7 +12,7 @@ module.exports = async function handler(req, res) {
 
   try {
     const result = await pool.query(
-      'SELECT report_date FROM reports ORDER BY report_date DESC LIMIT 90'
+      'SELECT DISTINCT report_date FROM reports ORDER BY report_date DESC LIMIT 90'
     );
     const dates = result.rows.map(r => {
       const d = new Date(r.report_date);
