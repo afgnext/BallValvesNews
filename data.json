@@ -1,351 +1,359 @@
 {
-  "date": "01 October 2026",
+  "date": "02 October 2026",
   "summary": {
-    "key_signal": "Múltiples proyectos LNG en fase FEED/EPC en USA (Argent LNG 25 Mtpa, Commonwealth LNG $13B) crean ventana crítica de especificación de bolas de válvula inox en Q4 2026 – Q1 2027",
-    "market_temp": 82
+    "key_signal": "El arancel Section 232 aplicado al valor total aduanero de productos de acero (desde abril 2026) encarece competidores importadores y refuerza la ventaja competitiva de AFG con producción en Michigan para el mercado USA",
+    "market_temp": 74
   },
   "opportunities": [
     {
-      "title": "Argent LNG 25 Mtpa — Tecnimont FEED activo: ventana de especificación de componentes de válvula cryogénica y high-pressure",
-      "company": "Tecnimont / Argent LNG",
-      "location": "USA (Gulf Coast)",
-      "type": "LNG EPC Pre-Specification",
-      "description": "Tecnimont ha firmado contrato FEED para el proyecto Argent LNG de 25 Mtpa. La fase FEED define requisitos técnicos de válvulas, incluyendo bolas de acero inox para válvulas de bola en líneas de gas a alta presión. AFG debe contactar a Tecnimont ingeniería de procesos ahora para quedar en lista de vendors aprobados antes del FID y transición a EPC. Large-bore ball valves, cryogenic valves y ESD systems son explícitamente mencionados como oportunidades de flow control.",
+      "title": "Fluor Corporation — Diseño de refinería America First Refining en Brownsville TX: ventana de especificación de componentes de válvula de bola",
+      "company": "Fluor Corporation / America First Refining",
+      "location": "Brownsville, Texas, USA",
+      "type": "Downstream Refinery — Nuevas instalaciones",
+      "description": "Fluor fue seleccionado en abril 2026 para diseñar la nueva refinería de America First Refining en Brownsville, con capacidad de procesar más de 60 millones de barriles de crudo doméstico al año (gasolina, diesel, jet fuel). Fase de ingeniería activa implica ventana de especificación de válvulas de bola en servicios críticos. AFG puede posicionarse ante Fluor como proveedor de bolas de acero inox certificadas API para válvulas de proceso.",
+      "probability": "Media",
+      "tags": [
+        "refinería",
+        "downstream",
+        "Fluor",
+        "Brownsville",
+        "nuevas instalaciones",
+        "API",
+        "válvulas de bola"
+      ],
+      "source_url": "https://market.us/report/oil-gas-epc-market",
+      "source_title": "Oil and Gas EPC Market Size, Share, Growth | CAGR of 4.9%",
+      "date": "April 2026"
+    },
+    {
+      "title": "JGC — Contrato EPC LNG adjudicado: demanda activa de componentes de válvula de alta presión",
+      "company": "JGC Corporation",
+      "location": "Gulf Coast / USA",
+      "type": "LNG — EPC activo",
+      "description": "JGC ha ganado un contrato EPC para proyecto LNG según Valve World Americas. En fase EPC, la cadena de suministro de componentes de válvula de bola para servicios criogénicos y de alta presión se activa de inmediato. AFG, con planta en Michigan, puede competir como proveedor local de bolas de acero inox frente a competidores asiáticos penalizados por aranceles Section 232 aplicados al valor total aduanero.",
+      "probability": "Media",
+      "tags": [
+        "LNG",
+        "EPC",
+        "JGC",
+        "válvulas criogénicas",
+        "alta presión",
+        "bolas inox",
+        "Section 232"
+      ],
+      "source_url": "https://valve-world-americas.com/jgc-wins-epc-contract-for-lng-project",
+      "source_title": "JGC Wins EPC Contract for LNG Project - Valve World Americas",
+      "date": "2026"
+    },
+    {
+      "title": "Mantenimiento de refinerías PADD 2 (Great Lakes) en temporada de mayor actividad: demanda MRO de componentes de válvula",
+      "company": "Operadores de refinería PADD 2 (Great Lakes region)",
+      "location": "Great Lakes Region, Michigan / Ohio / Illinois, USA",
+      "type": "MRO — Mantenimiento estacional",
+      "description": "Industrial Info Resources reporta que el mantenimiento en refinerías de PADD 2 (Great Lakes) podría ser uno de los mayores estacionalmente en la segunda mitad de 2026. Los paros de mantenimiento generan demanda urgente de componentes de válvula de bola de reemplazo. La proximidad de la planta de AFG en Michigan a este cluster refinerías es una ventaja logística crítica para tiempos de respuesta MRO.",
       "probability": "Alta",
+      "tags": [
+        "PADD 2",
+        "refinería",
+        "Great Lakes",
+        "MRO",
+        "mantenimiento",
+        "Michigan",
+        "demanda urgente"
+      ],
+      "source_url": "https://www.industrialinfo.com/news/article/us-refineries-to-run-lower-amid-regular-maintenance-period--362676",
+      "source_title": "U.S. Refineries to Run Lower Amid Regular Maintenance Period",
+      "date": "September 18, 2026"
+    },
+    {
+      "title": "Tecnimont — FEED Argent LNG completado, transición a EPC inminente: ventana de aprobación de proveedores de componentes",
+      "company": "Tecnimont / Argent LNG",
+      "location": "Gulf Coast, USA",
+      "type": "LNG — Pre-EPC vendor approval",
+      "description": "El FEED de Tecnimont para Argent LNG (25 Mtpa) está en desarrollo activo con objetivo de FID previo al EPC. La fase de transición FEED-EPC es el momento crítico para que AFG inicie el proceso de homologación como proveedor de bolas de acero inox para válvulas de bola en aplicaciones de gas de alta presión y criogénicas. La ventana de inclusión en Approved Vendor Lists (AVL) de Tecnimont se cierra en cuanto el EPC entre en fase de compras masivas.",
+      "probability": "Media",
       "tags": [
         "LNG",
         "FEED",
+        "EPC",
         "Tecnimont",
-        "Argent LNG",
-        "cryogenic valves",
-        "ball valves",
-        "ESD",
-        "API certification"
+        "AVL",
+        "homologación",
+        "criogénico",
+        "alta presión"
       ],
       "source_url": "https://globalflowcontrol.com/newsroom/tecnimont-wins-feed-for-25-mtpa-argent-lng-project",
       "source_title": "Tecnimont Wins FEED for 25-Mtpa Argent LNG Project - Global Flow Control",
       "date": "2026"
     },
     {
-      "title": "Commonwealth LNG $13B — Yokogawa MAC adjudicado: cadena de suministro de componentes de válvula en configuración activa",
-      "company": "Commonwealth LNG / Yokogawa",
-      "location": "USA (Louisiana, Gulf Coast)",
-      "type": "LNG EPC Supply Chain",
-      "description": "Yokogawa ha sido adjudicado como Main Automation Contractor del proyecto Commonwealth LNG valorado en $13B. Las entregas de sistemas están programadas desde 2027. La adjudicación del MAC activa inmediatamente la cadena de suministro de instrumentación, control y válvulas. AFG debe identificar al EPC principal del proyecto y al valve vendor list manager para posicionar bolas inox en la especificación de válvulas de bola del paquete.",
+      "title": "Triad Process Equipment (Michigan) — Fabricante de válvulas de bola con base en Michigan: potencial partnership para suministro local de bolas forjadas",
+      "company": "Triad Process Equipment",
+      "location": "Milford, Michigan, USA",
+      "type": "OEM Partnership — Suministro de componentes",
+      "description": "Triad Process Equipment, fabricante de válvulas de bola establecido desde 1990 con sede en Milford, Michigan, opera como proveedor nacional. La proximidad geográfica y la complementariedad de su actividad (ensamblaje de válvulas) con la de AFG (fabricación de bolas forjadas de acero inox) crean una oportunidad natural de partnership OEM para suministro local de bolas, reduciendo su dependencia de cadenas importadas ahora penalizadas por aranceles.",
       "probability": "Alta",
       "tags": [
-        "LNG",
-        "EPC",
-        "Commonwealth LNG",
-        "Yokogawa",
-        "MAC",
-        "ball valves",
-        "instrumentation",
-        "2027 delivery"
-      ],
-      "source_url": "https://www.hydrocarbonprocessing.com/news/2026/07/yokogawa-awarded-main-automation-contractor-for-13-b-commonwealth-lng-project-us",
-      "source_title": "Yokogawa awarded main automation contractor for $13-B Commonwealth LNG project (U.S.)",
-      "date": "07/07/2026"
-    },
-    {
-      "title": "Venture Global LNG — Nuevos SPAs con EnBW activan producción adicional: demanda incremental de componentes de válvula operativos",
-      "company": "Venture Global LNG",
-      "location": "USA (Louisiana)",
-      "type": "LNG Operations & MRO",
-      "description": "Venture Global ha cerrado nuevos acuerdos de compra vinculantes con EnBW (0.82 Mtpa adicionales desde 2026, sumados a 2 Mtpa a 20 años). La aceleración de producción exige disponibilidad inmediata de componentes de reemplazo para válvulas de bola en servicio criogénico y de gas. AFG puede posicionarse como proveedor MRO de bolas inox 4\" para mantenimiento de plantas LNG operativas en Luisiana.",
-      "probability": "Media",
-      "tags": [
-        "LNG",
-        "MRO",
-        "Venture Global",
-        "EnBW",
-        "operational",
-        "replacement parts",
-        "stainless ball"
-      ],
-      "source_url": "https://investors.ventureglobal.com/news/news-details/2026/Venture-Global-and-EnBW-Announce-New-LNG-Purchase-Agreements/default.aspx",
-      "source_title": "Venture Global and EnBW Announce New LNG Purchase Agreements",
-      "date": "2026"
-    },
-    {
-      "title": "KBR — Proyecto Zallaf South Refinery (Libia): PMC activo con potencial de suministro de componentes internacionales",
-      "company": "KBR Inc.",
-      "location": "Houston, TX (gestión) / Ubari, Libia (proyecto)",
-      "type": "Refinery PMC / International EPC",
-      "description": "KBR ha sido adjudicado contrato de PMC para la expansión downstream de la refinería Zallaf South en Libia. KBR gestionará desde Houston la cadena de suministro de equipos y componentes. AFG, con planta en Michigan, puede suministrar bolas inox certificadas API para válvulas de bola del proyecto a través de KBR Houston. Ventana de especificación activa en Q4 2026.",
-      "probability": "Media",
-      "tags": [
-        "EPC",
-        "PMC",
-        "KBR",
-        "refinery",
-        "downstream",
-        "international",
-        "Houston",
-        "API certified"
-      ],
-      "source_url": "https://markets.businessinsider.com/news/stocks/kbr-awarded-project-management-contract-to-support-libya-s-downstream-expansion-at-zallaf-south-refinery-1035940765",
-      "source_title": "KBR Awarded Project Management Contract to Support Libya's Downstream Expansion at Zallaf South Refinery",
-      "date": "18/03/2026"
-    },
-    {
-      "title": "Industria válvulas Michigan en crecimiento — Mercado local valorado en expansión anualizada: oportunidad de posicionamiento como proveedor regional de componentes",
-      "company": "Sector Valve Manufacturing Michigan (60 establecimientos activos)",
-      "location": "Michigan, USA",
-      "type": "Regional Supply Chain / OEM Components",
-      "description": "IBISWorld confirma que la industria de fabricación de válvulas en Michigan crece en tasa anualizada hasta 2026, mientras el sector nacional declina. Con 60 establecimientos y 4,816 empleados, Michigan es el hub de fabricación de válvulas más relevante para AFG dada su ubicación. AFG puede suministrar bolas inox como componente OEM a fabricantes de válvulas locales, evitando ciclos largos de aprobación EPC al entrar por la vía de componente estándar para OEMs establecidos.",
-      "probability": "Alta",
-      "tags": [
-        "Michigan",
         "OEM",
-        "valve manufacturing",
-        "local supply",
-        "stainless ball",
-        "IBISWorld",
-        "regional hub"
+        "Michigan",
+        "válvulas de bola",
+        "partnership",
+        "local",
+        "Triad",
+        "forja"
       ],
-      "source_url": "https://www.ibisworld.com/united-states/industry/michigan/valve-manufacturing/13384",
-      "source_title": "Valve Manufacturing in Michigan - Market Research Report | IBISWorld",
+      "source_url": "https://triadprocess.com/about-triad-process-equipment",
+      "source_title": "About Triad Process Equipment - Triad Process",
       "date": "2026"
     }
   ],
   "alerts": [
     {
       "level": "Critica",
-      "title": "Nickel surplus reduciéndose drásticamente en 2026: precio del acero inox presionado al alza, márgenes de componentes forjados en riesgo",
-      "body": "El surplus previsto de níquel para 2026 se ha reducido de 250,000 TM a 90,000 TM tras anuncios de Indonesia. El mercado está convergiendo hacia equilibrio, con implicaciones directas en el precio del acero inoxidable. Stainless pricing ya reporta niveles elevados con plazos de entrega de 12-16 semanas para especificaciones no estándar. AFG debe revisar contratos de suministro de materia prima y considerar cobertura de precios de níquel para proteger márgenes en contratos de suministro LNG a largo plazo.",
-      "source_url": "https://www.youtube.com/watch?v=lnaGGFx6vD4",
-      "source_title": "Metal Market: Steel and Stainless Are Moving Differently — And It Matters"
+      "title": "Section 232 ampliada al valor total aduanero desde abril 2026: componentes de acero importados (incluyendo bolas chinas) penalizados al 50% sobre valor total — ventaja competitiva directa para AFG Michigan",
+      "body": "El 2 de abril de 2026, Trump modificó los aranceles Section 232 para aplicarlos al valor total aduanero de productos derivados del acero (no solo al contenido metálico). Esto eleva drásticamente el coste efectivo de bolas de válvula importadas de China o terceros países, que antes pagaban aranceles solo sobre el valor del acero incorporado. AFG, con producción en Michigan, queda exenta de estos aranceles. La brecha de coste con competidores importadores se amplía significativamente, especialmente frente a proveedores chinos post-arancel. Acción inmediata: comunicar esta ventaja de coste neto a clientes y EPCs activos.",
+      "source_url": "https://www.whitecase.com/insight-alert/united-states-modifies-steel-aluminum-and-copper-section-232-tariffs",
+      "source_title": "United States modifies steel, aluminum, and copper Section 232 tariffs | White & Case LLP"
     },
     {
       "level": "Alta",
-      "title": "HRC USA alcanza $1,200/ton y plazos de acero inox 12-16 semanas: riesgo de desabastecimiento para producción de bolas forjadas en Michigan",
-      "body": "El mercado de acero USA reporta precios de HRC en $1,200/ton (agosto 2026) y la importación está siendo reactivada a pesar de aranceles del 50% Section 232 por escasez de oferta doméstica. El acero inoxidable enfrenta plazos de 12-16 semanas para especificaciones no estándar. AFG debe asegurar stock de materia prima con proveedores como North American Stainless (Ghent, KY) para garantizar continuidad productiva ante la demanda LNG que se activa en 2027.",
-      "source_url": "https://www.thefabricator.com/thefabricator/blog/metalsmaterials/us-steel-supply-crunch-puts-imports-back-in-play",
-      "source_title": "U.S. steel supply crunch puts imports back in play - The Fabricator"
+      "title": "Incendio en refinería Petromax (Harris County, TX, marzo 2026): presión regulatoria sobre integridad de componentes de válvula en refinerías USA",
+      "body": "El 5 de marzo de 2026 se produjo un incendio en Petromax Refining (1519 South Sheldon Road, Harris County TX) durante el refinado de Atmospheric Gas Oil (AGO) por un proceso upset que liberó vapores de hidrocarburo. Incidentes de este tipo activan auditorías de integridad mecánica y aceleran ciclos de reemplazo de válvulas y componentes críticos en refinerías del Golfo. AFG debe posicionarse ante operadores de refinería de Texas y Gulf Coast como proveedor de bolas de acero inox certificadas para reemplazos de emergencia y mantenimiento preventivo post-incidente.",
+      "source_url": "https://www.facebook.com/HarrisCoFM/posts/final-update-on-the-incident-that-occurred-wednesday-march-5-2026-at-approximate/1407412688093604",
+      "source_title": "Final update on the incident - Harris County Fire Marshal"
     },
     {
       "level": "Alta",
-      "title": "Fallo de válvula en refinería Superior (Wisconsin): OSHA confirma ausencia de protocolos de integridad mecánica — regulación de reemplazo de componentes en endurecimiento",
-      "body": "Documentos OSHA sobre la explosión de la refinería Superior revelan que una válvula con fugas conocidas durante años no fue reemplazada según protocolos de integridad mecánica. OSHA determinó que los intervalos de inspección eran insuficientes. Esto anticipa un endurecimiento regulatorio sobre integridad de válvulas en refinerías USA, acelerando ciclos de reemplazo de bolas y componentes internos. AFG debe comunicar proactivamente sus capacidades de suministro certificado API/NACE a operadores de refinerías de la región de los Grandes Lagos.",
-      "source_url": "https://www.wpr.org/history/conflicts-disasters/valve-had-been-known-leak-documents-show-superior-oil-refinery-knew-about-equipment-issues-years",
-      "source_title": "Documents show Superior oil refinery knew about equipment issues — WPR"
+      "title": "Downtime no planificado en process industries cuesta entre $100K y $500K/hora: el componente válvula es el epicentro de paros — oportunidad de posicionamiento como proveedor de respuesta rápida",
+      "body": "El DOE estima que el downtime no planificado en industrias de proceso cuesta entre $100,000 y $500,000 por hora. Las válvulas están en el centro de casi todos estos incidentes. Los operadores de refinerías, midstream y LNG en USA priorizan proveedores con capacidad de entrega rápida y certificación API sobre precio. AFG, con planta en Michigan, tiene ventaja de proximidad geográfica y tiempo de respuesta sobre cualquier proveedor importado. Posicionarse activamente como proveedor de componentes de válvula con stock local y certificaciones API es una palanca comercial diferencial.",
+      "source_url": "https://www.williamsvalve.com/blog/critical-valve-failures-industrial-operations",
+      "source_title": "7 Critical Valve Failures That Shut Down Industrial Operations"
     },
     {
       "level": "Media",
-      "title": "Oil & Gas EPC global alcanza $66B en 2026 con CAGR 5.6% hasta 2034: Middle East & Africa dominan con 67% de cuota — diversificación geográfica necesaria",
-      "body": "El mercado EPC global de O&G crece a $65.96B en 2026 y se proyecta a $102B en 2034. Middle East y Africa concentran el 66.96% del mercado, mientras USA proyecta $22.42B para 2032. AFG debe priorizar el mercado USA (Michigan → Gulf Coast) dado su ventaja logística, pero explorar cómo los EPCs activos en MEA (Saipem, TechnipFMC, Petrofac) con oficinas en USA pueden generar pedidos de componentes con fabricación local.",
-      "source_url": "https://www.fortunebusinessinsights.com/industry-reports/oil-gas-epc-market-100930",
-      "source_title": "Oil and Gas EPC Market Size, Growth | Industry Report [2034] - Fortune Business Insights"
+      "title": "Nuevas investigaciones Section 301 (marzo 2026) sobre capacidad excedentaria manufacturera china: riesgo de aranceles adicionales sobre componentes de acero inox importados de China en 2026-2027",
+      "body": "El 13 de marzo de 2026, el USTR inició nuevas investigaciones Section 301 sobre exceso de capacidad estructural en sectores manufactureros, incluyendo acero fabricado de China. Los nuevos aranceles Section 301 adicionales de 10-12.5% entraron en vigor el 24 de julio de 2026 y se suman a los ya existentes sobre China. La competencia china de bolas de válvula en el mercado USA se encarece progresivamente, reforzando la posición de AFG. Sin embargo, AFG debe vigilar posibles distorsiones de precio por dumping o triangulación a través de terceros países no sancionados.",
+      "source_url": "https://www.aisc.org/economic-data/tariffs",
+      "source_title": "Tariffs — AISC Economic Data"
     }
   ],
   "projects": [
     {
-      "name": "Argent LNG — Proyecto de exportación 25 Mtpa (Gulf Coast USA)",
+      "name": "America First Refining — Nueva refinería Brownsville (Texas)",
       "phase": "planificacion",
-      "companies": "Argent LNG / Tecnimont (FEED) / FERC (permitting)",
-      "location": "Gulf Coast, USA",
-      "description": "Proyecto LNG de 25 Mtpa con cooperación firmada en enero 2026 y contrato FEED adjudicado a Tecnimont. Fase FEED en ejecución para definir requisitos técnicos, bankability y soporte al FID. Tras FEED, FERC permitting y FID se inicia fase EPC. Primer cargo objetivo 2030. Requiere grandes volúmenes de válvulas de bola para líneas de gas, transferencia LNG y sistemas ESD con bolas de acero inox de alta especificación.",
-      "capex": "No publicado (25 Mtpa implica estimación >$10B)",
-      "source_url": "https://globalflowcontrol.com/newsroom/tecnimont-wins-feed-for-25-mtpa-argent-lng-project"
+      "companies": "Fluor Corporation / America First Refining",
+      "location": "Brownsville, Texas, USA",
+      "description": "Fluor seleccionado en abril 2026 para diseñar nueva refinería con capacidad de procesar más de 60 millones de barriles de crudo doméstico al año en productos gasolina, diesel y jet fuel. Proyecto greenfield de alta escala en fase de ingeniería de detalle. Generará demanda significativa de válvulas de bola y componentes para servicios de proceso en refinería.",
+      "capex": "No divulgado",
+      "source_url": "https://market.us/report/oil-gas-epc-market"
     },
     {
-      "name": "Commonwealth LNG — Planta de licuefacción $13B (Gulf Coast USA)",
+      "name": "Argent LNG — Proyecto exportación GNL 25 Mtpa (pre-EPC)",
+      "phase": "planificacion",
+      "companies": "Tecnimont / Argent LNG",
+      "location": "Gulf Coast, USA",
+      "description": "FEED en desarrollo por Tecnimont tras acuerdo de enero 2026. Proceso de permitting FERC en curso. Pendiente FID para transición a EPC. Primer cargo objetivo 2030. Fase actual crítica para inclusión en AVL de proveedores de componentes de válvula de bola para servicios LNG criogénicos y de alta presión.",
+      "capex": "No divulgado (escala 25 Mtpa)",
+      "source_url": "https://valve-world.net/tecnimont-signs-argent-lng-feed-contract"
+    },
+    {
+      "name": "Commonwealth LNG — Planta de licuefacción $13B (EPC activo)",
       "phase": "ejecucion",
       "companies": "Commonwealth LNG / Yokogawa (MAC)",
-      "location": "Gulf Coast, USA (Louisiana)",
-      "description": "Proyecto LNG valorado en $13B con Yokogawa como Main Automation Contractor adjudicado en julio 2026. Ejecución del proyecto iniciada inmediatamente, con entregas de sistemas programadas desde 2027. El proyecto tiene offtake agreements a largo plazo con compañías energéticas internacionales. La cadena de suministro de válvulas y componentes está siendo definida actualmente.",
-      "capex": "$13,000M",
+      "location": "Gulf Coast, USA",
+      "description": "Proyecto valorado en $13B con contratos de offtake a largo plazo con compañías internacionales. Yokogawa adjudicado como Main Automation Contractor en julio 2026. Ejecución del proyecto comenzó de inmediato con entregas de sistemas programadas desde 2027. Cadena de suministro de componentes de válvula activa en fase de compras.",
+      "capex": "$13,000,000,000",
       "source_url": "https://www.hydrocarbonprocessing.com/news/2026/07/yokogawa-awarded-main-automation-contractor-for-13-b-commonwealth-lng-project-us"
     },
     {
-      "name": "Zallaf South Refinery — Expansión downstream (Libia, gestión desde Houston)",
-      "phase": "planificacion",
-      "companies": "KBR (PMC) / Zallaf Exploration, Production and Refining of Oil and Gas Company",
-      "location": "Ubari, Southwest Libya (gestión KBR desde Houston, TX)",
-      "description": "KBR proporciona servicios de gestión de proyectos y asistencia técnica para la expansión de la refinería sur en Ubari (Libia). KBR Houston coordina la cadena de suministro internacional. Oportunidad para AFG de suministrar bolas inox certificadas API a través del canal KBR como proveedor aprobado para proyectos internacionales de refinery downstream gestionados desde USA.",
-      "capex": "No publicado",
-      "source_url": "https://markets.businessinsider.com/news/stocks/kbr-awarded-project-management-contract-to-support-libya-s-downstream-expansion-at-zallaf-south-refinery-1035940765"
-    },
-    {
-      "name": "Venture Global LNG — Expansión operativa con nuevos SPAs EnBW 2026-2031",
-      "phase": "operativo",
-      "companies": "Venture Global LNG / EnBW",
-      "location": "Louisiana, USA",
-      "description": "Venture Global activa nuevos acuerdos de suministro de 0.82 Mtpa adicionales desde 2026 a EnBW, sumados a contratos de 2 Mtpa a 20 años. La aceleración operativa de las plantas LNG de Venture Global genera demanda inmediata de piezas de repuesto y componentes de mantenimiento para válvulas de bola en servicio criogénico y de gas. Ciclo MRO activo desde Q4 2026.",
-      "capex": "Inversión operativa / MRO (no nuevo capex greenfield declarado)",
-      "source_url": "https://investors.ventureglobal.com/news/news-details/2026/Venture-Global-and-EnBW-Announce-New-LNG-Purchase-Agreements/default.aspx"
+      "name": "Mantenimiento estacional refinerías PADD 2 — Great Lakes H2 2026",
+      "phase": "ejecucion",
+      "companies": "Múltiples operadores refinería Great Lakes (PADD 2)",
+      "location": "Great Lakes Region, USA (Michigan, Illinois, Ohio, Indiana)",
+      "description": "Industrial Info Resources identifica el mantenimiento de refinerías en PADD 2 como uno de los más grandes estacionalmente en la segunda mitad de 2026. Los paros de mantenimiento activan compras urgentes de componentes de válvula de reemplazo. Proximidad de AFG Michigan es ventaja logística directa para servir esta demanda MRO en tiempo reducido.",
+      "capex": "Presupuestos MRO distribuidos por operador",
+      "source_url": "https://www.industrialinfo.com/news/article/us-refineries-to-run-lower-amid-regular-maintenance-period--362676"
     }
   ],
   "risks": [
     {
-      "title": "Plazos de homologación con majors LNG (12-24 meses): AFG puede quedar fuera de vendor lists si no actúa en FEED actual",
+      "title": "Ciclos de homologación con majors y EPCs (AVL): tiempo de aprobación 12-24 meses puede excluir a AFG de proyectos LNG en EPC activo",
       "impact": "Alto",
-      "description": "Los proyectos LNG en fase FEED (Argent LNG) y ejecución temprana (Commonwealth LNG) están definiendo sus vendor lists ahora. El proceso de homologación con EPCs majors (Tecnimont, Bechtel, etc.) y operadores LNG tarda entre 12 y 24 meses típicamente. Si AFG no inicia el proceso de aprobación durante Q4 2026, quedará excluido de la fase de procurement activa en 2027-2028.",
-      "mitigation": "Iniciar inmediatamente proceso de pre-qualificación con Tecnimont (Argent LNG FEED) y con el EPC de Commonwealth LNG. Preparar dossier técnico API 6D, NACE MR0175, material certs 316SS. Contactar directamente a ingeniería de procurement de KBR y Yokogawa en Houston."
+      "description": "Los grandes EPCs (Tecnimont, JGC, Fluor) y operadores (majors) mantienen Approved Vendor Lists (AVL) con procesos de homologación que típicamente duran 12-24 meses e incluyen auditorías de planta, certificaciones API/NACE, pruebas de material y calificación de producto. AFG que no esté ya en AVL de estos EPCs puede quedar excluida de proyectos LNG y refinery en EPC activo incluso si tiene capacidad productiva y planta local en Michigan.",
+      "mitigation": "Iniciar inmediatamente proceso de aplicación a AVL de Tecnimont, JGC y Fluor. Paralelamente, contactar a fabricantes de válvulas certificados (Vogt, Triad, Valveworks) ya en AVL de majors como canal de entrada de corto plazo para colocar bolas mientras se completa homologación directa."
     },
     {
-      "title": "Competencia china de bolas de válvula post-arancel: fabricantes chinos redirigen ventas a mercados no-USA y compiten por precio en segmento no-certificado",
+      "title": "Competencia china vía triangulación post-arancel: proveedores chinos redirigen exportaciones a través de terceros países no sujetos a Section 232/301",
       "impact": "Medio",
-      "description": "Los aranceles Section 301 (25%+) y Section 232 (50%) sobre acero chino penalizan significativamente a competidores chinos en USA. Sin embargo, fabricantes chinos de bolas de válvula pueden reducir precios agresivamente en mercados de menor exigencia certificacional (refinerías independientes, distribuidores sin requisito API) o intentar triangulación via terceros países. El riesgo no es de entrada directa sino de presión de precio en segmento MRO no-certificado.",
-      "mitigation": "AFG debe posicionarse explícitamente en el segmento API/NACE certificado donde los competidores chinos no pueden entrar sin homologación. Comunicar diferencial de certificación y trazabilidad de material como barrera competitiva estructural."
+      "description": "A pesar de los aranceles Section 232 (50% valor total) y Section 301 acumulados sobre China, existe riesgo documentado de triangulación: fabricantes chinos de bolas de acero inox exportan a través de México (USMCA), Vietnam, Tailandia o India para eludir aranceles USA. Esto puede mantener presión de precio en el mercado USA inferior a lo que los aranceles nominales sugieren, erosionando la ventaja competitiva de coste de AFG Michigan.",
+      "mitigation": "Monitorizar precios de mercado de bolas de acero inox en USA para detectar presión anómala. Alertar a clientes sobre riesgo de certificación de origen y compliance arancelario de competidores. Posicionarse no solo en precio sino en certificaciones API/NACE, trazabilidad de material USA y fiabilidad de suministro local."
     },
     {
-      "title": "Escasez y volatilidad de acero inox USA: plazos 12-16 semanas y precios al alza por nickel squeeze amenazan capacidad productiva en Michigan",
+      "title": "Volatilidad de precio de níquel y plazos de acero inox 12-16 semanas: riesgo de compresión de márgenes y desabastecimiento de materia prima en Michigan",
       "impact": "Alto",
-      "description": "El mercado de acero inox USA reporta lead times de 12-16 semanas para especificaciones no estándar y precios elevados por reducción del surplus de níquel global (de 250K TM a 90K TM en 2026). El HRC supera $1,200/ton. La planta de Michigan de AFG puede enfrentar restricciones de suministro de materia prima que afecten su capacidad de respuesta a pedidos urgentes de proyectos LNG.",
-      "mitigation": "Establecer acuerdo marco de suministro con North American Stainless (Ghent, KY) como proveedor primario. Mantener stock estratégico de barras/palanquilla 316SS equivalente a 8-12 semanas de producción. Evaluar cobertura financiera (hedging) sobre precio de níquel para contratos de más de 6 meses."
+      "description": "El superávit de níquel se redujo de 250,000 a 90,000 toneladas métricas en 2026, con precios presionados al alza. El acero inox no estándar enfrenta plazos de 12-16 semanas y posibles problemas de asignación. HRC USA en $1,200/ton. La producción de bolas de acero inox forjadas de ~10kg para válvulas 4 pulgadas en Michigan depende de disponibilidad y precio de acero inox, con riesgo de márgenes comprimidos si los precios de venta no absorben el incremento de materia prima.",
+      "mitigation": "Establecer contratos de suministro a largo plazo con North American Stainless (Ghent, KY) u otro productor integrado USA. Ampliar ventana de planificación de compras de materia prima a 16-20 semanas. Revisar estructura de precios con cláusulas de ajuste de níquel/acero inox en contratos con clientes."
     },
     {
-      "title": "Presión regulatoria OSHA post-explosión Superior: inspecciones más frecuentes de válvulas pueden saturar capacidad de supply chain de componentes de reemplazo",
-      "impact": "Medio",
-      "description": "El caso OSHA de la refinería Superior (Wisconsin) establece precedente regulatorio para integridad de válvulas. Un endurecimiento de los intervalos de inspección obligatoria en refinerías puede generar una demanda puntual masiva y no planificada de bolas y componentes de repuesto, potencialmente superando la capacidad de respuesta de AFG si no hay stock disponible. Esta presión afecta especialmente a refinerías del Midwest próximas a Michigan.",
-      "mitigation": "Desarrollar programa de stock consignado con distribuidores MRO del Midwest (distribuidores Michigan, Ohio, Indiana). Crear catálogo de bolas inox 316SS 4\" con certificaciones API para reemplazo rápido. Contactar a operadores de refinerías PADD 2 con propuesta de acuerdo de disponibilidad garantizada."
+      "title": "Certificaciones API/NACE: ausencia o gaps en certificaciones específicas pueden bloquear acceso a segmentos sour service y LNG criogénico",
+      "impact": "Alto",
+      "description": "Los proyectos oil & gas upstream, midstream y LNG en USA requieren certificaciones API 6D, API 608, y cumplimiento NACE MR0175 para servicios sour (H2S). Las bolas para válvulas en aplicaciones criogénicas LNG tienen requisitos adicionales de prueba a baja temperatura. Sin estas certificaciones completas y vigentes, AFG queda excluida de los segmentos de mayor valor: LNG (Commonwealth, Argent), sour service en refinería y transporte de gas ácido.",
+      "mitigation": "Auditar portfolio actual de certificaciones API/NACE vigentes. Priorizar obtención o renovación de API 6D y NACE MR0175. Considerar pruebas de calificación para aplicaciones criogénicas LNG en colaboración con un fabricante de válvulas ya certificado como canal de validación acelerada."
     }
   ],
   "actions": [
     {
-      "target": "Tecnimont (Argent LNG FEED Team)",
-      "type": "urgente",
-      "description": "Contactar al equipo de ingeniería de procurement de Tecnimont para el FEED de Argent LNG antes de que se cierre la vendor list de componentes de válvula. Enviar dossier de pre-calificación con certificaciones API 6D, NACE MR0175, y capacidad de forja 316SS 4\" 10kg. Solicitar inclusión en Approved Vendor List (AVL) para fase EPC. Ventana crítica: Q4 2026.",
-      "signals": [
-        "Tecnimont FEED Argent LNG firmado",
-        "25 Mtpa capacidad LNG",
-        "EPC phase post-FID",
-        "flow control opportunity explícita en fuente"
-      ],
-      "url": "https://globalflowcontrol.com/newsroom/tecnimont-wins-feed-for-25-mtpa-argent-lng-project"
-    },
-    {
-      "target": "KBR Houston (Zallaf South Refinery PMC)",
-      "type": "urgente",
-      "description": "Contactar a la oficina de Houston de KBR (gestora del PMC de Zallaf South Refinery) para posicionar a AFG como proveedor aprobado de bolas inox para proyectos internacionales de refinery. KBR gestiona la cadena de suministro desde Houston, lo que elimina barreras geográficas para AFG Michigan. Solicitar reunión con su equipo de vendor qualification.",
-      "signals": [
-        "KBR PMC adjudicado marzo 2026",
-        "gestión desde Houston",
-        "expansión downstream",
-        "cadena suministro internacional gestionada en USA"
-      ],
-      "url": "https://markets.businessinsider.com/news/stocks/kbr-awarded-project-management-contract-to-support-libya-s-downstream-expansion-at-zallaf-south-refinery-1035940765"
-    },
-    {
-      "target": "North American Stainless (Ghent, KY)",
-      "type": "urgente",
-      "description": "Negociar acuerdo marco de suministro de materia prima 316SS con North American Stainless, mayor productor integrado de acero inox en Norteamérica, para asegurar disponibilidad ante la demanda LNG proyectada para 2027. Establecer volúmenes mínimos garantizados y fijar precios a 12 meses para proteger márgenes ante volatilidad del níquel.",
-      "signals": [
-        "Nickel surplus reducido a 90K TM",
-        "Stainless lead times 12-16 semanas",
-        "HRC $1,200/ton",
-        "demanda LNG proyectada 2027"
-      ],
-      "url": "https://tariffreshore.com/us-steel-suppliers-2026.html"
-    },
-    {
-      "target": "Yokogawa Electric (Commonwealth LNG MAC Team)",
+      "target": "Triad Process Equipment (Milford, Michigan)",
       "type": "partnership",
-      "description": "Contactar al equipo de Yokogawa responsable del MAC de Commonwealth LNG para identificar al EPC principal del proyecto y obtener información sobre el vendor list de válvulas y componentes. Yokogawa como MAC tiene acceso directo a la estructura de procurement del proyecto. Solicitar introducción al valve package manager.",
+      "description": "Contactar a Triad Process Equipment para explorar acuerdo de suministro preferente de bolas de acero inox forjadas. Triad es fabricante de válvulas de bola con base en Michigan y distribución nacional desde 1990. La complementariedad directa (ellos ensamblan válvulas, AFG fabrica bolas) y la proximidad geográfica (ambos en Michigan) crean una propuesta de valor inmediata: suministro local, tiempos de respuesta cortos y ventaja arancelaria compartida frente a componentes importados. Proponer un acuerdo de proveedor preferente con stock mínimo garantizado.",
       "signals": [
-        "MAC adjudicado julio 2026",
-        "$13B capex",
-        "entregas desde 2027",
-        "cadena suministro de válvulas activa"
+        "Fabricante de válvulas de bola Michigan",
+        "distribución nacional",
+        "proximidad geográfica",
+        "ventaja post-arancel Section 232"
       ],
-      "url": "https://www.hydrocarbonprocessing.com/news/2026/07/yokogawa-awarded-main-automation-contractor-for-13-b-commonwealth-lng-project-us"
+      "url": "https://triadprocess.com/about-triad-process-equipment"
     },
     {
-      "target": "Fabricantes de válvulas Michigan (Armstrong International, Williams Valve y otros 58 establecimientos IBISWorld)",
+      "target": "Fluor Corporation — Proyecto America First Refining Brownsville TX",
+      "type": "urgente",
+      "description": "Iniciar contacto con el equipo de procurement de Fluor para el proyecto de la nueva refinería America First Refining en Brownsville. La fase de ingeniería de detalle activa en abril 2026 implica que las especificaciones de válvulas y componentes de proceso se están definiendo ahora. AFG debe solicitar inclusión en el proceso de Approved Vendor List de Fluor para bolas de acero inox API para válvulas de proceso de refinería, destacando planta USA en Michigan y ventaja arancelaria frente a competidores importados.",
+      "signals": [
+        "Fluor seleccionado abril 2026",
+        "60M barriles/año capacidad",
+        "fase de ingeniería activa",
+        "greenfield refinería"
+      ],
+      "url": "https://www.fluor.com"
+    },
+    {
+      "target": "Operadores de refinería PADD 2 / Great Lakes (Michigan, Ohio, Illinois)",
+      "type": "urgente",
+      "description": "Activar campaña de contacto comercial directo con responsables de mantenimiento y procurement de refinerías en PADD 2 (Great Lakes). Industrial Info Resources confirma que el mantenimiento estacional H2 2026 en esta región será uno de los más grandes históricamente. AFG tiene ventaja logística crítica como proveedor en Michigan para entregas urgentes MRO. Preparar oferta de stock de bolas de acero inox certificadas con tiempo de entrega garantizado inferior a cualquier proveedor importado. Incluir capacidad de respuesta de emergencia 48-72 horas.",
+      "signals": [
+        "Mantenimiento PADD 2 H2 2026 histórico",
+        "refinerías Great Lakes",
+        "demanda MRO urgente",
+        "proximidad Michigan"
+      ],
+      "url": "https://www.industrialinfo.com/news/article/us-refineries-to-run-lower-amid-regular-maintenance-period--362676"
+    },
+    {
+      "target": "Tecnimont — Proyecto Argent LNG (AVL pre-EPC)",
+      "type": "urgente",
+      "description": "Solicitar inmediatamente inicio del proceso de cualificación como proveedor de Tecnimont para el proyecto Argent LNG. La ventana entre FEED y EPC es el único momento en que los nuevos proveedores pueden ser incluidos en AVL antes de que las compras masivas de EPC se cierren. AFG debe presentar ficha técnica de producto (bolas inox ~4 pulgadas para válvulas de bola en servicio LNG), certificaciones API vigentes, referencia de planta Michigan y argumentario de ventaja arancelaria. El primer cargo objetivo es 2030, pero las compras EPC comenzarán en 2027-2028.",
+      "signals": [
+        "FEED activo Tecnimont",
+        "FERC permitting en curso",
+        "FID pre-EPC inminente",
+        "ventana AVL crítica"
+      ],
+      "url": "https://www.tecnimont.it"
+    },
+    {
+      "target": "JGC Corporation — Contrato EPC LNG adjudicado",
       "type": "distribucion",
-      "description": "Lanzar programa de visitas comerciales a los 60 establecimientos de fabricación de válvulas identificados en Michigan (IBISWorld) para posicionar a AFG como proveedor local de bolas inox OEM. La proximidad geográfica y los aranceles sobre componentes chinos hacen que AFG sea el proveedor natural. Proponer acuerdos de suministro preferente con stock consignado.",
+      "description": "Contactar al departamento de procurement de JGC para el proyecto LNG en EPC adjudicado. JGC es uno de los EPCs líderes mundiales en LNG con presencia activa en USA. En fase EPC las compras de componentes de válvula se activan de inmediato. AFG debe posicionarse como proveedor local USA de bolas de acero inox para válvulas de bola LNG, destacando cumplimiento Section 232 (sin aranceles por producción Michigan), capacidad de entrega y certificaciones API/NACE. Solicitar reunión con supply chain manager de JGC USA.",
       "signals": [
-        "Michigan valve manufacturing creciendo vs declive nacional",
-        "60 establecimientos activos",
-        "4,816 empleados",
-        "aranceles anti-China favorecen supply local"
+        "EPC LNG adjudicado",
+        "compras de componentes activas",
+        "ventaja arancelaria USA",
+        "certificaciones API"
       ],
-      "url": "https://www.ibisworld.com/united-states/industry/michigan/valve-manufacturing/13384"
+      "url": "https://www.jgc.com"
     },
     {
-      "target": "Operadores de refinerías región Great Lakes (Wisconsin, Indiana, Ohio) — Post-OSHA Superior",
-      "type": "comunicacion",
-      "description": "Desarrollar campaña de comunicación dirigida a directores de integridad mecánica e ingeniería de mantenimiento de refinerías del Midwest post-caso OSHA Superior. Mensaje clave: suministro certificado API/NACE de bolas inox con trazabilidad completa, entrega desde Michigan en días vs semanas desde competidores remotos. Proponer acuerdo de disponibilidad garantizada (consignment stock) para mantenimiento urgente.",
+      "target": "Vogt Valves — Red de agentes Midwest (Indiana, Ohio, Michigan, Kentucky, WV)",
+      "type": "partnership",
+      "description": "Vogt Valves acaba de firmar Output Sales Corporation como agente para la región Midwest (Indiana, Ohio, Michigan, Kentucky, West Virginia) en marzo 2026 y opera en oil & gas, renovables y aeroespacial. AFG debe contactar a Vogt Valves para explorar un acuerdo de suministro de bolas de acero inox forjadas certificadas API para sus válvulas en servicios críticos oil & gas. La nueva red de agentes Midwest amplía la cobertura comercial de Vogt y crea demanda incremental de componentes en la región inmediata a la planta de AFG en Michigan.",
       "signals": [
-        "OSHA caso Superior Wisconsin",
-        "válvulas con fugas conocidas no reemplazadas",
-        "endurecimiento regulatorio esperado",
-        "refinerías PADD 2 bajo presión operativa"
+        "Nuevo agente Midwest marzo 2026",
+        "oil & gas critical services",
+        "Michigan en territorio cubierto",
+        "red de distribución activa"
       ],
-      "url": "https://www.wpr.org/history/conflicts-disasters/valve-had-been-known-leak-documents-show-superior-oil-refinery-knew-about-equipment-issues-years"
+      "url": "https://www.vogtvalves.com"
     }
   ],
   "potential_clients": [
     {
-      "name": "Tecnimont S.p.A.",
-      "type": "EPC",
-      "url": "https://www.tecnimont.it",
-      "city": "Milan (Italy) / Houston TX (USA office)",
-      "lat": 45.4654,
-      "lng": 9.1859,
-      "reason": "EPC/FEED contractor activo en Argent LNG 25 Mtpa USA. Fase FEED define vendor lists para válvulas y componentes. Ventana de especificación abierta ahora en Q4 2026 antes del FID y transición a EPC.",
+      "name": "Triad Process Equipment",
+      "type": "OEM",
+      "url": "https://triadprocess.com",
+      "city": "Milford, Michigan, USA",
+      "lat": 42.5903,
+      "lng": -83.5991,
+      "reason": "Fabricante de válvulas de bola con sede en Michigan y distribución nacional desde 1990. Máxima complementariedad con AFG: ensambla válvulas de bola, necesita bolas de acero inox forjadas de alta calidad. Proximidad geográfica inmediata. Ventaja post-arancel Section 232 compartida frente a proveedores importados. Potencial de acuerdo de proveedor preferente.",
       "priority": "Alta"
     },
     {
-      "name": "Commonwealth LNG LLC",
-      "type": "Operator",
-      "url": "https://commonwealthlng.com",
-      "city": "Cameron, Louisiana, USA",
-      "lat": 29.7955,
-      "lng": -93.3174,
-      "reason": "Proyecto LNG $13B en fase de ejecución con MAC adjudicado a Yokogawa. Cadena de suministro de válvulas activa. Entregas programadas desde 2027 crean ventana de procurement inmediata para bolas inox.",
+      "name": "Fluor Corporation",
+      "type": "EPC",
+      "url": "https://www.fluor.com",
+      "city": "Irving, Texas, USA",
+      "lat": 32.814,
+      "lng": -96.9489,
+      "reason": "EPC seleccionado en abril 2026 para diseñar la nueva refinería America First Refining en Brownsville TX (60M+ barriles/año). Fase de ingeniería activa implica especificación de válvulas de proceso y componentes. AFG puede ser incluida en AVL de Fluor como proveedor de bolas de acero inox certificadas API para refinería.",
       "priority": "Alta"
     },
     {
-      "name": "KBR Inc.",
+      "name": "Vogt Valves",
+      "type": "OEM",
+      "url": "https://www.vogtvalves.com",
+      "city": "Louisville, Kentucky, USA",
+      "lat": 38.2527,
+      "lng": -85.7585,
+      "reason": "Fabricante de válvulas de alta performance para oil & gas, renovables y aeroespacial. Acaba de ampliar red de agentes Midwest (Michigan incluido) en marzo 2026. Opera en servicios críticos que requieren bolas de acero inox certificadas API/NACE. Proximidad geográfica a Michigan facilita relación de suministro.",
+      "priority": "Alta"
+    },
+    {
+      "name": "JGC Corporation",
       "type": "EPC",
-      "url": "https://www.kbr.com",
-      "city": "Houston, TX, USA",
+      "url": "https://www.jgc.com",
+      "city": "Houston, Texas, USA",
       "lat": 29.7604,
       "lng": -95.3698,
-      "reason": "PMC adjudicado para expansión downstream Zallaf South Refinery (Libia). Gestión de cadena de suministro internacional desde Houston. AFG Michigan puede suministrar componentes certificados API para proyectos internacionales gestionados por KBR USA.",
+      "reason": "EPC líder mundial en LNG con contrato activo adjudicado en 2026. Fase EPC implica compras activas de componentes de válvula de bola para servicios LNG. AFG con producción Michigan tiene ventaja arancelaria directa sobre competidores importados para suministro de bolas inox certificadas.",
       "priority": "Alta"
     },
     {
-      "name": "Venture Global LNG",
-      "type": "Operator",
-      "url": "https://www.ventureglobal.com",
-      "city": "Arlington, VA / Louisiana, USA",
-      "lat": 38.8799,
-      "lng": -77.1068,
-      "reason": "Operador LNG con múltiples plantas activas en Louisiana y nuevos SPAs que aceleran producción desde 2026. Demanda inmediata de componentes MRO para válvulas de bola criogénicas y de gas en plantas operativas.",
-      "priority": "Alta"
-    },
-    {
-      "name": "Yokogawa Electric Corporation (USA)",
-      "type": "OEM",
-      "url": "https://www.yokogawa.com",
-      "city": "Sugar Land, TX, USA",
-      "lat": 29.6197,
-      "lng": -95.6349,
-      "reason": "Main Automation Contractor de Commonwealth LNG $13B. Como MAC tiene acceso directo a estructura de procurement y puede facilitar introducción al valve package manager del proyecto. Partnership estratégico para acceder a proyectos LNG futuros.",
+      "name": "Pioneer Industrial",
+      "type": "Distributor",
+      "url": "https://www.pioneerindustrial.com",
+      "city": "USA (Midstream O&G)",
+      "lat": 37.0902,
+      "lng": -95.7129,
+      "reason": "Proveedor especializado en válvulas y actuadores para oil & gas midstream desde 1988 con enfoque en reducción de costes de mantenimiento y fiabilidad. Distribuidor activo en el segmento midstream que requiere bolas de acero inox para válvulas de bola en servicios de transporte y compresión. Canal de distribución potencial para AFG en mercado midstream USA.",
       "priority": "Media"
     },
     {
-      "name": "Armstrong International Inc.",
-      "type": "OEM",
-      "url": "https://www.armstronginternational.com",
-      "city": "Three Rivers, Michigan, USA",
-      "lat": 41.9445,
-      "lng": -85.6321,
-      "reason": "Fabricante multinacional de soluciones industriales con sede en Michigan, ISO 9001 certificado, activo en múltiples industrias incluyendo O&G. Cliente potencial OEM para suministro de bolas inox como componente de producción local. Proximidad geográfica a AFG Michigan facilita acuerdo de supply preferente.",
-      "priority": "Media"
-    },
-    {
-      "name": "Williams Valve Corporation",
-      "type": "OEM",
-      "url": "https://www.williamsvalve.com",
+      "name": "Valveworks USA",
+      "type": "Distributor",
+      "url": "https://www.valveworksusa.com",
       "city": "USA",
-      "lat": 39.5,
-      "lng": -98.35,
-      "reason": "Fabricante de válvulas industriales con más de 100 años de experiencia y enfoque en refinerías, plantas de energía e instalaciones de proceso químico. Publicación propia sobre fallos críticos de válvulas posiciona a la empresa como interlocutor de alto valor técnico. Cliente potencial OEM para bolas inox en segmento refinery y process industry.",
+      "lat": 29.9511,
+      "lng": -90.0715,
+      "reason": "Empresa especializada en válvulas para servicios de presión con presencia activa en oil & gas. Potencial canal de distribución de bolas de acero inox forjadas de AFG para proyectos oil & gas en USA. Posicionada en el segmento de calidad y presión, alineado con el perfil de producto de AFG.",
+      "priority": "Media"
+    },
+    {
+      "name": "DKM Valve (DKM Enterprises)",
+      "type": "MRO",
+      "url": "https://dkmenterprises.com",
+      "city": "USA (Midstream Pipeline)",
+      "lat": 32.7767,
+      "lng": -96.797,
+      "reason": "Proveedor de servicios completos de válvulas para midstream oil & gas: mantenimiento, reparación y automatización de válvulas de control en oleoductos y gasoductos. Los servicios de reparación y reemplazo de válvulas de bola en midstream generan demanda regular de componentes (bolas de acero inox) para sustitución. Canal MRO potencial con demanda recurrente.",
+      "priority": "Media"
+    },
+    {
+      "name": "Michigan Valve & Fitting",
+      "type": "Distributor",
+      "url": "https://www.michiganvalve.com",
+      "city": "Michigan, USA",
+      "lat": 42.7325,
+      "lng": -84.5555,
+      "reason": "Distribuidor especializado en válvulas, fittings y componentes para oil & gas, chemical, automotive y farmacéutica con sede en Michigan. Proximidad geográfica inmediata a planta AFG. Mercado objetivo incluye oil & gas y químico, que requieren bolas de acero inox de alta calidad. Potencial cliente directo para componentes de válvula de bola y canal de distribución regional.",
       "priority": "Media"
     }
   ],
@@ -355,20 +363,20 @@
       "url": "https://www.esg-intl.com/feeds/blog/ball-valve-oil-gas-industry"
     },
     {
-      "title": "'This valve had been known to leak': Documents show Superior oil refinery knew about equipment issues years before 2018 explosion - WPR",
-      "url": "https://www.wpr.org/history/conflicts-disasters/valve-had-been-known-leak-documents-show-superior-oil-refinery-knew-about-equipment-issues-years"
-    },
-    {
-      "title": "US refiners face historic stress test as global crisis looms",
-      "url": "https://www.reuters.com/commentary/reuters-open-interest/us-refiners-face-historic-stress-test-global-crisis-looms-2026-08-24"
-    },
-    {
       "title": "Failure analysis of the outlet pipeline and ball valve of the circulating pump in the desulfurization liquid concentration tower - ScienceDirect",
       "url": "https://www.sciencedirect.com/science/article/abs/pii/S1350630724003844"
     },
     {
+      "title": "U.S. Refineries to Run Lower Amid Regular Maintenance Period",
+      "url": "https://www.industrialinfo.com/news/article/us-refineries-to-run-lower-amid-regular-maintenance-period--362676"
+    },
+    {
       "title": "7 Critical Valve Failures That Shut Down Industrial Operations",
       "url": "https://www.williamsvalve.com/blog/critical-valve-failures-industrial-operations"
+    },
+    {
+      "title": "Final update on the incident... - Harris County Fire Marshal",
+      "url": "https://www.facebook.com/HarrisCoFM/posts/final-update-on-the-incident-that-occurred-wednesday-march-5-2026-at-approximate/1407412688093604"
     },
     {
       "title": "Tecnimont signs Argent LNG FEED contract - Valve World",
@@ -395,20 +403,20 @@
       "url": "https://www.aisc.org/economic-data/tariffs"
     },
     {
-      "title": "Steel and Aluminum Tariffs in 2026: A Definitive Guide for US Manufacturers",
-      "url": "https://materialsplus.com/resources/knowledge-hub/articles/steel-and-aluminum-tariffs-guide-us-manufacturers"
-    },
-    {
-      "title": "CSMS # 68855869 - GUIDANCE: Further Adjusting the Tariff Regimes for Imports of Aluminum, Steel, and Copper Into the United States",
-      "url": "https://content.govdelivery.com/accounts/USDHSCBP/bulletins/41aa83d"
-    },
-    {
       "title": "Section 232 Tariffs on Steel and Aluminum | Congress.gov | Library of Congress",
       "url": "https://www.congress.gov/crs-product/IN12519"
     },
     {
+      "title": "President Trump Modifies Section 232 Tariffs on Aluminum, Copper and Steel Imports | SmarTrade",
+      "url": "https://www.thompsonhinesmartrade.com/2026/06/president-trump-modifies-section-232-tariffs-on-aluminum-copper-and-steel-imports"
+    },
+    {
       "title": "US Tariff Update 2026 - Dimerco",
       "url": "https://dimerco.com/us-tariff-update-2026"
+    },
+    {
+      "title": "United States modifies steel, aluminum, and copper Section 232 tariffs | White & Case LLP",
+      "url": "https://www.whitecase.com/insight-alert/united-states-modifies-steel-aluminum-and-copper-section-232-tariffs"
     }
   ],
   "chat_users": [
